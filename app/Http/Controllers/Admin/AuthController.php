@@ -4,11 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use Illuminate\Support\Facades\Storage;
 use App\User;
 use Auth;
+use App\Services\AwsService;
 
 class AuthController extends Controller{
+	protected $awsService;
+	public function __construct(AwsService $awsService){ // Make service accessible in controller
+			$this->awsService = $awsService;
+	}
 
 	public function viewRegister(){
     return view('admin.auth.register');
@@ -21,10 +26,9 @@ class AuthController extends Controller{
 	    "password" => "required|confirmed"
 	  ]);
 
-	  $user = User::create($request->all());
-	  $user->role = 1;
-	  $user->save();
-	  Auth::login($user);
+		$user = User::create($request->all());
+		$this->awsService->uploadProfileImage($request, $user, 'avatar', 'Users/Profiles/');
+		Auth::login($user);
 
 	  return redirect()->route('dashboard');
 	}

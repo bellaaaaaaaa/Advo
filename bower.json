@@ -1,0 +1,22 @@
+{
+  "name": "advo",
+  "description": "",
+  "main": "",
+  "authors": [
+    "sakowan <gbayabos21@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/bellaaaaaaaa/advo_template",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "chartist": "^0.11.1",
+    "chart.js": "^2.8.0",
+    "eonasdan-bootstrap-datetimepicker": "^4.17.47"
+  }
+}

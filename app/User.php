@@ -7,6 +7,18 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable{
   use Notifiable;
+  public function interests(){
+    return $this->belongsToMany('App\Interest')->withTimestamps();;
+  }
+  public function badges(){
+    return $this->belongsToMany('App\Badge')->withTimestamps();;
+  }
+  public function funding_targets(){
+    return $this->hasMany('App\FundingTarget');
+  }
+  public function report_cards(){
+    return $this->hasMany('App\ReportCard');
+  }
 
   /**
    * The attributes that are mass assignable.
@@ -14,7 +26,7 @@ class User extends Authenticatable{
    * @var array
    */
   protected $fillable = [
-      'name', 'email', 'password',
+      'name', 'email', 'password', 'role',
   ];
 
   /**

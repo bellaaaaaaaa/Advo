@@ -28,10 +28,22 @@
           <p>Dashboard</p>
         </a>
       </li>
-			<li class="nav-item {{ is_active('teams') }}">
-				<a class="nav-link" href="{{ route('teams.index') }}">
-					<i class="fa fa-users text-info"></i>
-					<p>Teams</p>
+      <li class="nav-item {{ is_active('users') }}">
+          <a class="nav-link" href="{{ route('users.index') }}">
+            <i class="fa fa-male text-info"></i>
+            <p>Users</p>
+          </a>
+        </li>
+        <li class="nav-item {{ is_active('interests') }}">
+            <a class="nav-link" href="{{ route('interests.index') }}">
+              <i class="fa fa-star text-info"></i>
+              <p>Interests</p>
+            </a>
+          </li>
+			<li class="nav-item {{ is_active('badges') }}">
+				<a class="nav-link" href="{{ route('badges.index') }}">
+					<i class="fa fa-gift text-info"></i>
+					<p>Badges</p>
 				</a>
 			</li>
     </ul>

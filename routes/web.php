@@ -42,6 +42,15 @@ Route::prefix('admin')->group(function(){
     Route::get('settings', "Admin\AccountSettingsController@viewAccount")->name("admin.account.show");
     Route::post('settings', "Admin\AccountSettingsController@updateAccount")->name("admin.account.update");
     Route::put('settings/password', "Admin\AccountSettingsController@updatePassword")->name("admin.password.change");
+
+    //Users
+    Route::resource('users', 'Admin\UsersController');
+    //Interests
+    Route::resource('interests', 'Admin\InterestsController');
+    //Badges
+    Route::resource('badges', 'Admin\BadgesController');
+    //Report Cards
+    // Route::resource('report_cards', 'Admin\ReportCardsController');
   });
 });
 

@@ -2,7 +2,7 @@
 
 @section('content')
   <div class="col-md-4 col-sm-6 ml-auto mr-auto">
-    {!! Form::open(['route' => 'admin.register', 'id' => 'form-validation', 'class' => 'form form__submit']) !!}
+    {!! Form::open(['route' => 'admin.register', 'id' => 'form-validation', 'class' => 'form form__submit', 'enctype' => 'multipart/form-data']) !!}
       <div class="card card-login card-hidden">
         <div class="card-header">
           <h4 class="header text-center">Register Form</h4>
@@ -32,6 +32,21 @@
             </label>
             <input class="form-control" name="password_confirmation" type="password" required="true" />
           </div>
+          <div class="form-group has-label">
+            <label>Role
+              <star class="star">*</star>
+            </label>
+            <select class='form-control' name='role' required='true'>
+              <option value=0>Admin</option>
+            </select>
+          </div>
+          <div class="form-group has-label">
+              <label>Profile Image
+                <star class="star">*</star>
+              </label>
+              <input class="form-control" name="avatar" type="file"/>
+              {{ csrf_field() }}
+            </div>
           <div class="card-category form-category">
             <star class="star">*</star> Required fields
 					</div>

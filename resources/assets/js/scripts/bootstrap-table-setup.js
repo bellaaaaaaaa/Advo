@@ -3,6 +3,9 @@ $().ready(function(){
   var url = $table.data('url');
 
   window.operateEvents = {
+    'click .update': function(e, value, row, index) {
+      location.href = url + '/' + row.id;
+    },
     'click .view': function(e, value, row, index) {
       location.href = url + '/' + row.id;
     },
@@ -10,7 +13,6 @@ $().ready(function(){
       location.href = url + '/' + row.id + '/edit';
     },
     'click .remove': function(e, value, row, index) {
-
 			swal({
         title: "Are you sure?",
         text: "This action can not be recovered!",

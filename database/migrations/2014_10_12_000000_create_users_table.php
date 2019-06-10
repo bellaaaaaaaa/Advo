@@ -16,8 +16,12 @@ class CreateUsersTable extends Migration{
       $table->string('name');
       $table->string('email')->unique();
       $table->string('password');
+      $table->integer('role');
+      $table->date('date_of_birth')->nullable();
+      $table->string('phone_number')->nullable();
+      $table->string('ic_passport_number')->nullable();
+      $table->text('bio')->nullable();
 			$table->string('avatar')->nullable();
-			$table->integer('role')->default(0);
       $table->rememberToken();
       $table->timestamps();
     });
