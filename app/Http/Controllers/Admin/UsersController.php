@@ -114,7 +114,8 @@ class UsersController extends Controller
         $s3 = Storage::disk('s3');
         $avatar = str_replace("https://s3-ap-southeast-1.amazonaws.com/advoedu-testing", '', $user->avatar);
         $s3->delete($avatar);
-      
+        
+        dd($user);
         if (isset($request->badges)) {
             $user->badges()->sync($request->badges, true);
         } else {
