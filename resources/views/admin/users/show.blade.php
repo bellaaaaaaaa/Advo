@@ -31,6 +31,19 @@
   .fa {
     color: rgb(81, 134, 280)
   }
+  .interests-container {
+    display: inline-block;
+    padding: 20px;
+  }
+  .badge {
+    width: 100px;
+    height: 25px;
+    font-size: 15px !important;
+    padding: 0;
+    background-color: rgb(109, 144, 247);
+    border: 0;
+    color: white
+  }
 </style>
 
 @section('content')
@@ -68,6 +81,9 @@
       </div>
     </div>
   </div>
+<div>
+  <user-interests-component :user-id="{{ $user->id }}"></user-interests-component>
+</div>
 <div class="card col-md-10 offset-md-1 target-wheel">
   <h4>Target: {{ $funding_target == false ? "No funding target created." : "$$funding_target->amount" }} | Earned: ${{$funding_target->amount_gained}}</h4>
   <div class="container">
@@ -91,6 +107,7 @@
   </script>
   <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script> --}}
   <script src="{{ asset('js/jquery.easypiechart.js')}}"></script>
+  <script src="{{ asset('js/select2.min.js')}}"></script>
   <script>
     $(function() {
       $('.chart').easyPieChart({

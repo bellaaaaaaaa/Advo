@@ -1,12 +1,11 @@
 <?php
-
 namespace App;
-
+use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
-class User extends Authenticatable{
-  use Notifiable;
+class User extends Authenticatable
+{
+  use HasApiTokens, Notifiable;
   public function interests(){
     return $this->belongsToMany('App\Interest')->withTimestamps();;
   }
@@ -19,31 +18,20 @@ class User extends Authenticatable{
   public function report_cards(){
     return $this->hasMany('App\ReportCard');
   }
-
-  /**
-   * The attributes that are mass assignable.
-   *
-   * @var array
-   */
-  protected $fillable = [
-      'name', 'email', 'password', 'role',
-  ];
-
-  /**
-   * The attributes that should be hidden for arrays.
-   *
-   * @var array
-   */
-  protected $hidden = [
-      'password', 'remember_token',
-  ];
-
-	public static function boot(){
-		parent::boot();
-		static::creating(function($user){
-			$password = bcrypt($user->password);
-			$user->password = $password;
-		});
-	}
-
+/**
+* The attributes that are mass assignable.
+*
+* @var array
+*/
+protected $fillable = [
+'name', 'email', 'password', 'role'
+];
+/**
+* The attributes that should be hidden for arrays.
+*
+* @var array
+*/
+protected $hidden = [
+'password', 'remember_token',
+];
 }

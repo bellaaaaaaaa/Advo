@@ -20,6 +20,10 @@ function validationResponse($message = "Invalid request", $status_code = 422){
   return errorResponse(['message'=> $message], $status_code);
 }
 
+function validationError($message = "Missing or invalid parameters", $status_code = 422){
+	return errorResponse(['message' => $message], $status_code);
+}
+
 function formErrorValidation($messages, $status_code = 422){
   $messagesList = [];
   foreach ($messages->toArray() as $atrr => $msg) {

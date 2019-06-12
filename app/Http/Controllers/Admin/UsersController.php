@@ -114,7 +114,7 @@ class UsersController extends Controller
         $s3 = Storage::disk('s3');
         $avatar = str_replace("https://s3-ap-southeast-1.amazonaws.com/advoedu-testing", '', $user->avatar);
         $s3->delete($avatar);
-      
+        
         if (isset($request->badges)) {
             $user->badges()->sync($request->badges, true);
         } else {
@@ -139,5 +139,13 @@ class UsersController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function interests($id) {
+        $user = User::find($id);
+        return $user->interests()->get();
+    }
+    public function allinterests($id) {
+        $interests = Interest::whereDoesntHave('users', function($q) use ($id){ $q->where('user_id', $id); })->get()->all();
+        return $interests;
     }
 }
