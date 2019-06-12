@@ -45,7 +45,7 @@
 					<i class="fa fa-gift text-info"></i>
 					<p>Badges</p>
 				</a>
-			</li>
+      </li>
     </ul>
   </div>
 </div>

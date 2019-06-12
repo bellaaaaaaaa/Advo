@@ -84,6 +84,9 @@
 <div>
   <user-interests-component :user-id="{{ $user->id }}"></user-interests-component>
 </div>
+<div>
+  <user-badges-component :user-id="{{ $user->id }}"></user-badges-component>
+</div>
 <div class="card col-md-10 offset-md-1 target-wheel">
   <h4>Target: {{ $funding_target == false ? "No funding target created." : "$$funding_target->amount" }} | Earned: ${{$funding_target->amount_gained}}</h4>
   <div class="container">

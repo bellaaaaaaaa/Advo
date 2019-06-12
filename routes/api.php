@@ -29,7 +29,7 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::post('details', 'API\UserController@details');
 });
 
-// Routes for admin web
+// Routes for admin web ReportCardComponent
 Route::prefix('admin')->group(function(){
     Route::get('report_cards', 'Admin\ReportCardsController@index');
     Route::get('report_cards/{id}', 'Admin\ReportCardsController@show');
@@ -39,3 +39,16 @@ Route::prefix('admin')->group(function(){
 });
 Route::get('user_interests/{id}', 'Admin\UsersController@interests');
 Route::get('user_interests_options/{id}',  'Admin\UsersController@allinterests');
+
+// Routes for admin web  UserInterestsComponent
+Route::get('user_interests/{id}', 'Admin\UsersController@interests');
+Route::get('user_interests_options/{id}',  'Admin\UsersController@allinterests');
+Route::post('user_interest/{id}',  'Admin\UsersController@adduserinterest');
+Route::delete('user_interest/{id}',  'Admin\UsersController@deleteuserinterest');
+
+// Routes for admin web  UserBadgesComponent
+Route::get('user_badges/{id}', 'Admin\UsersController@badges');
+Route::get('user_badges_options/{id}',  'Admin\UsersController@allbadges');
+Route::post('user_badge/{id}',  'Admin\UsersController@adduserbadge');
+Route::delete('user_badge/{id}',  'Admin\UsersController@deleteuserbadge');
+

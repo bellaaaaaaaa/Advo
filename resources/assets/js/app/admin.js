@@ -5,7 +5,7 @@
  */
 
 require('../bootstrap');
-
+require('../select2.min');
 // Plugins
 require('../plugins/bootstrap-switch');
 
