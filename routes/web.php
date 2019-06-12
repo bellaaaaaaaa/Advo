@@ -14,7 +14,6 @@
 
 //Admin Routes
 Route::prefix('admin')->group(function(){
-
   //register
   Route::middleware('register.access')->group(function(){
     Route::get('register', "Admin\AuthController@viewRegister")->name('admin.register.show');
@@ -53,7 +52,6 @@ Route::prefix('admin')->group(function(){
     // Route::resource('report_cards', 'Admin\ReportCardsController');
   });
 });
-
 
 Route::get('/', 'Client\HomeController@home')->name('root');
 Route::get('/home', 'Client\HomeController@home')->name('home');

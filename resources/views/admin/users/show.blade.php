@@ -31,6 +31,19 @@
   .fa {
     color: rgb(81, 134, 280)
   }
+  .interests-container {
+    display: inline-block;
+    padding: 20px;
+  }
+  .badge {
+    width: 100px;
+    height: 25px;
+    font-size: 15px !important;
+    padding: 0;
+    background-color: rgb(109, 144, 247);
+    border: 0;
+    color: white
+  }
 </style>
 
 @section('content')
@@ -97,6 +110,7 @@
   </script>
   <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script> --}}
   <script src="{{ asset('js/jquery.easypiechart.js')}}"></script>
+  <script src="{{ asset('js/select2.min.js')}}"></script>
   <script>
     $(function() {
       $('.chart').easyPieChart({

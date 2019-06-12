@@ -46,12 +46,6 @@
 					<p>Badges</p>
 				</a>
       </li>
-      <li class="nav-item {{ is_active('funding_packages') }}">
-				<a class="nav-link" href="{{ route('funding_packages.index') }}">
-					<i class="fa fa-gift text-info"></i>
-					<p>Funding Packages</p>
-				</a>
-			</li>
     </ul>
   </div>
 </div>
