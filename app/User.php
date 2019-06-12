@@ -19,31 +19,32 @@ class User extends Authenticatable{
   public function report_cards(){
     return $this->hasMany('App\ReportCard');
   }
-
-  /**
-   * The attributes that are mass assignable.
-   *
-   * @var array
-   */
-  protected $fillable = [
-      'name', 'email', 'password', 'role',
-  ];
-
-  /**
-   * The attributes that should be hidden for arrays.
-   *
-   * @var array
-   */
-  protected $hidden = [
-      'password', 'remember_token',
-  ];
-
-	public static function boot(){
-		parent::boot();
-		static::creating(function($user){
-			$password = bcrypt($user->password);
-			$user->password = $password;
-		});
-	}
-
+  public function is_admin()
+  {
+    return $this->role == 0;
+  }
+  public function is_benefactor()
+  {
+    return $this->role == 1;
+  }
+  public function is_scholar()
+  {
+    return $this->role == 2;
+  }
+/**
+* The attributes that are mass assignable.
+*
+* @var array
+*/
+protected $fillable = [
+'name', 'email', 'password', 'role'
+];
+/**
+* The attributes that should be hidden for arrays.
+*
+* @var array
+*/
+protected $hidden = [
+'password', 'remember_token',
+];
 }

@@ -140,4 +140,43 @@ class UsersController extends Controller
     {
         //
     }
+    public function interests($id) {
+        $user = User::find($id);
+        return $user->interests()->get();
+    }
+    public function allinterests($id) {
+        $interests = Interest::whereDoesntHave('users', function($q) use ($id){ $q->where('user_id', $id); })->get()->all();
+        return $interests;
+    }
+    public function adduserinterest(Request $request, $id) {
+        $user = User::find($id);
+        $user->interests()->attach($request->interest_id);
+        return $user->interests()->get();
+        // return $user->interests();
+    }
+    public function deleteuserinterest(Request $request, $id) {
+        $user = User::find($request->user_id);
+        $user->interests()->detach($request->interest_id);
+        return 204;
+    }
+
+    public function badges($id) {
+        $user = User::find($id);
+        return $user->badges()->get();
+    }
+    public function allbadges($id) {
+        $badges = Badge::whereDoesntHave('users', function($q) use ($id){ $q->where('user_id', $id); })->get()->all();
+        return $badges;
+    }
+    public function adduserbadge(Request $request, $id) {
+        $user = User::find($id);
+        $user->badges()->attach($request->badge_id);
+        return $user->badges()->get();
+    }
+    public function deleteuserbadge(Request $request, $id) {
+        $user = User::find($request->user_id);
+        $user->badges()->detach($request->badge_id);
+        return 204;
+    }
+
 }
