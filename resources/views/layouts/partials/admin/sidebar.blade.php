@@ -46,6 +46,12 @@
 					<p>Badges</p>
 				</a>
       </li>
+      <li class="nav-item {{ is_active('posts') }}">
+        <a class="nav-link" href="{{ route('scholar_posts.index') }}">
+          <i class="fa fa-newspaper-o text-info"></i>
+          <p>Posts</p>
+        </a>
+      </li>
     </ul>
   </div>
 </div>
