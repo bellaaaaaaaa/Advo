@@ -14,9 +14,10 @@ use App\Http\Controllers\Controller;
 
 class ScholarPostsController extends Controller
 {
-    protected $scholarPostsService;
-    public function __construct(ScholarPostsService $scholarPostsService){
-        $this->scholarPostsService = $scholarPostsService;   
+    protected $scholarPostsService, $awsService;
+    public function __construct(ScholarPostsService $scholarPostsService, AwsService $awsService){
+        $this->scholarPostsService = $scholarPostsService;
+        $this->awsService = $awsService;
     }
     /**
      * Display a listing of the resource.
@@ -88,7 +89,8 @@ class ScholarPostsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $post = ScholarPost::find($id);
+        return view('admin.scholar_posts.edit')->withPost($post);
     }
 
     /**
@@ -100,7 +102,17 @@ class ScholarPostsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $post = ScholarPost::find($id);
+        $this->validate($request, array(
+            'title' => 'required',
+            'body' => 'required',
+        ));
+        $post->update($request->all());
+        $post->save();
+        $this->awsService->removeUpload($post, $post->cover_image, 'Users/Scholarposts/');
+        $this->awsService->uploadProfileImage($request, $post, 'cover_image_', 'Users/Scholarposts/');
+
+        return view('admin.scholar_posts.show')->withPost($post);
     }
 
     /**
