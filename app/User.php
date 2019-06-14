@@ -18,6 +18,9 @@ class User extends Authenticatable
   public function report_cards(){
     return $this->hasMany('App\ReportCard');
   }
+  public function scholar_posts(){
+    return $this->hasMany('App\ScholarPost');
+  }
   public function is_admin()
   {
     return $this->role == 0;

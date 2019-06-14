@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Aws\S3\S3Client;
 
 class AwsService extends TransformerService{
-  // public function uploadProfileImage($request, $user){
+  // public function uploadFile($request, $user){
   //   if($request->hasFile('avatar')) {
 	// 		$filenamewithextension = $request->file('avatar')->getClientOriginalName(); 	//get filename with extension
 	// 		$filename = pathinfo($filenamewithextension, PATHINFO_FILENAME); //get filename without extension
@@ -20,7 +20,7 @@ class AwsService extends TransformerService{
 	// 		return $user->save();
 	// 	}
 	// }
-	public function uploadProfileImage($request, $object, $file_header, $bucketFolder){
+	public function uploadFile($request, $object, $file_header, $bucketFolder){
     if($request->hasFile($file_header)) {
 			$filenamewithextension = $request->file($file_header)->getClientOriginalName(); 	//get filename with extension
 			$filename = pathinfo($filenamewithextension, PATHINFO_FILENAME); //get filename without extension
@@ -30,8 +30,10 @@ class AwsService extends TransformerService{
 			$image_url = "https://s3-ap-southeast-1.amazonaws.com/advoedu-testing/".$filenametostore;
 			if ($object instanceOf User)	{
 				$object->avatar = $image_url;
-			} else {
+			} elseif ($object instanceOf ReportCard) {
 				$object->file = $image_url;
+			} else {
+				$object->cover_image = $image_url;
 			}
 			return $object->save();
 		}
@@ -42,8 +44,10 @@ class AwsService extends TransformerService{
 		Storage::disk('s3')->delete($path);
 		if ($object instanceOf User)	{
 			$object->avatar = '';
-		} else {
+		} elseif ($object instanceOf ReportCard) {
 			$object->file = '';
+		} else {
+			$object->cover_image = '';
 		}
 		return $object->save();
 	}

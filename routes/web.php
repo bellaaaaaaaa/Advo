@@ -48,8 +48,9 @@ Route::prefix('admin')->group(function(){
     Route::resource('interests', 'Admin\InterestsController');
     //Badges
     Route::resource('badges', 'Admin\BadgesController');
-    //Report Cards
-    // Route::resource('report_cards', 'Admin\ReportCardsController');
+    //Scholar Posts
+    Route::resource('scholar_posts', 'Admin\ScholarPostsController', ['except' => 'create']);
+    Route::get('scholar_posts/create/{id}', "Admin\ScholarPostsController@create")->name("scholar_posts.create");
   });
 });
 

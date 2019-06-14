@@ -54,20 +54,15 @@
 @section('scripts')
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 {!! HTML::script('js/parsley.min.js')!!}
-{!! HTML::script('js/parsley.min.js')!!}
 {!! HTML::script('js/select2.min.js')!!}
 <script type="text/javascript">
     $('.select2-multi').select2();
 </script>
-<script src="{{ asset('js/intlTelInput.js')}}"></script>
+{{-- <script src="{{ asset('js/intlTelInput.js')}}"></script> --}}
 <script>
-  var user = <?php echo json_encode($user); ?>;
-  var roles = {'0' :'Admin', '1' : 'Benefactor', '2' : 'Scholar'};
-  
-  // $(document).ready(function({
-  //   $('#role').val(roles[user.role]);
-  // }));
-  var input = document.querySelector("#phone");
-  window.intlTelInput(input);
+  // var user = <?php echo json_encode($user); ?>;
+  // var roles = {'0' :'Admin', '1' : 'Benefactor', '2' : 'Scholar'};
+  // var input = document.querySelector("#phone");
+  // window.intlTelInput(input);
 </script>
 @endsection
