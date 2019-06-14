@@ -51,6 +51,8 @@ Route::prefix('admin')->group(function(){
     //Scholar Posts
     Route::resource('scholar_posts', 'Admin\ScholarPostsController', ['except' => 'create']);
     Route::get('scholar_posts/create/{id}', "Admin\ScholarPostsController@create")->name("scholar_posts.create");
+    //Funding Package
+    Route::resource('funding_packages', 'Admin\FundingPackageController');
   });
 });
 

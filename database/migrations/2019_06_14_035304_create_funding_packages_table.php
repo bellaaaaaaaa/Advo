@@ -15,6 +15,10 @@ class CreateFundingPackagesTable extends Migration
     {
         Schema::create('funding_packages', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('title');
+            $table->string('description');
+            $table->text('body');
+            $table->string('payment_method_type');
             $table->timestamps();
         });
     }
