@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\FundingPackagesService;
+use App\FundingPackage;
 
 class FundingPackageController extends Controller
 {
@@ -29,7 +30,8 @@ class FundingPackageController extends Controller
      */
     public function create()
     {
-        //
+        $options = ['a' => 'A', 'b' => 'B', 'c'=> 'C'];
+        return view('admin.funding_package.create')->withOptions($options);
     }
 
     /**
@@ -40,7 +42,8 @@ class FundingPackageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $fundingPackage = FundingPackage::create($request->all());
+        return view('admin.funding_package.index');
     }
 
     /**
@@ -62,7 +65,9 @@ class FundingPackageController extends Controller
      */
     public function edit($id)
     {
-        //
+        $fundingPackage = FundingPackage::find($id);
+        $options = ['a' => 'A', 'b' => 'B', 'c'=> 'C'];
+        return view('admin.funding_package.edit', ['options' => $options, 'fundingPackage' => $fundingPackage]);
     }
 
     /**
@@ -74,7 +79,10 @@ class FundingPackageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $fundingPackage = FundingPackage::find($id);
+        $fundingPackage->update($request->input());
+        $fundingPackage->save();
+        return view('admin.funding_package.index');
     }
 
     /**
@@ -85,6 +93,8 @@ class FundingPackageController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $fundingPackage = FundingPackage::find($id);
+        $fundingPackage->delete();
+        return view('admin.funding_package.index');
     }
 }

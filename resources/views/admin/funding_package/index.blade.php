@@ -3,6 +3,11 @@
 	<div class="card bootstrap-table">
     <div class="card-body table-full-width">
       <div class="toolbar">
+        <a href="{{ route('funding_packages.create') }}" class="ml-1">
+          <button class="btn btn-outline" style="border-radius: 30px">
+            <i class="glyphicon fa fa-plus"></i>
+          </button>
+        </a>
       </div>
       <table id="bootstrap-table" class="table" data-url="{{ route('funding_packages.index') }}">
         <thead>
@@ -27,9 +32,6 @@
         '</a>',
         "<a rel='tooltip' title='Edit' class='btn btn-link btn-primary table-action edit' href='javascript:void(0)'>",
         '<i class="fa fa-edit"></i>',
-        '</a>',
-        "<a rel='tooltip' title='View' class='btn btn-link btn-primary table-action view' href='javascript:void(0)'>",
-        '<i class="fa fa-eye"></i>',
         '</a>'
       ].join('');
     }
