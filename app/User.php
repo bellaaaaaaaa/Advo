@@ -13,13 +13,19 @@ class User extends Authenticatable
     return $this->belongsToMany('App\Badge')->withTimestamps();;
   }
   public function funding_targets(){
-    return $this->hasMany('App\FundingTarget');
+    return $this->hasMany('App\FundingTarget')->withTimestamps();
   }
   public function report_cards(){
-    return $this->hasMany('App\ReportCard');
+    return $this->hasMany('App\ReportCard')->withTimestamps();
   }
   public function scholar_posts(){
-    return $this->hasMany('App\ScholarPost');
+    return $this->hasMany('App\ScholarPost')->withTimestamps();
+  }
+  public function funding_transactions(){
+    return $this->hasMany('App\FundingTransaction')->withTimestamps();
+  }
+  public function funding_receipts(){
+    return $this->hasMany('App\FundingReceipt')->withTimestamps();
   }
   public function is_admin()
   {

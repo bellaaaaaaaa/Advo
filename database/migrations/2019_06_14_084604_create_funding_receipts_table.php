@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateFundingPackagesTable extends Migration
+class CreateFundingReceiptsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,11 @@ class CreateFundingPackagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('funding_packages', function (Blueprint $table) {
+        Schema::create('funding_receipts', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('funding_transaction_id')->unsigned();
+            $table->integer('user_id')->unsigned();
+            $table->integer('amount_cents')->unsigned();
             $table->timestamps();
         });
     }
@@ -26,6 +29,6 @@ class CreateFundingPackagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('funding_packages');
+        Schema::dropIfExists('funding_receipts');
     }
 }
