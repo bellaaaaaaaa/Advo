@@ -86,7 +86,7 @@ class ReportCardsController extends Controller
         $rc = ReportCard::findOrFail($id);
         $rc->update($request->all());
         $this->awsService->removeUpload($rc, $rc->file, 'Users/Reportcards/');
-        $this->awsService->uploadProfileImage($request, $rc, 'report_file', 'Users/Reportcards/');
+        $this->awsService->uploadFile($request, $rc, 'report_file', 'Users/Reportcards/');
         return $rc;
     }
 

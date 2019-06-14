@@ -7,7 +7,7 @@ use App\User;
 use App\ScholarPost;
 use App\Services\ScholarPostsService;
 use Illuminate\Support\Facades\Storage;
-use Aws\S3\S3Client;
+use Aws\S3\S3Client as s3;
 use App\Services\AwsService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -61,7 +61,7 @@ class ScholarPostsController extends Controller
         $filenamewithextension = $request->file('cover_image')->getClientOriginalName(); 	//get filename with extension
         $filename = pathinfo($filenamewithextension, PATHINFO_FILENAME); //get filename without extension
         $extension = $request->file('cover_image')->getClientOriginalExtension(); //get file extension
-        $filenametostore = 'Users/Scholarposts/'.$filename.'_'.time().'.'.$extension;	//filename to store
+        $filenametostore =  "Users/Scholarposts/User_".$scholarPost->user_id."/".$filename.'_'.time().'.'.$extension;	//filename to store
         Storage::disk('s3')->put($filenametostore, fopen($request->file('cover_image'), 'r+'), 'public');	//Upload File to s3
         $report_url = "https://s3-ap-southeast-1.amazonaws.com/advoedu-testing/".$filenametostore;
         $scholarPost->cover_image = $report_url;
@@ -109,8 +109,10 @@ class ScholarPostsController extends Controller
         ));
         $post->update($request->all());
         $post->save();
-        $this->awsService->removeUpload($post, $post->cover_image, 'Users/Scholarposts/');
-        $this->awsService->uploadProfileImage($request, $post, 'cover_image_', 'Users/Scholarposts/');
+        if ($request->hasFile('cover_image_')) {
+            $this->awsService->removeUpload($post, $post->cover_image, "Users/Scholarposts/User_".$post->user_id."/");
+            $this->awsService->uploadFile($request, $post, 'cover_image_', "Users/Scholarposts/User_".$post->user_id."/"); 
+        }
 
         return view('admin.scholar_posts.show')->withPost($post);
     }

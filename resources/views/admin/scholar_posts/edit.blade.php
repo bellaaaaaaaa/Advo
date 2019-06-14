@@ -19,8 +19,12 @@
         {{ Form::label('body', 'Body:')}}
         {{ Form::text('body', null, array('class' => 'form-control input-margin', 'required' => '')) }}
       
-        {{ Form::label('cover_image', 'Cover Image', array('style' => 'margin-top: 10px'))}}
+        {{ Form::label('cover_image', 'Change Image', array('style' => 'margin-top: 10px'))}}
         {{ Form::file('cover_image ', null, array('class' => 'form-control input-margin')) }}
+        <br>
+        <label for="">Current Image</label>
+        <br>
+        <img class="col-sm-4" src="{{ $post->cover_image }}" alt="">
         {{ csrf_field() }}
 
         {{ Form::submit('Save Changes', array('class' => 'btn-primary btn-lg btn-block', 'style' => 'margin-top: 25px;')) }}

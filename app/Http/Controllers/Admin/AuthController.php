@@ -27,7 +27,9 @@ class AuthController extends Controller{
 	  ]);
 
 		$user = User::create($request->all());
-		$this->awsService->uploadProfileImage($request, $user, 'avatar', 'Users/Profiles/');
+		$user->password = password_hash($request->password, PASSWORD_BCRYPT);
+		$user->save();
+		$this->awsService->uploadFile($request, $user, 'avatar', 'Users/Profiles/');
 		Auth::login($user);
 
 	  return redirect()->route('dashboard');
@@ -41,9 +43,9 @@ class AuthController extends Controller{
 	  $this->validate($request, [
 	    "email" => "required|email",
 	    "password" => "required"
-	  ]);
-
-	  if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'role' => 1])) {
+		]);
+		
+	  if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
 	    return redirect()->route('dashboard');
 	  }else{
 	    return redirect()->back()->withErrors(['message' => 'Email or password is incorrect']);
