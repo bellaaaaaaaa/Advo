@@ -10,6 +10,6 @@ class FundingPackage extends Model
     protected $guarded = ['_token'];
 
     public function funding_transactions(){
-        return $this->hasMany('App\FundingTransaction')->withTimestamps();
+        return $this->hasMany('App\FundingTransaction');
     }
 }

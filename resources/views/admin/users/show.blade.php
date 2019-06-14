@@ -47,87 +47,46 @@
 </style>
 
 @section('content')
-  <div class="card col-md-10 offset-md-1" style="padding: 20px; border: none; background-color: transparent">
-    <div class="row">
-      <div class="col-md-3" style="padding-right: 0;">
-        <img src="{{ $user->avatar == null ? asset('/images/default-person.png') : $user->avatar }}" alt="" style="width:150px; height: 150px; border-radius: 50%">
+<div class="card col-md-10 offset-md-1" style="padding: 20px; border: none; background-color: transparent">
+  <div class="row">
+    <div class="col-md-3" style="padding-right: 0;">
+      <img src="{{ $user->avatar == null ? asset('/images/default-person.png') : $user->avatar }}" alt="" style="width:150px; height: 150px; border-radius: 50%">
+    </div>
+    <div class="col-md-9" style="background-color: white; border-radius: 6px">
+      <h4>
+        {{ $user->name }} | {{ $user->role < 1 ? 'Admin' : ($user->role == 1 ? 'Benefactor' : 'Scholar')}}
+      </h4>
+      <div class="row; display: inline-block">
+        <i class="fa fa-info" aria-hidden="true" style="display: inline-block"></i>
+        <p style="display: inline-block; font-weight: 300; margin-right: 15px"> {{ $user->bio }}</p>
       </div>
-      <div class="col-md-9" style="background-color: white; border-radius: 6px">
-        <h4>
-          {{ $user->name }} | {{ $user->role < 1 ? 'Admin' : ($user->role == 1 ? 'Benefactor' : 'Scholar')}}
-        </h4>
-        <div class="row; display: inline-block">
-          <i class="fa fa-info" aria-hidden="true" style="display: inline-block"></i>
-          <p style="display: inline-block; font-weight: 300; margin-right: 15px"> {{ $user->bio }}</p>
-        </div>
-        <div class="info" style='display:inline-block'>
-          <i class="fa fa-envelope" aria-hidden='true'></i>
-          <p style="display: inline-block; font-weight: 300; margin-right: 15px;">
-            {{$user->email}}
-          </p>
-          <i class="fa fa-phone" aria-hidden="true"></i>
-          <p style="display: inline-block; font-weight: 300; margin-right: 15px;">
-            {{$user->phone_number}}
-          </p>
-          <i class="fa fa-birthday-cake" aria-hidden="true"></i>
-          <p style="display: inline-block; font-weight: 300; margin-right: 15px;">
-            {{$user->date_of_birth}}
-          </p>
-          <i class="fa fa-id-card-o" aria-hidden="true"></i>
-          <p style="display: inline-block; font-weight: 300; margin-right: 15px;">
-            {{$user->ic_passport_number}}
-          </p>
-        </div>
+      <div class="info" style='display:inline-block'>
+        <i class="fa fa-envelope" aria-hidden='true'></i>
+        <p style="display: inline-block; font-weight: 300; margin-right: 15px;">
+          {{$user->email}}
+        </p>
+        <i class="fa fa-phone" aria-hidden="true"></i>
+        <p style="display: inline-block; font-weight: 300; margin-right: 15px;">
+          {{$user->phone_number}}
+        </p>
+        <i class="fa fa-birthday-cake" aria-hidden="true"></i>
+        <p style="display: inline-block; font-weight: 300; margin-right: 15px;">
+          {{$user->date_of_birth}}
+        </p>
+        <i class="fa fa-id-card-o" aria-hidden="true"></i>
+        <p style="display: inline-block; font-weight: 300; margin-right: 15px;">
+          {{$user->ic_passport_number}}
+        </p>
       </div>
     </div>
   </div>
-<div>
-  <user-interests-component :user-id="{{ $user->id }}"></user-interests-component>
 </div>
-<div>
-  <user-badges-component :user-id="{{ $user->id }}"></user-badges-component>
-</div>
-@if ($funding_target && $user->role == 2)
-  <div class="card col-md-10 offset-md-1 target-wheel">
-    <h4>Target: {{ $funding_target == false ? "No funding target created." : "$$funding_target->amount" }} | Earned: ${{$funding_target->amount_gained}}</h4>
-    <div class="container">
-      <div class="box">
-      <div class="chart" data-percent="{{ (($funding_target->amount_gained/$funding_target->amount) * 100) }}">{{ floor(($funding_target->amount_gained/$funding_target->amount) * 100)  }}%</div>
-      </div>
-    </div>
-  </div>
+@if ($user->is_admin())
+  @include('layouts.partials.admin._admin_show')
 @endif
-<div class="card col-md-10 offset-md-1">
-  <h4>Report Cards</h4>
-  <div class="container">
-    <div class="box">
-      <report-card-component :user-id="{{ $user->id }}"></report-card-component>
-    </div>
-  </div>
-</div>
-<div class="col-md-10 offset-md-1">
-  <div class="row">
-    <h4 style="margin: 0">Posts</h4>
-    <a href="{{ route('scholar_posts.create', $user->id) }}">
-      <i class="fa fa-plus-circle" aria-hidden="true" style="width: 40px; font-size: 25px"></i>
-    </a>
-  </div>
-  <div class="row">
-    <table class="table">
-    @foreach ($user->scholar_posts()->get() as $post)
-      <tr>
-        <td class="text-left">{{ $post->title }}</td> 
-        <td class="text-right">
-          <a href="{{ route('scholar_posts.show', $post->id) }}" class="btn btn-info" style="color: white">View</a>
-          {!! Form::open(['route' => ['scholar_posts.destroy', $post->id], 'method' => 'DELETE'])!!}
-            {!! Form::submit('Delete', ['class' => 'btn btn-danger btn-block', 'style' => 'width: 67px; float: right']) !!}
-          {!! Form::close() !!}
-        </td>
-      </tr>
-      @endforeach
-    </table>
-  </div>
-</div>
+@if ($user->is_scholar())
+  @include('layouts.partials.admin._scholar_show')
+@endif
 @endsection
 @section('scripts')
   {{-- <script>
