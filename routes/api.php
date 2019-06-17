@@ -52,3 +52,9 @@ Route::get('user_badges_options/{id}',  'Admin\UsersController@allbadges');
 Route::post('user_badge/{id}',  'Admin\UsersController@adduserbadge');
 Route::delete('user_badge/{id}',  'Admin\UsersController@deleteuserbadge');
 
+// Funding Transactions for NewFundingTransactionComponent
+Route::get('get_benefactors', 'Admin\FundingTransactionController@get_benefactors');
+Route::get('get_scholars',  'Admin\FundingTransactionController@get_scholars');
+Route::get('get_funding_packages',  'Admin\FundingTransactionController@get_funding_packages');
+Route::get('get_scholar_funding_targets/{id}',  'Admin\FundingTransactionController@get_scholar_funding_targets');
+Route::get('get_scholar_name/{id}',  'Admin\FundingTransactionController@get_scholar_name');

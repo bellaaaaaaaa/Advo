@@ -60,3 +60,10 @@ Route::prefix('admin')->group(function(){
 
 Route::get('/', 'Client\HomeController@home')->name('root');
 Route::get('/home', 'Client\HomeController@home')->name('home');
+
+
+Route::group(['middleware' => ['web']], function () {
+  Route::get('stripe', 'Admin\StripePaymentController@stripe');
+  Route::post('stripe', 'Admin\StripePaymentController@stripePost')->name('stripe.post');
+  //routes here
+});

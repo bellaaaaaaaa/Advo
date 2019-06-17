@@ -13,10 +13,8 @@
     <div class="user">
 			<div class="info">
       <div class="photo">
-        <img src="{{ avatar_picture_url(current_user()->avatar) }}" >
       </div>
 			<a data-toggle="collapse" href="#collapseExample" class="collapsed">
-				<span>{{ str_limit(current_user()->name, 20) }}</span>
       </a>
 			</div>
     </div>
@@ -56,6 +54,12 @@
         <a class="nav-link" href="{{ route('funding_packages.index') }}">
           <i class="fa fa-money text-info"></i>
           <p>Funding Packages</p>
+        </a>
+      </li>
+      <li class="nav-item {{ is_active('funding_transactions') }}">
+        <a class="nav-link" href="{{ route('funding_transactions.index') }}">
+          <i class="fa fa-money text-info"></i>
+          <p>Funding Transactions</p>
         </a>
       </li>
     </ul>

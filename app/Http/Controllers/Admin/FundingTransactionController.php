@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\FundingTransactionsService;
 
+use App\User;
+use App\FundingPackage;
+
 class FundingTransactionController extends Controller
 {
     protected $fundingTransactionsService;
@@ -29,7 +32,7 @@ class FundingTransactionController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.funding_transactions.create');
     }
 
     /**
@@ -86,5 +89,24 @@ class FundingTransactionController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function get_benefactors(){
+        $benefactors = User::where('role', 1)->get();
+        return $benefactors;
+    }
+    public function get_scholars(){
+        $scholars = User::where('role', 2)->get();
+        return $scholars;
+    }
+    public function get_scholar_funding_targets($user_id){
+        $scholar = User::find($user_id);
+        return $scholar->funding_targets;
+    }
+    public function get_funding_packages(){
+        return FundingPackage::all();
+    }
+    public function get_scholar_name($user_id){
+        $scholar = User::find($user_id);
+        return $scholar->name;
     }
 }

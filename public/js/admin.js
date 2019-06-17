@@ -4574,7 +4574,7 @@
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module)))
 
 /***/ }),
 /* 1 */
@@ -33934,34 +33934,6 @@ module.exports = Cancel;
 /* 14 */
 /***/ (function(module, exports) {
 
-module.exports = function(module) {
-	if(!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if(!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
-
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports) {
-
 /* globals __VUE_SSR_CONTEXT__ */
 
 // IMPORTANT: Do NOT use ES2015 features in this file.
@@ -34065,6 +34037,34 @@ module.exports = function normalizeComponent (
     options: options
   }
 }
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
 
 
 /***/ }),
@@ -51248,7 +51248,7 @@ if (token) {
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3), __webpack_require__(14)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3), __webpack_require__(15)(module)))
 
 /***/ }),
 /* 18 */
@@ -79652,11 +79652,11 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(15)
+var normalizeComponent = __webpack_require__(14)
 /* script */
-var __vue_script__ = __webpack_require__(205)
+var __vue_script__ = __webpack_require__(208)
 /* template */
-var __vue_template__ = __webpack_require__(206)
+var __vue_template__ = __webpack_require__(209)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -108001,8 +108001,9 @@ $().ready(function () {
 
 var map = {
 	"./components/ExampleComponent.vue": 196,
-	"./components/ReportCardComponent.vue": 199,
-	"./components/UserBadgesComponent.vue": 202,
+	"./components/NewFundingTransactionComponent.vue": 199,
+	"./components/ReportCardComponent.vue": 202,
+	"./components/UserBadgesComponent.vue": 205,
 	"./components/UserInterestsComponent.vue": 163
 };
 function webpackContext(req) {
@@ -108026,7 +108027,7 @@ webpackContext.id = 195;
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(15)
+var normalizeComponent = __webpack_require__(14)
 /* script */
 var __vue_script__ = __webpack_require__(197)
 /* template */
@@ -108145,11 +108146,549 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(15)
+var normalizeComponent = __webpack_require__(14)
 /* script */
 var __vue_script__ = __webpack_require__(200)
 /* template */
 var __vue_template__ = __webpack_require__(201)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/NewFundingTransactionComponent.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-22250e93", Component.options)
+  } else {
+    hotAPI.reload("data-v-22250e93", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 200 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_moment__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      benefactors: [],
+      scholars: [],
+      fundingTransactions: [],
+      scholarFundingTargets: [],
+      scholarName: '',
+      fundingPackages: [],
+      paymentMethodTypes: ['A', 'B', 'C'],
+      newFundingTransactionObject: {
+        benefactor_id: '',
+        scholar_id: '',
+        funding_target_id: '',
+        amount_cents: ''
+      }
+    };
+  },
+  mounted: function mounted() {
+    this.getBenefactors(), this.getScholars(), this.getFundingPackages();
+  },
+
+  methods: {
+    addFundingTransaction: function addFundingTransaction() {
+      console.log(this.newFundingTransactionObject);
+    },
+    getBenefactors: function getBenefactors() {
+      var _this = this;
+
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/get_benefactors' }).then(function (result) {
+        _this.benefactors = result.data;
+        console.log(_this.benefactors);
+      }, function (error) {
+        console.log(error);
+      });
+    },
+    getScholars: function getScholars() {
+      var _this2 = this;
+
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/get_scholars' }).then(function (result) {
+        _this2.scholars = result.data;
+      }, function (error) {
+        console.log(error);
+      });
+    },
+    getFundingPackages: function getFundingPackages() {
+      var _this3 = this;
+
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/get_funding_packages' }).then(function (result) {
+        _this3.fundingPackages = result.data;
+      }, function (error) {
+        console.log(error);
+      });
+    },
+    getScholarFundingTargets: function getScholarFundingTargets() {
+      var _this4 = this;
+
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/get_scholar_funding_targets/' + this.scholar_id }).then(function (result) {
+        _this4.scholarFundingTargets = result.data;
+      }, function (error) {
+        console.log(error);
+      });
+    },
+    getScholarName: function getScholarName() {
+      var _this5 = this;
+
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/get_scholar_name/' + this.scholar_id }).then(function (result) {
+        var name = result.data;
+        name += "'s ";
+        _this5.scholarName = name;
+        console.log(_this5.scholarName);
+      }, function (error) {
+        console.log(error);
+      });
+    },
+    onChange: function onChange(event) {
+      this.scholar_id = event.target.value;
+      this.getScholarName();
+      this.getScholarFundingTargets();
+      console.log(this.scholarFundingTargets);
+    },
+
+    isNumber: function isNumber(evt) {
+      evt = evt ? evt : window.event;
+      var charCode = evt.which ? evt.which : evt.keyCode;
+      if (charCode < 48 || charCode > 57) {
+        evt.preventDefault();
+      } else {
+        return true;
+      }
+    }
+  }
+});
+
+/***/ }),
+/* 201 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "card col-md-10 offset-1" }, [
+    _c("h4", [_vm._v(" New Funding Transaction")]),
+    _vm._v(" "),
+    _c(
+      "form",
+      {
+        on: {
+          submit: function($event) {
+            $event.preventDefault()
+            _vm.addFundingTransaction()
+          }
+        }
+      },
+      [
+        _c("div", { staticClass: "col-md-12 row" }, [
+          _c("div", { staticClass: "col-md-6" }, [
+            _c("label", [_vm._v("Benefactor (Sender)")]),
+            _vm._v(" "),
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.newFundingTransactionObject.benefactor_id,
+                    expression: "newFundingTransactionObject.benefactor_id"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { type: "submit" },
+                on: {
+                  change: function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.$set(
+                      _vm.newFundingTransactionObject,
+                      "benefactor_id",
+                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                    )
+                  }
+                }
+              },
+              _vm._l(_vm.benefactors, function(benefactor) {
+                return _c("option", { domProps: { value: benefactor.id } }, [
+                  _vm._v(
+                    _vm._s(benefactor.id) + " | " + _vm._s(benefactor.name)
+                  )
+                ])
+              })
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-md-6" }, [
+            _c("label", [_vm._v("Scholar (Receiver)")]),
+            _vm._v(" "),
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.newFundingTransactionObject.scholar_id,
+                    expression: "newFundingTransactionObject.scholar_id"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { type: "submit" },
+                on: {
+                  change: [
+                    function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.$set(
+                        _vm.newFundingTransactionObject,
+                        "scholar_id",
+                        $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      )
+                    },
+                    function($event) {
+                      _vm.onChange($event)
+                    }
+                  ]
+                }
+              },
+              _vm._l(_vm.scholars, function(scholar) {
+                return _c("option", { domProps: { value: scholar.id } }, [
+                  _vm._v(_vm._s(scholar.id) + " | " + _vm._s(scholar.name))
+                ])
+              })
+            )
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-md-12  row" }, [
+          _c("div", { staticClass: "col-md-6" }, [
+            _c("label", [_vm._v(_vm._s(this.scholarName) + "Funding Targets")]),
+            _vm._v(" "),
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.newFundingTransactionObject.funding_target_id,
+                    expression: "newFundingTransactionObject.funding_target_id"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { type: "submit" },
+                on: {
+                  change: function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.$set(
+                      _vm.newFundingTransactionObject,
+                      "funding_target_id",
+                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                    )
+                  }
+                }
+              },
+              _vm._l(_vm.scholarFundingTargets, function(ft) {
+                return _c("option", { domProps: { value: ft.id } }, [
+                  _vm._v(_vm._s(ft.id) + " | " + _vm._s(ft.title))
+                ])
+              })
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-md-6" }, [
+            _c("label", [_vm._v("Amount")]),
+            _vm._v(" "),
+            _c("div", { staticClass: "input-group mb-2" }, [
+              _vm._m(0),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.newFundingTransactionObject.amount_cents,
+                    expression: "newFundingTransactionObject.amount_cents"
+                  }
+                ],
+                staticClass: "form-control",
+                domProps: {
+                  value: _vm.newFundingTransactionObject.amount_cents
+                },
+                on: {
+                  keypress: function($event) {
+                    _vm.isNumber($event)
+                  },
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(
+                      _vm.newFundingTransactionObject,
+                      "amount_cents",
+                      $event.target.value
+                    )
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _vm._m(1)
+            ])
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-md-12 row" }, [
+          _c("div", { staticClass: "col-md-6" }, [
+            _c("label", [_vm._v("Funding Package")]),
+            _vm._v(" "),
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.newFundingTransactionObject.funding_package_id,
+                    expression: "newFundingTransactionObject.funding_package_id"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { type: "submit" },
+                on: {
+                  change: function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.$set(
+                      _vm.newFundingTransactionObject,
+                      "funding_package_id",
+                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                    )
+                  }
+                }
+              },
+              _vm._l(_vm.fundingPackages, function(fp) {
+                return _c("option", { domProps: { value: fp.id } }, [
+                  _vm._v(_vm._s(fp.title))
+                ])
+              })
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-md-6" }, [
+            _c("label", [_vm._v("Payment Method")]),
+            _vm._v(" "),
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.newFundingTransactionObject.payment_method,
+                    expression: "newFundingTransactionObject.payment_method"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { type: "submit" },
+                on: {
+                  change: function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.$set(
+                      _vm.newFundingTransactionObject,
+                      "payment_method",
+                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                    )
+                  }
+                }
+              },
+              _vm._l(_vm.paymentMethodTypes, function(pmt) {
+                return _c("option", { domProps: { value: pmt } }, [
+                  _vm._v(_vm._s(pmt))
+                ])
+              })
+            )
+          ])
+        ]),
+        _vm._v(" "),
+        _c(
+          "button",
+          { staticClass: "btn btn-info col-md-12", attrs: { type: "submit" } },
+          [_vm._v("Create Transaction")]
+        )
+      ]
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "input-group-prepend" }, [
+      _c("div", { staticClass: "input-group-text" }, [_vm._v("$")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "input-group-addon" }, [
+      _c("div", { staticClass: "input-group-text" }, [_vm._v(".00")])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-22250e93", module.exports)
+  }
+}
+
+/***/ }),
+/* 202 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(14)
+/* script */
+var __vue_script__ = __webpack_require__(203)
+/* template */
+var __vue_template__ = __webpack_require__(204)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -108188,7 +108727,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 200 */
+/* 203 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -108354,7 +108893,7 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
 });
 
 /***/ }),
-/* 201 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -108579,15 +109118,15 @@ if (false) {
 }
 
 /***/ }),
-/* 202 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(15)
+var normalizeComponent = __webpack_require__(14)
 /* script */
-var __vue_script__ = __webpack_require__(203)
+var __vue_script__ = __webpack_require__(206)
 /* template */
-var __vue_template__ = __webpack_require__(204)
+var __vue_template__ = __webpack_require__(207)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -108626,7 +109165,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 203 */
+/* 206 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -108725,7 +109264,7 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
 $('.select2-multi').select2();
 
 /***/ }),
-/* 204 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -108837,7 +109376,7 @@ if (false) {
 }
 
 /***/ }),
-/* 205 */
+/* 208 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -108937,7 +109476,7 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
 $('.select2-multi').select2();
 
 /***/ }),
-/* 206 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
