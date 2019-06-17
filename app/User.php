@@ -7,25 +7,25 @@ class User extends Authenticatable
 {
   use HasApiTokens, Notifiable;
   public function interests(){
-    return $this->belongsToMany('App\Interest')->withTimestamps();;
+    return $this->belongsToMany('App\Interest');
   }
   public function badges(){
-    return $this->belongsToMany('App\Badge')->withTimestamps();;
+    return $this->belongsToMany('App\Badge');
   }
   public function funding_targets(){
-    return $this->hasMany('App\FundingTarget')->withTimestamps();
+    return $this->hasMany('App\FundingTarget');
   }
   public function report_cards(){
-    return $this->hasMany('App\ReportCard')->withTimestamps();
+    return $this->hasMany('App\ReportCard');
   }
   public function scholar_posts(){
-    return $this->hasMany('App\ScholarPost')->withTimestamps();
+    return $this->hasMany('App\ScholarPost');
   }
   public function funding_transactions(){
-    return $this->hasMany('App\FundingTransaction')->withTimestamps();
+    return $this->hasMany('App\FundingTransaction');
   }
   public function funding_receipts(){
-    return $this->hasMany('App\FundingReceipt')->withTimestamps();
+    return $this->hasMany('App\FundingReceipt');
   }
   public function is_admin()
   {
