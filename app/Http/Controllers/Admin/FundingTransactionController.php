@@ -12,9 +12,11 @@ use App\FundingPackage;
 class FundingTransactionController extends Controller
 {
     protected $fundingTransactionsService;
+
     public function __construct(FundingTransactionsService $fundingTransactionsService){ // Make service accessible in controller
         $this->fundingTransactionsService = $fundingTransactionsService;   
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -43,7 +45,9 @@ class FundingTransactionController extends Controller
      */
     public function store(Request $request)
     {
-        // $fundingTransaction = FundingTransaction::create($request->all);
+        // $userdata = $request->all();
+        return route('stripe.get');
+        // return Redirect::route('stripe.get')->with( ['request' => $request] );
     }
 
     /**

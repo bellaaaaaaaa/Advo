@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Session;
 use Stripe;
 use App\User;
+use App\FundingTransaction;
+use App\FundingReceipt;
    
 class StripePaymentController extends Controller
 {
@@ -15,13 +17,14 @@ class StripePaymentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function stripe()
+    public function stripe(Request $request)
     {
-        return view('admin.stripe.stripe');
+        // $userdata = $request->all();
+        return view('admin.stripe.stripe'); //['userdata' => $userdata]
     }
   
     /**
-     * success response method.
+     * success response method.a
      *
      * @return \Illuminate\Http\Response
      */
@@ -29,12 +32,27 @@ class StripePaymentController extends Controller
 
         // Handling Payment
         Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+        $stripe = 
         Stripe\Charge::create ([
-                "amount" => 100 * 100,
-                "currency" => "usd",
-                "source" => $request->stripeToken,
-                "description" => "Advo test payment." 
+            "amount" => 100,
+            "currency" => "usd",
+            "source" => $request->stripeToken,
+            "description" => "Advo test payment." 
         ]);
+        if($stripe->status == 'succeeded' && $stripe->paid == true){
+            // Create funding transaction.
+            $transaction = FundingTransaction::create($request->all());
+            $transaction->amount_cents *= 100;
+            $transaction->save();
+
+            // Create funding receipt
+            $receipt = new FundingReceipt;
+            $receipt->funding_transaction_id = $transaction->id;
+            $receipt->amount_cents = $transaction->amount_cents;
+            $receipt->user_id = $transaction->benefactor_id;
+            $receipt->save();
+
+        }
         Session::flash('success', 'Payment successful!');
         return back();
     }

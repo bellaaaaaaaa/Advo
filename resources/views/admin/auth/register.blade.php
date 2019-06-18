@@ -45,7 +45,6 @@
                 <star class="star">*</star>
               </label>
               <input class="form-control" name="avatar" type="file"/>
-              {{ csrf_field() }}
             </div>
           <div class="card-category form-category">
             <star class="star">*</star> Required fields

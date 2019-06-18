@@ -3,7 +3,7 @@
 	<div class="card bootstrap-table">
     <div class="card-body table-full-width">
       <div class="toolbar">
-        <a href="{{ route('funding_transactions.create') }}" class="ml-1">
+        <a href="{{ route('stripe.get') }}" class="ml-1">
           <button class="btn btn-outline" style="border-radius: 30px">
             <i class="glyphicon fa fa-plus"></i>
           </button>

@@ -108003,6 +108003,7 @@ var map = {
 	"./components/ExampleComponent.vue": 196,
 	"./components/NewFundingTransactionComponent.vue": 199,
 	"./components/ReportCardComponent.vue": 202,
+	"./components/StripeTransactionComponent.vue": 226,
 	"./components/UserBadgesComponent.vue": 205,
 	"./components/UserInterestsComponent.vue": 163
 };
@@ -108286,7 +108287,11 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
 
   methods: {
     addFundingTransaction: function addFundingTransaction() {
-      console.log(this.newFundingTransactionObject);
+      // admin/funding_transactions
+      var userData = this.newFundingTransactionObject;
+      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/admin/funding_transactions', this.newFundingTransactionObject).then(function (response) {
+        // window.location.href = response.data;
+      });
     },
     getBenefactors: function getBenefactors() {
       var _this = this;
@@ -108394,7 +108399,6 @@ var render = function() {
                   }
                 ],
                 staticClass: "form-control",
-                attrs: { type: "submit" },
                 on: {
                   change: function($event) {
                     var $$selectedVal = Array.prototype.filter
@@ -108438,7 +108442,6 @@ var render = function() {
                   }
                 ],
                 staticClass: "form-control",
-                attrs: { type: "submit" },
                 on: {
                   change: [
                     function($event) {
@@ -108489,7 +108492,6 @@ var render = function() {
                   }
                 ],
                 staticClass: "form-control",
-                attrs: { type: "submit" },
                 on: {
                   change: function($event) {
                     var $$selectedVal = Array.prototype.filter
@@ -108573,7 +108575,6 @@ var render = function() {
                   }
                 ],
                 staticClass: "form-control",
-                attrs: { type: "submit" },
                 on: {
                   change: function($event) {
                     var $$selectedVal = Array.prototype.filter
@@ -108615,7 +108616,6 @@ var render = function() {
                   }
                 ],
                 staticClass: "form-control",
-                attrs: { type: "submit" },
                 on: {
                   change: function($event) {
                     var $$selectedVal = Array.prototype.filter
@@ -109588,6 +109588,653 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-ef7e79d4", module.exports)
+  }
+}
+
+/***/ }),
+/* 210 */,
+/* 211 */,
+/* 212 */,
+/* 213 */,
+/* 214 */,
+/* 215 */,
+/* 216 */,
+/* 217 */,
+/* 218 */,
+/* 219 */,
+/* 220 */,
+/* 221 */,
+/* 222 */,
+/* 223 */,
+/* 224 */,
+/* 225 */,
+/* 226 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(14)
+/* script */
+var __vue_script__ = __webpack_require__(227)
+/* template */
+var __vue_template__ = __webpack_require__(228)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/StripeTransactionComponent.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-d5a9adba", Component.options)
+  } else {
+    hotAPI.reload("data-v-d5a9adba", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 227 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_moment__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      benefactors: [],
+      scholars: [],
+      fundingTransactions: [],
+      scholarFundingTargets: [],
+      scholarName: '',
+      fundingPackages: [],
+      paymentMethodTypes: ['A', 'B', 'C'],
+      newFundingTransactionObject: {
+        benefactor_id: '',
+        scholar_id: '',
+        funding_target_id: '',
+        amount_cents: ''
+      }
+    };
+  },
+  mounted: function mounted() {
+    this.getBenefactors(), this.getScholars(), this.getFundingPackages();
+  },
+
+  methods: {
+    getBenefactors: function getBenefactors() {
+      var _this = this;
+
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/get_benefactors' }).then(function (result) {
+        _this.benefactors = result.data;
+        console.log(_this.benefactors);
+      }, function (error) {
+        console.log(error);
+      });
+    },
+    getScholars: function getScholars() {
+      var _this2 = this;
+
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/get_scholars' }).then(function (result) {
+        _this2.scholars = result.data;
+      }, function (error) {
+        console.log(error);
+      });
+    },
+    getFundingPackages: function getFundingPackages() {
+      var _this3 = this;
+
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/get_funding_packages' }).then(function (result) {
+        _this3.fundingPackages = result.data;
+      }, function (error) {
+        console.log(error);
+      });
+    },
+    getScholarFundingTargets: function getScholarFundingTargets() {
+      var _this4 = this;
+
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/get_scholar_funding_targets/' + this.scholar_id }).then(function (result) {
+        _this4.scholarFundingTargets = result.data;
+      }, function (error) {
+        console.log(error);
+      });
+    },
+    getScholarName: function getScholarName() {
+      var _this5 = this;
+
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/get_scholar_name/' + this.scholar_id }).then(function (result) {
+        var name = result.data;
+        name += "'s ";
+        _this5.scholarName = name;
+        console.log(_this5.scholarName);
+      }, function (error) {
+        console.log(error);
+      });
+    },
+    onChange: function onChange(event) {
+      this.scholar_id = event.target.value;
+      this.getScholarName();
+      this.getScholarFundingTargets();
+      console.log(this.scholarFundingTargets);
+    },
+
+    isNumber: function isNumber(evt) {
+      evt = evt ? evt : window.event;
+      var charCode = evt.which ? evt.which : evt.keyCode;
+      if (charCode < 48 || charCode > 57) {
+        evt.preventDefault();
+      } else {
+        return true;
+      }
+    }
+  }
+});
+
+/***/ }),
+/* 228 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c("div", { staticClass: "col-md-12 row" }, [
+      _c("div", { staticClass: "col-md-6" }, [
+        _c("label", [_vm._v("Benefactor (Sender)")]),
+        _vm._v(" "),
+        _c(
+          "select",
+          {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.newFundingTransactionObject.benefactor_id,
+                expression: "newFundingTransactionObject.benefactor_id"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: { name: "benefactor_id" },
+            on: {
+              change: function($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function(o) {
+                    return o.selected
+                  })
+                  .map(function(o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return val
+                  })
+                _vm.$set(
+                  _vm.newFundingTransactionObject,
+                  "benefactor_id",
+                  $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                )
+              }
+            }
+          },
+          _vm._l(_vm.benefactors, function(benefactor) {
+            return _c("option", { domProps: { value: benefactor.id } }, [
+              _vm._v(_vm._s(benefactor.id) + " | " + _vm._s(benefactor.name))
+            ])
+          })
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-6" }, [
+        _c("label", [_vm._v("Scholar (Receiver)")]),
+        _vm._v(" "),
+        _c(
+          "select",
+          {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.newFundingTransactionObject.scholar_id,
+                expression: "newFundingTransactionObject.scholar_id"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: { name: "scholar_id" },
+            on: {
+              change: [
+                function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.$set(
+                    _vm.newFundingTransactionObject,
+                    "scholar_id",
+                    $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                  )
+                },
+                function($event) {
+                  _vm.onChange($event)
+                }
+              ]
+            }
+          },
+          _vm._l(_vm.scholars, function(scholar) {
+            return _c("option", { domProps: { value: scholar.id } }, [
+              _vm._v(_vm._s(scholar.id) + " | " + _vm._s(scholar.name))
+            ])
+          })
+        )
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "col-md-12  row" }, [
+      _c("div", { staticClass: "col-md-6" }, [
+        _c("label", [_vm._v(_vm._s(this.scholarName) + "Funding Targets")]),
+        _vm._v(" "),
+        _c(
+          "select",
+          {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.newFundingTransactionObject.funding_target_id,
+                expression: "newFundingTransactionObject.funding_target_id"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: { name: "funding_target_id" },
+            on: {
+              change: function($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function(o) {
+                    return o.selected
+                  })
+                  .map(function(o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return val
+                  })
+                _vm.$set(
+                  _vm.newFundingTransactionObject,
+                  "funding_target_id",
+                  $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                )
+              }
+            }
+          },
+          _vm._l(_vm.scholarFundingTargets, function(ft) {
+            return _c("option", { domProps: { value: ft.id } }, [
+              _vm._v(_vm._s(ft.id) + " | " + _vm._s(ft.title))
+            ])
+          })
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-6" }, [
+        _c("label", [_vm._v("Amount")]),
+        _vm._v(" "),
+        _c("div", { staticClass: "input-group mb-2" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.newFundingTransactionObject.amount_cents,
+                expression: "newFundingTransactionObject.amount_cents"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: { name: "amount_cents" },
+            domProps: { value: _vm.newFundingTransactionObject.amount_cents },
+            on: {
+              keypress: function($event) {
+                _vm.isNumber($event)
+              },
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(
+                  _vm.newFundingTransactionObject,
+                  "amount_cents",
+                  $event.target.value
+                )
+              }
+            }
+          }),
+          _vm._v(" "),
+          _vm._m(1)
+        ])
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "col-md-12 row" }, [
+      _c("div", { staticClass: "col-md-6" }, [
+        _c("label", [_vm._v("Funding Package")]),
+        _vm._v(" "),
+        _c(
+          "select",
+          {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.newFundingTransactionObject.funding_package_id,
+                expression: "newFundingTransactionObject.funding_package_id"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: { name: "funding_package_id" },
+            on: {
+              change: function($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function(o) {
+                    return o.selected
+                  })
+                  .map(function(o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return val
+                  })
+                _vm.$set(
+                  _vm.newFundingTransactionObject,
+                  "funding_package_id",
+                  $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                )
+              }
+            }
+          },
+          _vm._l(_vm.fundingPackages, function(fp) {
+            return _c("option", { domProps: { value: fp.id } }, [
+              _vm._v(_vm._s(fp.title))
+            ])
+          })
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-6" }, [
+        _c("label", [_vm._v("Payment Method")]),
+        _vm._v(" "),
+        _c(
+          "select",
+          {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.newFundingTransactionObject.payment_method,
+                expression: "newFundingTransactionObject.payment_method"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: { name: "payment_method" },
+            on: {
+              change: function($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function(o) {
+                    return o.selected
+                  })
+                  .map(function(o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return val
+                  })
+                _vm.$set(
+                  _vm.newFundingTransactionObject,
+                  "payment_method",
+                  $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                )
+              }
+            }
+          },
+          _vm._l(_vm.paymentMethodTypes, function(pmt) {
+            return _c("option", { domProps: { value: pmt } }, [
+              _vm._v(_vm._s(pmt))
+            ])
+          })
+        )
+      ])
+    ]),
+    _vm._v(" "),
+    _vm._m(2),
+    _vm._v(" "),
+    _vm._m(3),
+    _vm._v(" "),
+    _vm._m(4),
+    _vm._v(" "),
+    _vm._m(5)
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "input-group-prepend" }, [
+      _c("div", { staticClass: "input-group-text" }, [_vm._v("$")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "input-group-addon" }, [
+      _c("div", { staticClass: "input-group-text" }, [_vm._v(".00")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-row row" }, [
+      _c("div", { staticClass: "col-md-10 form-group required" }, [
+        _c("label", { staticClass: "control-label" }, [_vm._v("Name on Card")]),
+        _vm._v(" "),
+        _c("input", {
+          staticClass: "form-control",
+          attrs: { size: "4", type: "text" }
+        })
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-row row" }, [
+      _c("div", { staticClass: "col-md-10 form-group required" }, [
+        _c("label", { staticClass: "control-label" }, [_vm._v("Card Number")]),
+        _vm._v(" "),
+        _c("input", {
+          staticClass: "form-control card-number",
+          attrs: { autocomplete: "off", size: "4", type: "text" }
+        })
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      { staticClass: "col-xs-12 col-md-3 form-group cvc required" },
+      [
+        _c("label", { staticClass: "control-label" }, [_vm._v("CVC")]),
+        _vm._v(" "),
+        _c("input", {
+          staticClass: "form-control card-cvc",
+          attrs: {
+            autocomplete: "off",
+            placeholder: "ex. 311",
+            size: "4",
+            type: "text"
+          }
+        })
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-row row" }, [
+      _c(
+        "div",
+        { staticClass: "col-xs-12 col-md-3 form-group expiration required" },
+        [
+          _c("label", { staticClass: "control-label" }, [
+            _vm._v("Expiration Month")
+          ]),
+          _vm._v(" "),
+          _c("input", {
+            staticClass: "form-control card-expiry-month",
+            attrs: { placeholder: "MM", size: "2", type: "text" }
+          })
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "col-xs-12 col-md-3 form-group expiration required" },
+        [
+          _c("label", { staticClass: "control-label" }, [
+            _vm._v("Expiration Year")
+          ]),
+          _vm._v(" "),
+          _c("input", {
+            staticClass: "form-control card-expiry-year",
+            attrs: { placeholder: "YYYY", size: "4", type: "text" }
+          })
+        ]
+      )
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-d5a9adba", module.exports)
   }
 }
 

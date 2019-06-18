@@ -68,9 +68,10 @@ class InterestsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Interest $interest)
     {
-        $interest = Interest::find($id);
+        dd($interest);
+        // $interest = Interest::find($id);
         return view('admin.interests.edit', ['interest' => $interest]);
     }
 
@@ -81,18 +82,11 @@ class InterestsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Interest $interest)
     {
-        $interest = Interest::find($id);
-        if($interest->title == $request->input('title')){
-            $this->validate($request, array(
-                'title' => 'required|max:255'
-            ));
-        } else {
-            $this->validate($request, array(
-                'title' => 'required|max:255|unique:interests,title'
-            ));
-        };
+        $this->validate($request, array(
+            'title' => 'required|max:255|unique:interests,title'
+        ));
         $interest->title = $request->input('title');
         $interest->save();
         return view('admin.interests.index');

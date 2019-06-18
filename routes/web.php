@@ -63,7 +63,7 @@ Route::get('/home', 'Client\HomeController@home')->name('home');
 
 
 Route::group(['middleware' => ['web']], function () {
-  Route::get('stripe', 'Admin\StripePaymentController@stripe');
+  Route::get('stripe', 'Admin\StripePaymentController@stripe')->name('stripe.get');
   Route::post('stripe', 'Admin\StripePaymentController@stripePost')->name('stripe.post');
   //routes here
 });
