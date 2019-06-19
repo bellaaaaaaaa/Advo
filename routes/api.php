@@ -49,6 +49,7 @@ Route::delete('user_interest/{id}',  'Admin\UsersController@deleteuserinterest')
 // Routes for admin web  UserBadgesComponent
 Route::get('user_badges/{id}', 'Admin\UsersController@badges');
 Route::get('user_badges_options/{id}',  'Admin\UsersController@allbadges');
+Route::get('get_selected_badge/{id}',  'Admin\UsersController@getselectedbadge');
 Route::post('user_badge/{id}',  'Admin\UsersController@adduserbadge');
 Route::delete('user_badge/{id}',  'Admin\UsersController@deleteuserbadge');
 
@@ -58,3 +59,6 @@ Route::get('get_scholars',  'Admin\FundingTransactionController@get_scholars');
 Route::get('get_funding_packages',  'Admin\FundingTransactionController@get_funding_packages');
 Route::get('get_scholar_funding_targets/{id}',  'Admin\FundingTransactionController@get_scholar_funding_targets');
 Route::get('get_scholar_name/{id}',  'Admin\FundingTransactionController@get_scholar_name');
+
+// Vue Update User
+Route::get('get_user/{id}', 'Admin\UsersController@get_user');

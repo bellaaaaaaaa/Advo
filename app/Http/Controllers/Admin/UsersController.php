@@ -92,6 +92,8 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $userParams = json_decode($request->input('userParams'));
+        dd($userParams);
         $user = User::find($id);
         $this->validate($request, array(
             'name' => 'required|max:255',
@@ -178,5 +180,13 @@ class UsersController extends Controller
         $user->badges()->detach($request->badge_id);
         return 204;
     }
+    public function getselectedbadge(Request $request, $id) {
+        dd($id);
+    }
 
+    // Update user routes
+    public function get_user($id){
+        $user = User::find($id);
+        return $user;
+    }
 }

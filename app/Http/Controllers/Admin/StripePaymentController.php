@@ -34,7 +34,7 @@ class StripePaymentController extends Controller
         Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
         $stripe = 
         Stripe\Charge::create ([
-            "amount" => 100,
+            "amount" => $request->amount_cents * 100,
             "currency" => "usd",
             "source" => $request->stripeToken,
             "description" => "Advo test payment." 
@@ -51,6 +51,12 @@ class StripePaymentController extends Controller
             $receipt->amount_cents = $transaction->amount_cents;
             $receipt->user_id = $transaction->benefactor_id;
             $receipt->save();
+
+            // Update funding target amount gained
+            $target = $transaction->funding_target;
+            $target->amount_gained += ($receipt->amount_cents/100);
+            $target->save();
+            
 
         }
         Session::flash('success', 'Payment successful!');

@@ -108004,6 +108004,7 @@ var map = {
 	"./components/NewFundingTransactionComponent.vue": 199,
 	"./components/ReportCardComponent.vue": 202,
 	"./components/StripeTransactionComponent.vue": 226,
+	"./components/UpdateUserComponent.vue": 229,
 	"./components/UserBadgesComponent.vue": 205,
 	"./components/UserInterestsComponent.vue": 163
 };
@@ -110235,6 +110236,575 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-d5a9adba", module.exports)
+  }
+}
+
+/***/ }),
+/* 229 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(14)
+/* script */
+var __vue_script__ = __webpack_require__(230)
+/* template */
+var __vue_template__ = __webpack_require__(231)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/UpdateUserComponent.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-5de05d7c", Component.options)
+  } else {
+    hotAPI.reload("data-v-5de05d7c", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 230 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_moment__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['userId', 'user', 'userBadges'],
+
+  data: function data() {
+    return {
+      userParams: {
+        user_id: this.userId,
+        name: this.user.name,
+        email: this.user.email,
+        role: this.user.role,
+        date_of_birth: this.user.date_of_birth,
+        phone_number: this.user.phone_number,
+        ic_passport_number: this.user.ic_passport_number,
+        bio: this.user.bio,
+        avatar: this.user.avatar,
+        badges: this.selectedBadges
+      },
+      roles: { '0': 'Admin', '1': 'Benefactor', '2': 'Scholar' },
+      selectedBadge: '',
+      selectedBadges: [],
+      badges: []
+    };
+  },
+  mounted: function mounted() {
+    this.getUser(), this.getAllBadges(), this.getUserBadges(this.userId);
+  },
+
+  methods: {
+    getUser: function getUser() {
+      var _this = this;
+
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/get_user/' + this.userId }).then(function (result) {
+        _this.userToEdit = result.data;
+        console.log(_this.userToEdit.name);
+      });
+    },
+    updateUser: function updateUser(e) {
+      var formData = new FormData(e.target);
+      formData.append('_method', 'PATCH');
+      formData.append('userParams', JSON.stringify(this.userParams));
+      // console.log(this.userParams, 'hi', formData)
+      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/admin/users/' + this.userId, formData).then(function (res) {
+        console.log(res);
+      }).catch(function (err) {
+        console.log(err);
+      });
+    },
+    onInputChange: function onInputChange(event) {
+      var input = event.target;
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        var vm = this;
+        reader.onload = function (e) {
+          vm.imageSrc = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+      this.userParams.avatar = input.files[0];
+    },
+    getAllBadges: function getAllBadges() {
+      var _this2 = this;
+
+      // this.selectedBadges.concat(this.userBadges)
+      // console.log('selected badges', this.selectedBadges)
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/user_badges_options/' + this.user_id }).then(function (result) {
+        _this2.badges = result.data;
+      });
+    },
+    selectBadge: function selectBadge() {
+      var array = [];
+      var i;
+      for (i = 0; i < this.selectedBadges.length; i++) {
+        array.push(this.selectedBadges[i].id);
+      }
+
+      if (array.includes(this.selectedBadge.id) == false) {
+        this.selectedBadges.push(this.selectedBadge);
+      }
+      console.log(this.selectedBadges);
+    },
+    getUserBadges: function getUserBadges() {
+      var _this3 = this;
+
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/user_badges/' + this.userId }).then(function (result) {
+        _this3.selectedBadges = result.data;
+      }, function (error) {
+        console.log(error);
+      });
+    },
+    unselectBadge: function unselectBadge(id) {
+      console.log(this.selectedBadges);
+      var x;
+      for (x = 0; x < this.selectedBadges.length; x++) {
+        if (this.selectedBadges[x].id == this.selectedBadge.id) {
+          this.selectedBadges.splice(x, 1);
+        }
+      }
+    }
+  }
+});
+
+/***/ }),
+/* 231 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c(
+      "form",
+      {
+        staticClass: "col-md-12 ",
+        on: {
+          submit: function($event) {
+            $event.preventDefault()
+            return _vm.updateUser($event)
+          }
+        }
+      },
+      [
+        _vm._m(0),
+        _vm._v(" "),
+        _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-md-4" }, [
+            _c("label", [_vm._v("Name")]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.userParams.name,
+                  expression: "userParams.name"
+                }
+              ],
+              staticClass: "form-control",
+              domProps: { value: _vm.userParams.name },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.userParams, "name", $event.target.value)
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-md-4" }, [
+            _c("label", [_vm._v("Email")]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.userParams.email,
+                  expression: "userParams.email"
+                }
+              ],
+              staticClass: "form-control",
+              domProps: { value: _vm.userParams.email },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.userParams, "email", $event.target.value)
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-md-4" }, [
+            _c("label", [_vm._v("Role")]),
+            _vm._v(" "),
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.userParams.role,
+                    expression: "userParams.role"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { type: "submit" },
+                on: {
+                  change: function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.$set(
+                      _vm.userParams,
+                      "role",
+                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                    )
+                  }
+                }
+              },
+              _vm._l(_vm.roles, function(key, value) {
+                return _c("option", { domProps: { value: value } }, [
+                  _vm._v(_vm._s(key))
+                ])
+              })
+            )
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-md-4" }, [
+            _c("label", [_vm._v("Date of Birth")]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.userParams.date_of_birth,
+                  expression: "userParams.date_of_birth"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { type: "date" },
+              domProps: { value: _vm.userParams.date_of_birth },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.userParams, "date_of_birth", $event.target.value)
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-md-4" }, [
+            _c("label", [_vm._v("Phone Number")]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.userParams.phone_number,
+                  expression: "userParams.phone_number"
+                }
+              ],
+              staticClass: "form-control",
+              domProps: { value: _vm.userParams.phone_number },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.userParams, "phone_number", $event.target.value)
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-md-4" }, [
+            _c("label", [_vm._v("IC/Passport Number")]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.userParams.ic_passport_number,
+                  expression: "userParams.ic_passport_number"
+                }
+              ],
+              staticClass: "form-control",
+              domProps: { value: _vm.userParams.ic_passport_number },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(
+                    _vm.userParams,
+                    "ic_passport_number",
+                    $event.target.value
+                  )
+                }
+              }
+            })
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-md-6" }, [
+            _c("label", [_vm._v("Bio")]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.userParams.bio,
+                  expression: "userParams.bio"
+                }
+              ],
+              staticClass: "form-control",
+              domProps: { value: _vm.userParams.bio },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.userParams, "bio", $event.target.value)
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-md-6" }, [
+            _c("label", [_vm._v("Avatar")]),
+            _vm._v(" "),
+            _c("input", {
+              staticClass: "form-control",
+              attrs: { type: "file" },
+              on: { change: _vm.onInputChange }
+            })
+          ])
+        ]),
+        _vm._v(" "),
+        _vm._m(1),
+        _vm._v(" "),
+        _c(
+          "select",
+          {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.selectedBadge,
+                expression: "selectedBadge"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: { type: "submit" },
+            on: {
+              change: [
+                function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.selectedBadge = $event.target.multiple
+                    ? $$selectedVal
+                    : $$selectedVal[0]
+                },
+                function($event) {
+                  _vm.selectBadge()
+                }
+              ]
+            }
+          },
+          _vm._l(_vm.badges, function(badge) {
+            return _c("option", { domProps: { value: badge } }, [
+              _vm._v(_vm._s(badge.title))
+            ])
+          })
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass: "row",
+            staticStyle: { padding: "0px 15px !important" }
+          },
+          _vm._l(_vm.selectedBadges, function(badge) {
+            return _c(
+              "div",
+              { key: badge.id, staticStyle: { padding: "5px" } },
+              [
+                _c("span", { staticClass: "badge badge-secondary" }, [
+                  _vm._v(_vm._s(badge.title)),
+                  _c("i", {
+                    staticClass: "fa fa-close",
+                    staticStyle: { color: "white" },
+                    on: {
+                      click: function($event) {
+                        _vm.unselectBadge(badge.id)
+                      }
+                    }
+                  })
+                ])
+              ]
+            )
+          })
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          { staticClass: "btn btn-primary", attrs: { type: "submit" } },
+          [_vm._v("Submit")]
+        )
+      ]
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row col-md-12" }, [
+      _c("h4", [_vm._v("User Details")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row col-md-12" }, [
+      _c("h4", [_vm._v("User Badges")])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-5de05d7c", module.exports)
   }
 }
 
