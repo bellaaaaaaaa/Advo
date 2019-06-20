@@ -15188,7 +15188,7 @@ return jQuery;
 "use strict";
 
 
-var bind = __webpack_require__(8);
+var bind = __webpack_require__(9);
 var isBuffer = __webpack_require__(20);
 
 /*global toString:true*/
@@ -30825,6 +30825,12 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! DataTables 1
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = __webpack_require__(19);
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
@@ -30845,10 +30851,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(10);
+    adapter = __webpack_require__(11);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(10);
+    adapter = __webpack_require__(11);
   }
   return adapter;
 }
@@ -30923,16 +30929,119 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(19);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ }),
 /* 7 */
+/***/ (function(module, exports) {
+
+/* globals __VUE_SSR_CONTEXT__ */
+
+// IMPORTANT: Do NOT use ES2015 features in this file.
+// This module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle.
+
+module.exports = function normalizeComponent (
+  rawScriptExports,
+  compiledTemplate,
+  functionalTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier /* server only */
+) {
+  var esModule
+  var scriptExports = rawScriptExports = rawScriptExports || {}
+
+  // ES6 modules interop
+  var type = typeof rawScriptExports.default
+  if (type === 'object' || type === 'function') {
+    esModule = rawScriptExports
+    scriptExports = rawScriptExports.default
+  }
+
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (compiledTemplate) {
+    options.render = compiledTemplate.render
+    options.staticRenderFns = compiledTemplate.staticRenderFns
+    options._compiled = true
+  }
+
+  // functional template
+  if (functionalTemplate) {
+    options.functional = true
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
+      }
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = injectStyles
+  }
+
+  if (hook) {
+    var functional = options.functional
+    var existing = functional
+      ? options.render
+      : options.beforeCreate
+
+    if (!functional) {
+      // inject component registration as beforeCreate hook
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    } else {
+      // for template-only hot-reload because in that case the render fn doesn't
+      // go through the normalizer
+      options._injectStyles = hook
+      // register for functioal component in vue file
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return existing(h, context)
+      }
+    }
+  }
+
+  return {
+    esModule: esModule,
+    exports: scriptExports,
+    options: options
+  }
+}
+
+
+/***/ }),
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -33473,7 +33582,7 @@ Popper.Defaults = Defaults;
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(3)))
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33491,7 +33600,7 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -33681,7 +33790,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33692,7 +33801,7 @@ var settle = __webpack_require__(23);
 var buildURL = __webpack_require__(25);
 var parseHeaders = __webpack_require__(26);
 var isURLSameOrigin = __webpack_require__(27);
-var createError = __webpack_require__(11);
+var createError = __webpack_require__(12);
 var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(28);
 
 module.exports = function xhrAdapter(config) {
@@ -33868,7 +33977,7 @@ module.exports = function xhrAdapter(config) {
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33893,7 +34002,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33905,7 +34014,7 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33928,115 +34037,6 @@ Cancel.prototype.toString = function toString() {
 Cancel.prototype.__CANCEL__ = true;
 
 module.exports = Cancel;
-
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports) {
-
-/* globals __VUE_SSR_CONTEXT__ */
-
-// IMPORTANT: Do NOT use ES2015 features in this file.
-// This module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle.
-
-module.exports = function normalizeComponent (
-  rawScriptExports,
-  compiledTemplate,
-  functionalTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier /* server only */
-) {
-  var esModule
-  var scriptExports = rawScriptExports = rawScriptExports || {}
-
-  // ES6 modules interop
-  var type = typeof rawScriptExports.default
-  if (type === 'object' || type === 'function') {
-    esModule = rawScriptExports
-    scriptExports = rawScriptExports.default
-  }
-
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // render functions
-  if (compiledTemplate) {
-    options.render = compiledTemplate.render
-    options.staticRenderFns = compiledTemplate.staticRenderFns
-    options._compiled = true
-  }
-
-  // functional template
-  if (functionalTemplate) {
-    options.functional = true
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = scopeId
-  }
-
-  var hook
-  if (moduleIdentifier) { // server build
-    hook = function (context) {
-      // 2.3 injection
-      context =
-        context || // cached call
-        (this.$vnode && this.$vnode.ssrContext) || // stateful
-        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
-      // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
-      // inject component styles
-      if (injectStyles) {
-        injectStyles.call(this, context)
-      }
-      // register component module identifier for async chunk inferrence
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier)
-      }
-    }
-    // used by ssr in case component is cached and beforeCreate
-    // never gets called
-    options._ssrRegister = hook
-  } else if (injectStyles) {
-    hook = injectStyles
-  }
-
-  if (hook) {
-    var functional = options.functional
-    var existing = functional
-      ? options.render
-      : options.beforeCreate
-
-    if (!functional) {
-      // inject component registration as beforeCreate hook
-      options.beforeCreate = existing
-        ? [].concat(existing, hook)
-        : [hook]
-    } else {
-      // for template-only hot-reload because in that case the render fn doesn't
-      // go through the normalizer
-      options._injectStyles = hook
-      // register for functioal component in vue file
-      options.render = function renderWithStyleInjection (h, context) {
-        hook.call(context)
-        return existing(h, context)
-      }
-    }
-  }
-
-  return {
-    esModule: esModule,
-    exports: scriptExports,
-    options: options
-  }
-}
 
 
 /***/ }),
@@ -34073,7 +34073,7 @@ module.exports = function(module) {
 
 
 window._ = __webpack_require__(17);
-window.Popper = __webpack_require__(7).default;
+window.Popper = __webpack_require__(8).default;
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -34097,7 +34097,7 @@ try {
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-window.axios = __webpack_require__(6);
+window.axios = __webpack_require__(5);
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE';
@@ -51260,7 +51260,7 @@ if (token) {
   * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
   */
 (function (global, factory) {
-   true ? factory(exports, __webpack_require__(1), __webpack_require__(7)) :
+   true ? factory(exports, __webpack_require__(1), __webpack_require__(8)) :
   typeof define === 'function' && define.amd ? define(['exports', 'jquery', 'popper.js'], factory) :
   (global = global || self, factory(global.bootstrap = {}, global.jQuery, global.Popper));
 }(this, function (exports, $, Popper) { 'use strict';
@@ -55699,9 +55699,9 @@ if (token) {
 
 
 var utils = __webpack_require__(2);
-var bind = __webpack_require__(8);
+var bind = __webpack_require__(9);
 var Axios = __webpack_require__(21);
-var defaults = __webpack_require__(5);
+var defaults = __webpack_require__(6);
 
 /**
  * Create an instance of Axios
@@ -55734,9 +55734,9 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(13);
+axios.Cancel = __webpack_require__(14);
 axios.CancelToken = __webpack_require__(35);
-axios.isCancel = __webpack_require__(12);
+axios.isCancel = __webpack_require__(13);
 
 // Expose all/spread
 axios.all = function all(promises) {
@@ -55784,7 +55784,7 @@ function isSlowBuffer (obj) {
 "use strict";
 
 
-var defaults = __webpack_require__(5);
+var defaults = __webpack_require__(6);
 var utils = __webpack_require__(2);
 var InterceptorManager = __webpack_require__(30);
 var dispatchRequest = __webpack_require__(31);
@@ -55889,7 +55889,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 "use strict";
 
 
-var createError = __webpack_require__(11);
+var createError = __webpack_require__(12);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -56322,8 +56322,8 @@ module.exports = InterceptorManager;
 
 var utils = __webpack_require__(2);
 var transformData = __webpack_require__(32);
-var isCancel = __webpack_require__(12);
-var defaults = __webpack_require__(5);
+var isCancel = __webpack_require__(13);
+var defaults = __webpack_require__(6);
 var isAbsoluteURL = __webpack_require__(33);
 var combineURLs = __webpack_require__(34);
 
@@ -56482,7 +56482,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 "use strict";
 
 
-var Cancel = __webpack_require__(13);
+var Cancel = __webpack_require__(14);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -67800,7 +67800,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3), __webpack_require__(9)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3), __webpack_require__(10)))
 
 /***/ }),
 /* 40 */
@@ -79652,11 +79652,11 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(14)
+var normalizeComponent = __webpack_require__(7)
 /* script */
-var __vue_script__ = __webpack_require__(208)
+var __vue_script__ = __webpack_require__(214)
 /* template */
-var __vue_template__ = __webpack_require__(209)
+var __vue_template__ = __webpack_require__(215)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -108003,9 +108003,9 @@ var map = {
 	"./components/ExampleComponent.vue": 196,
 	"./components/NewFundingTransactionComponent.vue": 199,
 	"./components/ReportCardComponent.vue": 202,
-	"./components/StripeTransactionComponent.vue": 226,
-	"./components/UpdateUserComponent.vue": 229,
-	"./components/UserBadgesComponent.vue": 205,
+	"./components/StripeTransactionComponent.vue": 205,
+	"./components/UpdateUserComponent.vue": 208,
+	"./components/UserBadgesComponent.vue": 211,
 	"./components/UserInterestsComponent.vue": 163
 };
 function webpackContext(req) {
@@ -108029,7 +108029,7 @@ webpackContext.id = 195;
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(14)
+var normalizeComponent = __webpack_require__(7)
 /* script */
 var __vue_script__ = __webpack_require__(197)
 /* template */
@@ -108148,7 +108148,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(14)
+var normalizeComponent = __webpack_require__(7)
 /* script */
 var __vue_script__ = __webpack_require__(200)
 /* template */
@@ -108196,7 +108196,7 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_moment__);
@@ -108685,7 +108685,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(14)
+var normalizeComponent = __webpack_require__(7)
 /* script */
 var __vue_script__ = __webpack_require__(203)
 /* template */
@@ -108733,7 +108733,7 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_moment__);
@@ -109123,501 +109123,11 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(14)
+var normalizeComponent = __webpack_require__(7)
 /* script */
 var __vue_script__ = __webpack_require__(206)
 /* template */
 var __vue_template__ = __webpack_require__(207)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/UserBadgesComponent.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-c334100a", Component.options)
-  } else {
-    hotAPI.reload("data-v-c334100a", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 206 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_moment__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
-/* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['userId'],
-
-  data: function data() {
-    return {
-      badges: [],
-      userBadges: [],
-      user_id: this.userId,
-      newBadge: '',
-      newUserBadge: {
-        user_id: this.userId,
-        badge_id: ''
-      },
-      deleteParams: {
-        user_id: this.userId,
-        badge_id: ''
-      }
-    };
-  },
-  mounted: function mounted() {
-    this.getUserBadges(this.userId), this.getAllBadges(this.userId);
-  },
-
-  methods: {
-    getUserBadges: function getUserBadges() {
-      var _this = this;
-
-      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/user_badges/' + this.user_id }).then(function (result) {
-        _this.userBadges = result.data;
-        console.log(result.data);
-      }, function (error) {
-        console.log(error);
-      });
-    },
-    getAllBadges: function getAllBadges() {
-      var _this2 = this;
-
-      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/user_badges_options/' + this.user_id }).then(function (result) {
-        _this2.badges = result.data;
-      });
-    },
-    addUserBadge: function addUserBadge() {
-      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/api/user_badge/' + this.user_id, this.newUserBadge).then(function (res) {}).catch(function (err) {
-        console.log(err);
-      });
-      this.getUserBadges(this.user_id);
-      this.getAllBadges(this.user_id);
-    },
-    deleteUserBadge: function deleteUserBadge(id) {
-      var _this3 = this;
-
-      this.deleteParams.badge_id = id;
-      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.delete('/api/user_badge/' + id, { data: this.deleteParams }).then(function (res) {
-        _this3.getUserBadges(_this3.user_id);
-        _this3.getAllBadges(_this3.user_id);
-        console.log(res);
-      }).catch(function (err) {
-        console.log(err);
-      });
-    }
-  }
-});
-$('.select2-multi').select2();
-
-/***/ }),
-/* 207 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "card col-md-10 offset-md-1" }, [
-    _c("div", { staticClass: "row", staticStyle: { padding: "15px" } }, [
-      _c("h4", { staticClass: "col-md-2", staticStyle: { margin: "0" } }, [
-        _vm._v("Badges")
-      ]),
-      _vm._v(" "),
-      _c(
-        "form",
-        {
-          staticClass: "input-group col-md-8",
-          on: {
-            submit: function($event) {
-              $event.preventDefault()
-              _vm.addUserBadge()
-            }
-          }
-        },
-        [
-          _c(
-            "select",
-            {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.newUserBadge.badge_id,
-                  expression: "newUserBadge.badge_id"
-                }
-              ],
-              staticClass: "form-control",
-              attrs: { type: "submit" },
-              on: {
-                change: function($event) {
-                  var $$selectedVal = Array.prototype.filter
-                    .call($event.target.options, function(o) {
-                      return o.selected
-                    })
-                    .map(function(o) {
-                      var val = "_value" in o ? o._value : o.value
-                      return val
-                    })
-                  _vm.$set(
-                    _vm.newUserBadge,
-                    "badge_id",
-                    $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                  )
-                }
-              }
-            },
-            _vm._l(_vm.badges, function(badge) {
-              return _c("option", { domProps: { value: badge.id } }, [
-                _vm._v(_vm._s(badge.title))
-              ])
-            })
-          ),
-          _vm._v(" "),
-          _vm._m(0)
-        ]
-      )
-    ]),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "row", staticStyle: { padding: "0px 15px !important" } },
-      _vm._l(_vm.userBadges, function(badge) {
-        return _c("div", { key: badge.id, staticStyle: { padding: "5px" } }, [
-          _c("span", { staticClass: "badge" }, [
-            _vm._v(_vm._s(badge.title) + " "),
-            _c("i", {
-              staticClass: "fa fa-close",
-              staticStyle: { color: "white" },
-              on: {
-                click: function($event) {
-                  _vm.deleteUserBadge(badge.id)
-                }
-              }
-            })
-          ])
-        ])
-      })
-    )
-  ])
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("span", { staticClass: "input-group-btn" }, [
-      _c("button", { staticClass: "btn btn-info", attrs: { type: "submit" } }, [
-        _vm._v("Add")
-      ])
-    ])
-  }
-]
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-c334100a", module.exports)
-  }
-}
-
-/***/ }),
-/* 208 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_moment__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
-/* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['userId'],
-
-  data: function data() {
-    return {
-      interests: [],
-      userInterests: [],
-      user_id: this.userId,
-      newInterest: '',
-      newUserInterest: {
-        user_id: this.userId,
-        interest_id: ''
-      },
-      deleteParams: {
-        user_id: this.userId,
-        interest_id: ''
-      }
-    };
-  },
-  mounted: function mounted() {
-    this.getUserInterests(this.userId), this.getAllInterests(this.userId);
-  },
-
-  methods: {
-    getUserInterests: function getUserInterests() {
-      var _this = this;
-
-      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/user_interests/' + this.user_id }).then(function (result) {
-        _this.userInterests = result.data;
-        console.log(result.data);
-      }, function (error) {
-        console.log(error);
-      });
-    },
-    getAllInterests: function getAllInterests() {
-      var _this2 = this;
-
-      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/user_interests_options/' + this.user_id }).then(function (result) {
-        _this2.interests = result.data;
-        // console.log('interests ' + this.interests)
-      });
-    },
-    addUserInterest: function addUserInterest() {
-      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/api/user_interest/' + this.user_id, this.newUserInterest).then(function (res) {}).catch(function (err) {
-        console.log(err);
-      });
-      this.getUserInterests(this.user_id);
-      this.getAllInterests(this.user_id);
-    },
-    deleteUserInterest: function deleteUserInterest(id) {
-      var _this3 = this;
-
-      this.deleteParams.interest_id = id;
-      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.delete('/api/user_interest/' + id, { data: this.deleteParams }).then(function (res) {
-        _this3.getUserInterests(_this3.user_id);
-        _this3.getAllInterests(_this3.user_id);
-        console.log(res);
-      }).catch(function (err) {
-        console.log(err);
-      });
-    }
-  }
-});
-$('.select2-multi').select2();
-
-/***/ }),
-/* 209 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "card col-md-10 offset-md-1" }, [
-    _c("div", { staticClass: "row", staticStyle: { padding: "15px" } }, [
-      _c("h4", { staticClass: "col-md-2", staticStyle: { margin: "0" } }, [
-        _vm._v("Interests")
-      ]),
-      _vm._v(" "),
-      _c(
-        "form",
-        {
-          staticClass: "input-group col-md-8",
-          on: {
-            submit: function($event) {
-              $event.preventDefault()
-              _vm.addUserInterest()
-            }
-          }
-        },
-        [
-          _c(
-            "select",
-            {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.newUserInterest.interest_id,
-                  expression: "newUserInterest.interest_id"
-                }
-              ],
-              staticClass: "form-control",
-              attrs: { type: "submit" },
-              on: {
-                change: function($event) {
-                  var $$selectedVal = Array.prototype.filter
-                    .call($event.target.options, function(o) {
-                      return o.selected
-                    })
-                    .map(function(o) {
-                      var val = "_value" in o ? o._value : o.value
-                      return val
-                    })
-                  _vm.$set(
-                    _vm.newUserInterest,
-                    "interest_id",
-                    $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                  )
-                }
-              }
-            },
-            _vm._l(_vm.interests, function(interest) {
-              return _c("option", { domProps: { value: interest.id } }, [
-                _vm._v(_vm._s(interest.title))
-              ])
-            })
-          ),
-          _vm._v(" "),
-          _vm._m(0)
-        ]
-      )
-    ]),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "row", staticStyle: { padding: "0px 15px !important" } },
-      _vm._l(_vm.userInterests, function(interest) {
-        return _c(
-          "div",
-          { key: interest.id, staticStyle: { padding: "5px" } },
-          [
-            _c("span", { staticClass: "badge" }, [
-              _vm._v(_vm._s(interest.title) + " "),
-              _c("i", {
-                staticClass: "fa fa-close",
-                staticStyle: { color: "white" },
-                on: {
-                  click: function($event) {
-                    _vm.deleteUserInterest(interest.id)
-                  }
-                }
-              })
-            ])
-          ]
-        )
-      })
-    )
-  ])
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("span", { staticClass: "input-group-btn" }, [
-      _c("button", { staticClass: "btn btn-info", attrs: { type: "submit" } }, [
-        _vm._v("Add")
-      ])
-    ])
-  }
-]
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-ef7e79d4", module.exports)
-  }
-}
-
-/***/ }),
-/* 210 */,
-/* 211 */,
-/* 212 */,
-/* 213 */,
-/* 214 */,
-/* 215 */,
-/* 216 */,
-/* 217 */,
-/* 218 */,
-/* 219 */,
-/* 220 */,
-/* 221 */,
-/* 222 */,
-/* 223 */,
-/* 224 */,
-/* 225 */,
-/* 226 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(14)
-/* script */
-var __vue_script__ = __webpack_require__(227)
-/* template */
-var __vue_template__ = __webpack_require__(228)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -109656,12 +109166,12 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 227 */
+/* 206 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_moment__);
@@ -109847,7 +109357,7 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
 });
 
 /***/ }),
-/* 228 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -110240,15 +109750,15 @@ if (false) {
 }
 
 /***/ }),
-/* 229 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(14)
+var normalizeComponent = __webpack_require__(7)
 /* script */
-var __vue_script__ = __webpack_require__(230)
+var __vue_script__ = __webpack_require__(209)
 /* template */
-var __vue_template__ = __webpack_require__(231)
+var __vue_template__ = __webpack_require__(210)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -110287,15 +109797,34 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 230 */
+/* 209 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_moment__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -110379,19 +109908,27 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
         ic_passport_number: this.user.ic_passport_number,
         bio: this.user.bio,
         avatar: this.user.avatar,
-        badges: this.selectedBadges
+        badges: this.selectedBadges,
+        interests: this.selectedInterests
       },
       roles: { '0': 'Admin', '1': 'Benefactor', '2': 'Scholar' },
       selectedBadge: '',
       selectedBadges: [],
-      badges: []
+      badges: [],
+      unselectedBadge: '',
+
+      selectedInterest: '',
+      selectedInterests: [],
+      interests: [],
+      unselectedInterest: ''
     };
   },
   mounted: function mounted() {
-    this.getUser(), this.getAllBadges(), this.getUserBadges(this.userId);
+    this.getUser(), this.getAllBadges(), this.getUserBadges(this.userId), this.getAllInterests(), this.getUserInterests(this.userId);
   },
 
   methods: {
+    // User Methods
     getUser: function getUser() {
       var _this = this;
 
@@ -110403,8 +109940,9 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
     updateUser: function updateUser(e) {
       var formData = new FormData(e.target);
       formData.append('_method', 'PATCH');
+      this.userParams.badges = this.selectedBadges;
+      this.userParams.interests = this.selectedInterests;
       formData.append('userParams', JSON.stringify(this.userParams));
-      // console.log(this.userParams, 'hi', formData)
       __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/admin/users/' + this.userId, formData).then(function (res) {
         console.log(res);
       }).catch(function (err) {
@@ -110423,13 +109961,22 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
       }
       this.userParams.avatar = input.files[0];
     },
+
+    // Badge Methods
     getAllBadges: function getAllBadges() {
       var _this2 = this;
 
-      // this.selectedBadges.concat(this.userBadges)
-      // console.log('selected badges', this.selectedBadges)
-      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/user_badges_options/' + this.user_id }).then(function (result) {
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/user_badges_options/' + this.userId }).then(function (result) {
         _this2.badges = result.data;
+      });
+    },
+    getUserBadges: function getUserBadges() {
+      var _this3 = this;
+
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/user_badges/' + this.userId }).then(function (result) {
+        _this3.selectedBadges = result.data;
+      }, function (error) {
+        console.log(error);
       });
     },
     selectBadge: function selectBadge() {
@@ -110444,29 +109991,63 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
       }
       console.log(this.selectedBadges);
     },
-    getUserBadges: function getUserBadges() {
-      var _this3 = this;
+    unselectBadge: function unselectBadge(event) {
+      console.log('unselected badge id', event.target.parentElement.id);
+      var unselectedBadgeId = event.target.parentElement.id;
+      var x;
+      for (x = 0; x < this.selectedBadges.length; x++) {
+        if (this.selectedBadges[x].id == unselectedBadgeId) {
+          this.selectedBadges.splice(x, 1);
+        }
+      }
+      console.log('selected badges', this.selectedBadges);
+    },
 
-      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/user_badges/' + this.userId }).then(function (result) {
-        _this3.selectedBadges = result.data;
+    // Interest Methods
+    getAllInterests: function getAllInterests() {
+      var _this4 = this;
+
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/user_interests_options/' + this.userId }).then(function (result) {
+        _this4.interests = result.data;
+      });
+    },
+    getUserInterests: function getUserInterests() {
+      var _this5 = this;
+
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/user_interests/' + this.userId }).then(function (result) {
+        _this5.selectedInterests = result.data;
       }, function (error) {
         console.log(error);
       });
     },
-    unselectBadge: function unselectBadge(id) {
-      console.log(this.selectedBadges);
+    selectInterest: function selectInterest() {
+      var array = [];
+      var i;
+      for (i = 0; i < this.selectedInterests.length; i++) {
+        array.push(this.selectedInterests[i].id);
+      }
+
+      if (array.includes(this.selectedInterest.id) == false) {
+        this.selectedInterests.push(this.selectedInterest);
+      }
+      console.log(this.selectedInterests);
+    },
+    unselectInterest: function unselectInterest(event) {
+      console.log('unselected interest id', event.target.parentElement.id);
+      var unselectedInterestId = event.target.parentElement.id;
       var x;
-      for (x = 0; x < this.selectedBadges.length; x++) {
-        if (this.selectedBadges[x].id == this.selectedBadge.id) {
-          this.selectedBadges.splice(x, 1);
+      for (x = 0; x < this.selectedInterests.length; x++) {
+        if (this.selectedInterests[x].id == unselectedInterestId) {
+          this.selectedInterests.splice(x, 1);
         }
       }
+      console.log('selected interests', this.selectedInterests);
     }
   }
 });
 
 /***/ }),
-/* 231 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -110755,22 +110336,101 @@ var render = function() {
               "div",
               { key: badge.id, staticStyle: { padding: "5px" } },
               [
-                _c("span", { staticClass: "badge badge-secondary" }, [
-                  _vm._v(_vm._s(badge.title)),
-                  _c("i", {
-                    staticClass: "fa fa-close",
-                    staticStyle: { color: "white" },
-                    on: {
-                      click: function($event) {
-                        _vm.unselectBadge(badge.id)
-                      }
-                    }
-                  })
-                ])
+                _c(
+                  "span",
+                  {
+                    staticClass: "badge badge-secondary",
+                    attrs: { id: badge.id, value: badge.id }
+                  },
+                  [
+                    _vm._v(_vm._s(badge.title)),
+                    _c("i", {
+                      staticClass: "fa fa-close",
+                      staticStyle: { color: "white" },
+                      on: { click: _vm.unselectBadge }
+                    })
+                  ]
+                )
               ]
             )
           })
         ),
+        _vm._v(" "),
+        _vm._m(2),
+        _vm._v(" "),
+        _c(
+          "select",
+          {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.selectedInterest,
+                expression: "selectedInterest"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: { type: "submit" },
+            on: {
+              change: [
+                function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.selectedInterest = $event.target.multiple
+                    ? $$selectedVal
+                    : $$selectedVal[0]
+                },
+                function($event) {
+                  _vm.selectInterest()
+                }
+              ]
+            }
+          },
+          _vm._l(_vm.interests, function(interest) {
+            return _c("option", { domProps: { value: interest } }, [
+              _vm._v(_vm._s(interest.title))
+            ])
+          })
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass: "row",
+            staticStyle: { padding: "0px 15px !important" }
+          },
+          _vm._l(_vm.selectedInterests, function(interest) {
+            return _c(
+              "div",
+              { key: interest.id, staticStyle: { padding: "5px" } },
+              [
+                _c(
+                  "span",
+                  {
+                    staticClass: "badge badge-secondary",
+                    attrs: { id: interest.id, value: interest.id }
+                  },
+                  [
+                    _vm._v(_vm._s(interest.title)),
+                    _c("i", {
+                      staticClass: "fa fa-close",
+                      staticStyle: { color: "white" },
+                      on: { click: _vm.unselectInterest }
+                    })
+                  ]
+                )
+              ]
+            )
+          })
+        ),
+        _vm._v(" "),
+        _c("div"),
         _vm._v(" "),
         _c(
           "button",
@@ -110795,7 +110455,15 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "row col-md-12" }, [
-      _c("h4", [_vm._v("User Badges")])
+      _c("label", [_vm._v("User Badges")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row col-md-12" }, [
+      _c("label", [_vm._v("User Interests")])
     ])
   }
 ]
@@ -110805,6 +110473,480 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-5de05d7c", module.exports)
+  }
+}
+
+/***/ }),
+/* 211 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(7)
+/* script */
+var __vue_script__ = __webpack_require__(212)
+/* template */
+var __vue_template__ = __webpack_require__(213)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/UserBadgesComponent.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-c334100a", Component.options)
+  } else {
+    hotAPI.reload("data-v-c334100a", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 212 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_moment__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['userId'],
+
+  data: function data() {
+    return {
+      badges: [],
+      userBadges: [],
+      user_id: this.userId,
+      newBadge: '',
+      newUserBadge: {
+        user_id: this.userId,
+        badge_id: ''
+      },
+      deleteParams: {
+        user_id: this.userId,
+        badge_id: ''
+      }
+    };
+  },
+  mounted: function mounted() {
+    this.getUserBadges(this.userId), this.getAllBadges(this.userId);
+  },
+
+  methods: {
+    getUserBadges: function getUserBadges() {
+      var _this = this;
+
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/user_badges/' + this.user_id }).then(function (result) {
+        _this.userBadges = result.data;
+        console.log(result.data);
+      }, function (error) {
+        console.log(error);
+      });
+    },
+    getAllBadges: function getAllBadges() {
+      var _this2 = this;
+
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/user_badges_options/' + this.user_id }).then(function (result) {
+        _this2.badges = result.data;
+      });
+    },
+    addUserBadge: function addUserBadge() {
+      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/api/user_badge/' + this.user_id, this.newUserBadge).then(function (res) {}).catch(function (err) {
+        console.log(err);
+      });
+      this.getUserBadges(this.user_id);
+      this.getAllBadges(this.user_id);
+    },
+    deleteUserBadge: function deleteUserBadge(id) {
+      var _this3 = this;
+
+      this.deleteParams.badge_id = id;
+      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.delete('/api/user_badge/' + id, { data: this.deleteParams }).then(function (res) {
+        _this3.getUserBadges(_this3.user_id);
+        _this3.getAllBadges(_this3.user_id);
+        console.log(res);
+      }).catch(function (err) {
+        console.log(err);
+      });
+    }
+  }
+});
+$('.select2-multi').select2();
+
+/***/ }),
+/* 213 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "card col-md-10 offset-md-1" }, [
+    _c("div", { staticClass: "row", staticStyle: { padding: "15px" } }, [
+      _c("h4", { staticClass: "col-md-2", staticStyle: { margin: "0" } }, [
+        _vm._v("Badges")
+      ]),
+      _vm._v(" "),
+      _c(
+        "form",
+        {
+          staticClass: "input-group col-md-8",
+          on: {
+            submit: function($event) {
+              $event.preventDefault()
+              _vm.addUserBadge()
+            }
+          }
+        },
+        [
+          _c(
+            "select",
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.newUserBadge.badge_id,
+                  expression: "newUserBadge.badge_id"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { type: "submit" },
+              on: {
+                change: function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.$set(
+                    _vm.newUserBadge,
+                    "badge_id",
+                    $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                  )
+                }
+              }
+            },
+            _vm._l(_vm.badges, function(badge) {
+              return _c("option", { domProps: { value: badge.id } }, [
+                _vm._v(_vm._s(badge.title))
+              ])
+            })
+          ),
+          _vm._v(" "),
+          _vm._m(0)
+        ]
+      )
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "row", staticStyle: { padding: "0px 15px !important" } },
+      _vm._l(_vm.userBadges, function(badge) {
+        return _c("div", { key: badge.id, staticStyle: { padding: "5px" } }, [
+          _c("span", { staticClass: "badge" }, [
+            _vm._v(_vm._s(badge.title) + " "),
+            _c("i", {
+              staticClass: "fa fa-close",
+              staticStyle: { color: "white" },
+              on: {
+                click: function($event) {
+                  _vm.deleteUserBadge(badge.id)
+                }
+              }
+            })
+          ])
+        ])
+      })
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "input-group-btn" }, [
+      _c("button", { staticClass: "btn btn-info", attrs: { type: "submit" } }, [
+        _vm._v("Add")
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-c334100a", module.exports)
+  }
+}
+
+/***/ }),
+/* 214 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_moment__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['userId'],
+
+  data: function data() {
+    return {
+      interests: [],
+      userInterests: [],
+      user_id: this.userId,
+      newInterest: '',
+      newUserInterest: {
+        user_id: this.userId,
+        interest_id: ''
+      },
+      deleteParams: {
+        user_id: this.userId,
+        interest_id: ''
+      }
+    };
+  },
+  mounted: function mounted() {
+    this.getUserInterests(this.userId), this.getAllInterests(this.userId);
+  },
+
+  methods: {
+    getUserInterests: function getUserInterests() {
+      var _this = this;
+
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/user_interests/' + this.user_id }).then(function (result) {
+        _this.userInterests = result.data;
+        console.log(result.data);
+      }, function (error) {
+        console.log(error);
+      });
+    },
+    getAllInterests: function getAllInterests() {
+      var _this2 = this;
+
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/user_interests_options/' + this.user_id }).then(function (result) {
+        _this2.interests = result.data;
+        // console.log('interests ' + this.interests)
+      });
+    },
+    addUserInterest: function addUserInterest() {
+      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/api/user_interest/' + this.user_id, this.newUserInterest).then(function (res) {}).catch(function (err) {
+        console.log(err);
+      });
+      this.getUserInterests(this.user_id);
+      this.getAllInterests(this.user_id);
+    },
+    deleteUserInterest: function deleteUserInterest(id) {
+      var _this3 = this;
+
+      this.deleteParams.interest_id = id;
+      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.delete('/api/user_interest/' + id, { data: this.deleteParams }).then(function (res) {
+        _this3.getUserInterests(_this3.user_id);
+        _this3.getAllInterests(_this3.user_id);
+        console.log(res);
+      }).catch(function (err) {
+        console.log(err);
+      });
+    }
+  }
+});
+$('.select2-multi').select2();
+
+/***/ }),
+/* 215 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "card col-md-10 offset-md-1" }, [
+    _c("div", { staticClass: "row", staticStyle: { padding: "15px" } }, [
+      _c("h4", { staticClass: "col-md-2", staticStyle: { margin: "0" } }, [
+        _vm._v("Interests")
+      ]),
+      _vm._v(" "),
+      _c(
+        "form",
+        {
+          staticClass: "input-group col-md-8",
+          on: {
+            submit: function($event) {
+              $event.preventDefault()
+              _vm.addUserInterest()
+            }
+          }
+        },
+        [
+          _c(
+            "select",
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.newUserInterest.interest_id,
+                  expression: "newUserInterest.interest_id"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { type: "submit" },
+              on: {
+                change: function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.$set(
+                    _vm.newUserInterest,
+                    "interest_id",
+                    $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                  )
+                }
+              }
+            },
+            _vm._l(_vm.interests, function(interest) {
+              return _c("option", { domProps: { value: interest.id } }, [
+                _vm._v(_vm._s(interest.title))
+              ])
+            })
+          ),
+          _vm._v(" "),
+          _vm._m(0)
+        ]
+      )
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "row", staticStyle: { padding: "0px 15px !important" } },
+      _vm._l(_vm.userInterests, function(interest) {
+        return _c(
+          "div",
+          { key: interest.id, staticStyle: { padding: "5px" } },
+          [
+            _c("span", { staticClass: "badge" }, [
+              _vm._v(_vm._s(interest.title) + " "),
+              _c("i", {
+                staticClass: "fa fa-close",
+                staticStyle: { color: "white" },
+                on: {
+                  click: function($event) {
+                    _vm.deleteUserInterest(interest.id)
+                  }
+                }
+              })
+            ])
+          ]
+        )
+      })
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "input-group-btn" }, [
+      _c("button", { staticClass: "btn btn-info", attrs: { type: "submit" } }, [
+        _vm._v("Add")
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-ef7e79d4", module.exports)
   }
 }
 
