@@ -108002,6 +108002,7 @@ $().ready(function () {
 var map = {
 	"./components/ExampleComponent.vue": 196,
 	"./components/NewFundingTransactionComponent.vue": 199,
+	"./components/NewReportCardComponent.vue": 232,
 	"./components/ReportCardComponent.vue": 202,
 	"./components/StripeTransactionComponent.vue": 205,
 	"./components/UpdateUserComponent.vue": 208,
@@ -108817,8 +108818,6 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
       });
     },
     addNewReportCard: function addNewReportCard(e) {
-      var _this2 = this;
-
       // debugger;
       var formData = new FormData(e.target);
       formData.append('report_file', this.newReportCard.file);
@@ -108826,16 +108825,18 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
       formData.append('term_start', this.newReportCard.term_start);
       formData.append('term_end', this.newReportCard.term_end);
       formData.append('user_id', this.newReportCard.user_id);
-      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/api/admin/report_cards', formData).then(function (res) {
-        _this2.newReportCard.term_start = '';
-        _this2.newReportCard.term_end = '';
-        _this2.newReportCard.file = '';
-        _this2.newReportCard.title = '';
-        _this2.getReportCards();
-        console.log("addNewReportCard " + res);
-      }).catch(function (err) {
-        console.log(err);
-      });
+      this.$emit('newReportCard', formData);
+      console.log('rc component', formData);
+      // axios.post('/api/admin/report_cards', formData).then(res => {
+      // this.newReportCard.term_start = ''
+      // this.newReportCard.term_end = ''
+      // this.newReportCard.file = ''
+      // this.newReportCard.title = ''
+      // this.getReportCards()
+      // console.log("addNewReportCard " + res)
+      // }).catch(err => {
+      //   console.log(err)
+      // })
     },
     editReportCard: function editReportCard(term_start, term_end, id, rc) {
       this.newReportCard.title = rc.title;
@@ -108847,8 +108848,6 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
       this.isEdit = true;
     },
     updateReportCard: function updateReportCard() {
-      var _this3 = this;
-
       var form = $('form')[0];
       var formData = new FormData(form);
       formData.append('report_file', this.newReportCard.file);
@@ -108856,23 +108855,26 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
       formData.append('term_start', this.newReportCard.term_start);
       formData.append('term_end', this.newReportCard.term_end);
       formData.append('user_id', this.newReportCard.user_id);
-      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/api/admin/report_cards/' + this.id, formData).then(function (res) {
-        _this3.newReportCard.term_start = '';
-        _this3.newReportCard.term_end = '';
-        _this3.newReportCard.title = '';
-        _this3.isEdit = false;
-        _this3.getReportCards();
-        console.log(res);
-      }).catch(function (err) {
-        console.log(err);
-      });
+      this.$emit('newReportCard', formData);
+      // axios.post(`/api/admin/report_cards/${this.id}`, formData)
+      // .then(res => {
+      //   this.newReportCard.term_start = ''
+      //   this.newReportCard.term_end = ''
+      //   this.newReportCard.title = ''
+      //   this.isEdit = false
+      //   this.getReportCards()
+      //   console.log(res)
+      // })
+      // .catch(err => {
+      //   console.log(err)
+      // })
     },
     deleteReportCard: function deleteReportCard(id) {
-      var _this4 = this;
+      var _this2 = this;
 
       __WEBPACK_IMPORTED_MODULE_0_axios___default.a.delete('/api/admin/report_cards/' + id).then(function (res) {
-        _this4.getReportCards();
-        _this4.term_start = '';
+        _this2.getReportCards();
+        _this2.term_start = '';
         console.log(res);
       }).catch(function (err) {
         console.log(err);
@@ -109889,6 +109891,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 
 
@@ -109920,7 +109924,10 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
       selectedInterest: '',
       selectedInterests: [],
       interests: [],
-      unselectedInterest: ''
+      unselectedInterest: '',
+
+      numNewReportCards: 0,
+      newReportCards: {}
     };
   },
   mounted: function mounted() {
@@ -109942,6 +109949,7 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
       formData.append('_method', 'PATCH');
       this.userParams.badges = this.selectedBadges;
       this.userParams.interests = this.selectedInterests;
+      this.userParams.newReportCards = this.newReportCards;
       formData.append('userParams', JSON.stringify(this.userParams));
       __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/admin/users/' + this.userId, formData).then(function (res) {
         console.log(res);
@@ -110042,6 +110050,13 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
         }
       }
       console.log('selected interests', this.selectedInterests);
+    },
+    createReportCard: function createReportCard(reportCard) {
+      console.log(reportCard);
+      this.newReportCards[this.numNewReportCards] = reportCard;
+      console.log('newReportCards', this.newReportCards);
+      this.numNewReportCards += 1;
+      console.log(this.numNewReportCards);
     }
   }
 });
@@ -110430,7 +110445,17 @@ var render = function() {
           })
         ),
         _vm._v(" "),
-        _c("div"),
+        _c(
+          "div",
+          [
+            _c("label", [_vm._v("New Report Card")]),
+            _vm._v(" "),
+            _c("report-card-component", {
+              on: { newReportCard: _vm.createReportCard }
+            })
+          ],
+          1
+        ),
         _vm._v(" "),
         _c(
           "button",
@@ -110947,6 +110972,459 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-ef7e79d4", module.exports)
+  }
+}
+
+/***/ }),
+/* 216 */,
+/* 217 */,
+/* 218 */,
+/* 219 */,
+/* 220 */,
+/* 221 */,
+/* 222 */,
+/* 223 */,
+/* 224 */,
+/* 225 */,
+/* 226 */,
+/* 227 */,
+/* 228 */,
+/* 229 */,
+/* 230 */,
+/* 231 */,
+/* 232 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(7)
+/* script */
+var __vue_script__ = __webpack_require__(233)
+/* template */
+var __vue_template__ = __webpack_require__(234)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/NewReportCardComponent.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-74814fb0", Component.options)
+  } else {
+    hotAPI.reload("data-v-74814fb0", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 233 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_moment__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['userId'],
+
+  data: function data() {
+    return {
+      reportCards: [],
+      files: [],
+      images: [],
+      imgSrc: '',
+      newReportCard: {
+        user_id: this.userId,
+        title: '',
+        term_start: '',
+        term_end: ''
+      },
+      user_id: this.userId,
+      isEdit: false
+    };
+  },
+  mounted: function mounted() {
+    this.getReportCards();
+  },
+
+  methods: {
+    getReportCards: function getReportCards() {
+      var _this = this;
+
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/admin/report_cards' }).then(function (result) {
+        _this.reportCards = result.data;
+      }, function (error) {
+        console.log('getReportCards ' + error);
+      });
+    },
+    addNewReportCard: function addNewReportCard(e) {
+      var _this2 = this;
+
+      var formData = new FormData(e.target);
+      formData.append('report_file', this.newReportCard.file);
+      formData.append('title', this.newReportCard.title);
+      formData.append('term_start', this.newReportCard.term_start);
+      formData.append('term_end', this.newReportCard.term_end);
+      formData.append('user_id', this.newReportCard.user_id);
+      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/api/admin/report_cards', formData).then(function (res) {
+        _this2.newReportCard.term_start = '';
+        _this2.newReportCard.term_end = '';
+        _this2.newReportCard.file = '';
+        _this2.newReportCard.title = '';
+        _this2.getReportCards();
+        console.log("addNewReportCard " + res);
+      }).catch(function (err) {
+        console.log(err);
+      });
+    },
+    editReportCard: function editReportCard(term_start, term_end, id, rc) {
+      this.newReportCard.title = rc.title;
+      this.newReportCard.term_start = __WEBPACK_IMPORTED_MODULE_1_moment___default()(rc.term_start).format('YYYY-MM-DD');
+      this.newReportCard.term_end = __WEBPACK_IMPORTED_MODULE_1_moment___default()(rc.term_end).format('YYYY-MM-DD');
+      this.id = id;
+      this.term_start = term_start;
+      this.term_end = term_end;
+      this.isEdit = true;
+    },
+    updateReportCard: function updateReportCard() {
+      var _this3 = this;
+
+      var form = $('form')[0];
+      var formData = new FormData(form);
+      formData.append('report_file', this.newReportCard.file);
+      formData.append('title', this.newReportCard.title);
+      formData.append('term_start', this.newReportCard.term_start);
+      formData.append('term_end', this.newReportCard.term_end);
+      formData.append('user_id', this.newReportCard.user_id);
+      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/api/admin/report_cards/' + this.id, formData).then(function (res) {
+        _this3.newReportCard.term_start = '';
+        _this3.newReportCard.term_end = '';
+        _this3.newReportCard.title = '';
+        _this3.isEdit = false;
+        _this3.getReportCards();
+        console.log(res);
+      }).catch(function (err) {
+        console.log(err);
+      });
+    },
+    deleteReportCard: function deleteReportCard(id) {
+      var _this4 = this;
+
+      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.delete('/api/admin/report_cards/' + id).then(function (res) {
+        _this4.getReportCards();
+        _this4.term_start = '';
+        console.log(res);
+      }).catch(function (err) {
+        console.log(err);
+      });
+    },
+    onInputChange: function onInputChange(event) {
+      var input = event.target;
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        var vm = this;
+        reader.onload = function (e) {
+          vm.imageSrc = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+      this.newReportCard.file = input.files[0];
+    }
+  }
+});
+
+/***/ }),
+/* 234 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c(
+      "form",
+      {
+        attrs: { enctype: "multipart/form-data" },
+        on: {
+          submit: function($event) {
+            $event.preventDefault()
+            return _vm.addNewReportCard($event)
+          }
+        }
+      },
+      [
+        _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col" }, [
+            _c("label", { attrs: { for: "title_input" } }, [_vm._v("Title")]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.newReportCard.title,
+                  expression: "newReportCard.title"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: {
+                type: "text",
+                id: "title_input",
+                placeholder: "Eg. Mid-Term Exams"
+              },
+              domProps: { value: _vm.newReportCard.title },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.newReportCard, "title", $event.target.value)
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col" }, [
+            _c("label", { attrs: { for: "file" } }, [_vm._v("Upload")]),
+            _vm._v(" "),
+            _c("input", {
+              staticClass: "form-control",
+              attrs: { type: "file" },
+              on: { change: _vm.onInputChange }
+            })
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col" }, [
+            _c("label", { attrs: { for: "term_start_input" } }, [
+              _vm._v("Term Start")
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.newReportCard.term_start,
+                  expression: "newReportCard.term_start"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { type: "date", id: "term_start_input" },
+              domProps: { value: _vm.newReportCard.term_start },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.newReportCard, "term_start", $event.target.value)
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col" }, [
+            _c("label", { attrs: { for: "term_end_input" } }, [
+              _vm._v("Term End")
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.newReportCard.term_end,
+                  expression: "newReportCard.term_end"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { type: "date", id: "term_end_input" },
+              domProps: { value: _vm.newReportCard.term_end },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.newReportCard, "term_end", $event.target.value)
+                }
+              }
+            })
+          ])
+        ]),
+        _vm._v(" "),
+        this.isEdit == false
+          ? _c(
+              "button",
+              {
+                staticClass: "btn btn-success btn-block",
+                staticStyle: {
+                  "background-color": "rgb(101, 140, 247)",
+                  "border-color": "rgb(101, 140, 247)",
+                  "margin-top": "10px"
+                },
+                attrs: { type: "submit" }
+              },
+              [_vm._v("Submit")]
+            )
+          : _c(
+              "button",
+              {
+                staticClass: "btn btn-primary btn-block",
+                attrs: { type: "button" },
+                on: {
+                  click: function($event) {
+                    _vm.updateReportCard()
+                  }
+                }
+              },
+              [_vm._v("Update")]
+            )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "table",
+      { staticClass: "table" },
+      _vm._l(_vm.reportCards, function(rc) {
+        return _c("tr", { key: rc.id, attrs: { title: rc.term_start } }, [
+          _c("td", { staticClass: "text-left" }, [
+            _vm._v(_vm._s(rc.title) + " | "),
+            _c("span", { staticStyle: { color: "grey" } }, [
+              _vm._v(
+                _vm._s(
+                  _vm.moment(rc.term_start).format("MMM Do YY") +
+                    " - " +
+                    _vm.moment(rc.term_end).format("MMM Do YY")
+                )
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("td", { staticClass: "text-right" }, [
+            _c(
+              "a",
+              {
+                staticClass: "btn btn-info",
+                staticStyle: { color: "white" },
+                attrs: { href: rc.file }
+              },
+              [_vm._v("View")]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-info",
+                staticStyle: {
+                  "background-color": "rgb(101, 140, 247)",
+                  "border-color": "rgb(101, 140, 247)"
+                },
+                on: {
+                  click: function($event) {
+                    _vm.editReportCard(rc.term_start, rc.term_end, rc.id, rc)
+                  }
+                }
+              },
+              [_vm._v("Edit")]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-danger",
+                on: {
+                  click: function($event) {
+                    _vm.deleteReportCard(rc.id)
+                  }
+                }
+              },
+              [_vm._v("Delete")]
+            )
+          ])
+        ])
+      })
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-74814fb0", module.exports)
   }
 }
 

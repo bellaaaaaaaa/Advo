@@ -78,25 +78,22 @@
         )
       },
       addNewReportCard(e) {
-        // debugger;
         var formData = new FormData(e.target);
         formData.append('report_file', this.newReportCard.file);
         formData.append('title', this.newReportCard.title);
         formData.append('term_start', this.newReportCard.term_start);
         formData.append('term_end', this.newReportCard.term_end);
         formData.append('user_id', this.newReportCard.user_id);
-        this.$emit('newReportCard', formData)
-        console.log('rc component', formData)
-        // axios.post('/api/admin/report_cards', formData).then(res => {
-        // this.newReportCard.term_start = ''
-        // this.newReportCard.term_end = ''
-        // this.newReportCard.file = ''
-        // this.newReportCard.title = ''
-        // this.getReportCards()
-        // console.log("addNewReportCard " + res)
-        // }).catch(err => {
-        //   console.log(err)
-        // })
+        axios.post('/api/admin/report_cards', formData).then(res => {
+        this.newReportCard.term_start = ''
+        this.newReportCard.term_end = ''
+        this.newReportCard.file = ''
+        this.newReportCard.title = ''
+        this.getReportCards()
+        console.log("addNewReportCard " + res)
+        }).catch(err => {
+          console.log(err)
+        })
       },
       editReportCard(term_start, term_end, id, rc) {
         this.newReportCard.title = rc.title
@@ -115,19 +112,18 @@
         formData.append('term_start', this.newReportCard.term_start);
         formData.append('term_end', this.newReportCard.term_end);
         formData.append('user_id', this.newReportCard.user_id);
-        this.$emit('newReportCard', formData)
-        // axios.post(`/api/admin/report_cards/${this.id}`, formData)
-        // .then(res => {
-        //   this.newReportCard.term_start = ''
-        //   this.newReportCard.term_end = ''
-        //   this.newReportCard.title = ''
-        //   this.isEdit = false
-        //   this.getReportCards()
-        //   console.log(res)
-        // })
-        // .catch(err => {
-        //   console.log(err)
-        // })
+        axios.post(`/api/admin/report_cards/${this.id}`, formData)
+        .then(res => {
+          this.newReportCard.term_start = ''
+          this.newReportCard.term_end = ''
+          this.newReportCard.title = ''
+          this.isEdit = false
+          this.getReportCards()
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
       },
       deleteReportCard(id) {
         axios.delete(`/api/admin/report_cards/${id}`)

@@ -93,7 +93,8 @@ class UsersController extends Controller
     public function update(Request $request, $id)
     {
         $userParams = json_decode($request->input('userParams'));
-        dd($userParams);
+        $rc = $userParams->newReportCards;
+        dd($rc[0]);
         $user = User::find($id);
         $this->validate($request, array(
             'name' => 'required|max:255',

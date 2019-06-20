@@ -75,6 +75,8 @@
 
       <!-- Report Cards -->
       <div>
+        <label>New Report Card</label>
+        <report-card-component v-on:newReportCard='createReportCard' ></report-card-component>
       </div>
       <button type='submit' class='btn btn-primary'>Submit</button>
 
@@ -112,7 +114,10 @@
         selectedInterest: '',
         selectedInterests: [],
         interests: [],
-        unselectedInterest: ''
+        unselectedInterest: '',
+
+        numNewReportCards: 0,
+        newReportCards: {}
       }
     },
     mounted() {
@@ -137,6 +142,7 @@
         formData.append('_method', 'PATCH')
         this.userParams.badges = this.selectedBadges
         this.userParams.interests = this.selectedInterests
+        this.userParams.newReportCards = this.newReportCards
         formData.append('userParams', JSON.stringify(this.userParams))
         axios.post(`/admin/users/${this.userId}`, formData)
         .then(res => {
@@ -242,7 +248,14 @@
         console.log('selected interests', this.selectedInterests)
 
       },
-      // Report Card Methods
+      createReportCard(reportCard){
+        console.log(reportCard);
+        this.newReportCards[this.numNewReportCards] = reportCard
+        console.log('newReportCards', this.newReportCards)
+        this.numNewReportCards += 1
+        console.log(this.numNewReportCards)
+
+      }
     }
   }
 </script>
