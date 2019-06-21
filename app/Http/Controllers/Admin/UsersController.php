@@ -94,7 +94,7 @@ class UsersController extends Controller
     {
         $userParams = json_decode($request->input('userParams'));
         $rc = $userParams->newReportCards;
-        dd($rc[0]);
+        dd($request);
         $user = User::find($id);
         $this->validate($request, array(
             'name' => 'required|max:255',

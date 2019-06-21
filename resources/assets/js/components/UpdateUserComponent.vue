@@ -3,7 +3,7 @@
     <form v-on:submit.prevent="updateUser" class="col-md-12 ">
 
       <!-- User Details -->
-      <div class='row col-md-12'><h4>User Details</h4></div>
+      <div class='row col-md-12'><h5>User Details</h5></div>
       <div class='row'>
         <div class='col-md-4'>
           <label>Name</label>
@@ -52,7 +52,7 @@
       </div>
 
       <!-- User Badges -->
-      <div class='row col-md-12'><label>User Badges</label></div>
+      <div class='row col-md-12'><h5>User Badges</h5></div>
       <select @change='selectBadge()' v-model="selectedBadge" type="submit" class='form-control'>
         <option v-for='badge in badges' :value='badge'>{{ badge.title }}</option>
       </select>
@@ -63,7 +63,7 @@
       </div>
 
       <!-- User Interests -->
-      <div class='row col-md-12'><label>User Interests</label></div>
+      <div class='row col-md-12'><h5>User Interests</h5></div>
       <select @change='selectInterest()' v-model="selectedInterest" type="submit" class='form-control'>
         <option v-for='interest in interests' :value='interest'>{{ interest.title }}</option>
       </select>
@@ -75,8 +75,8 @@
 
       <!-- Report Cards -->
       <div>
-        <label>New Report Card</label>
-        <report-card-component v-on:newReportCard='createReportCard' ></report-card-component>
+        <h5>New Report Card</h5>
+        <report-card-component v-on:newReportCards='receiveNewReportCards'></report-card-component>
       </div>
       <button type='submit' class='btn btn-primary'>Submit</button>
 
@@ -104,6 +104,7 @@
           avatar: this.user.avatar,
           badges: this.selectedBadges,
           interests: this.selectedInterests,
+          newReportCards: []
         },
         roles: {'0' : 'Admin', '1' : 'Benefactor', '2' : 'Scholar'},
         selectedBadge: '',
@@ -117,7 +118,6 @@
         unselectedInterest: '',
 
         numNewReportCards: 0,
-        newReportCards: {}
       }
     },
     mounted() {
@@ -133,18 +133,23 @@
         axios({method: 'GET', url: `/api/get_user/${this.userId}`}).then(
           result => {
             this.userToEdit = result.data
-            console.log(this.userToEdit.name)
           }
         )
       },
       updateUser(e){
+        const config = { headers: { 'Content-Type': 'multipart/form-data'}}
+
         var formData = new FormData(e.target)
         formData.append('_method', 'PATCH')
         this.userParams.badges = this.selectedBadges
         this.userParams.interests = this.selectedInterests
-        this.userParams.newReportCards = this.newReportCards
         formData.append('userParams', JSON.stringify(this.userParams))
-        axios.post(`/admin/users/${this.userId}`, formData)
+        debugger;
+        var i;
+        for (i = 0; i < this.userParams.newReportCards.length; i++) {
+          formData.append('rc_files[]', this.userParams.newReportCards[i].file)
+        }
+        axios.post(`/admin/users/${this.userId}`, formData, config)
         .then(res => {
           console.log(res)
         })
@@ -192,7 +197,6 @@
         if (array.includes(this.selectedBadge.id) == false ){
           this.selectedBadges.push(this.selectedBadge)
         }
-        console.log(this.selectedBadges)
       },
       unselectBadge(event){
         console.log('unselected badge id', event.target.parentElement.id)
@@ -203,7 +207,6 @@
             this.selectedBadges.splice(x, 1)
           }
         }
-        console.log('selected badges', this.selectedBadges)
 
       },
       // Interest Methods
@@ -234,10 +237,8 @@
         if (array.includes(this.selectedInterest.id) == false ){
           this.selectedInterests.push(this.selectedInterest)
         }
-        console.log(this.selectedInterests)
       },
       unselectInterest(event){
-        console.log('unselected interest id', event.target.parentElement.id)
         var unselectedInterestId =  event.target.parentElement.id;
         var x;
         for (x = 0; x < this.selectedInterests.length; x ++){
@@ -245,15 +246,10 @@
             this.selectedInterests.splice(x, 1)
           }
         }
-        console.log('selected interests', this.selectedInterests)
 
       },
-      createReportCard(reportCard){
-        console.log(reportCard);
-        this.newReportCards[this.numNewReportCards] = reportCard
-        console.log('newReportCards', this.newReportCards)
-        this.numNewReportCards += 1
-        console.log(this.numNewReportCards)
+      receiveNewReportCards(reportCards){
+        this.userParams.newReportCards = reportCards;
 
       }
     }

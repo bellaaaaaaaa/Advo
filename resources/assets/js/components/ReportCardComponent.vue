@@ -1,32 +1,22 @@
 <template>
   <div>
-    <form v-on:submit.prevent="addNewReportCard" enctype="multipart/form-data">
-      <div class='row'>
-        <div class="col">
-          <label for="title_input">Title</label>
-          <input v-model="newReportCard.title" type="text" id="title_input" class="form-control" placeholder="Eg. Mid-Term Exams"></input>
-        </div>
-        <div class="col">
-          <label for="file">Upload</label>
-          <input type="file" v-on:change="onInputChange" class="form-control">
-        </div>
-      </div>
+    <add-report-card-component v-on:newReportCard='createReportCard'></add-report-card-component>
+    <div class='row'>
+      <table class='table col-md-6'>
+        <label> New Report Cards</label>
+        <tr v-for="(nrc, i) in newReportCards">
+          <td class='text-left'>{{ nrc.title }}</td>
+          <td class='text-right'><i :id="i" class='fa fa-close' v-on:click="removeNewReportCard" ></i></td>
+        </tr>
+      </table>
+    </div>  
 
-      <div class='row'>
-        <div class="col">
-          <label for="term_start_input">Term Start</label>
-          <input v-model="newReportCard.term_start" type="date" id="term_start_input" class="form-control"></input>
-        </div>
+    <!--
+    <button v-if="this.isEdit == false" v-on:click="addNewReportCard" class="btn btn-success btn-block" style="background-color: rgb(101, 140, 247); border-color:  rgb(101, 140, 247); margin-top: 10px">Add</button>
+    <button v-else v-on:click="updateReportCard()" type="button" class="btn btn-primary btn-block">Update</button>
+    -->
 
-        <div class="col">
-          <label for="term_end_input">Term End</label>
-          <input v-model="newReportCard.term_end" type="date" id="term_end_input" class="form-control"></input>
-        </div>
-      </div>
-
-      <button v-if="this.isEdit == false" type="submit" class="btn btn-success btn-block" style="background-color: rgb(101, 140, 247); border-color:  rgb(101, 140, 247); margin-top: 10px">Submit</button>
-      <button v-else v-on:click="updateReportCard()" type="button" class="btn btn-primary btn-block">Update</button>
-    </form>
+    <!--
     <table class="table">
       <tr v-for="(rc) in reportCards" v-bind:key="rc.id" v-bind:title="rc.term_start">
       
@@ -37,9 +27,10 @@
           <button v-on:click="deleteReportCard(rc.id)" class="btn btn-danger">Delete</button>
         </td>
       </tr>
-    </table>
+    </table> -->
   </div>
 </template>
+
 <script>
   import axios from 'axios'
   import moment from 'moment'
@@ -53,14 +44,15 @@
         files: [],
         images: [],
         imgSrc: '',
-        newReportCard :{
+        newReportCard :[{
           user_id: this.userId,
           title: '',
           term_start: '',
           term_end: ''
-        },
+        }],
         user_id: this.userId,
-        isEdit: false
+        isEdit: false,
+        newReportCards: []
       }
     },
     mounted() {
@@ -78,25 +70,7 @@
         )
       },
       addNewReportCard(e) {
-        // debugger;
-        var formData = new FormData(e.target);
-        formData.append('report_file', this.newReportCard.file);
-        formData.append('title', this.newReportCard.title);
-        formData.append('term_start', this.newReportCard.term_start);
-        formData.append('term_end', this.newReportCard.term_end);
-        formData.append('user_id', this.newReportCard.user_id);
-        this.$emit('newReportCard', formData)
-        console.log('rc component', formData)
-        // axios.post('/api/admin/report_cards', formData).then(res => {
-        // this.newReportCard.term_start = ''
-        // this.newReportCard.term_end = ''
-        // this.newReportCard.file = ''
-        // this.newReportCard.title = ''
-        // this.getReportCards()
-        // console.log("addNewReportCard " + res)
-        // }).catch(err => {
-        //   console.log(err)
-        // })
+        // this.$emit('newReportCard', this.newReportCard);
       },
       editReportCard(term_start, term_end, id, rc) {
         this.newReportCard.title = rc.title
@@ -115,7 +89,7 @@
         formData.append('term_start', this.newReportCard.term_start);
         formData.append('term_end', this.newReportCard.term_end);
         formData.append('user_id', this.newReportCard.user_id);
-        this.$emit('newReportCard', formData)
+        
         // axios.post(`/api/admin/report_cards/${this.id}`, formData)
         // .then(res => {
         //   this.newReportCard.term_start = ''
@@ -134,7 +108,6 @@
         .then(res => {
           this.getReportCards()
           this.term_start = ''
-          console.log(res)
         })
         .catch(err => {
           console.log(err)
@@ -151,6 +124,13 @@
             reader.readAsDataURL(input.files[0]);
         }
         this.newReportCard.file = input.files[0];
+      },
+      createReportCard(newReportCard){
+        this.newReportCards.push(newReportCard)
+        this.$emit('newReportCards', this.newReportCards)
+      },
+      removeNewReportCard(e){
+        this.newReportCards.splice(e.target.id, 1)
       }
     }
   }

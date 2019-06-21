@@ -9,7 +9,7 @@
 </style>
 @section('content')
 <div class="row">
-  <div class="card col-md-10 offset-md-1" style="padding:20px">
+  <div class="card" style="padding:20px">
     <h2>Update User: {{$user->id}}</h2>
     <hr>
   <update-user-component  :user-id="{{ $user->id }}" :user="{{ $user }}" :user-badges="{{ $user->badges }}" :report-cards="{{ $user->report_cards }}"></update-user-component>
