@@ -29,9 +29,10 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::post('details', 'API\UserController@details');
 });
 
+
 // Routes for admin web ReportCardComponent
 Route::prefix('admin')->group(function(){
-    Route::get('report_cards', 'Admin\ReportCardsController@index');
+    Route::get('users_report_cards/{id}', 'Admin\ReportCardsController@usersreportcards');
     Route::get('report_cards/{id}', 'Admin\ReportCardsController@show');
     Route::post('report_cards', 'Admin\ReportCardsController@store');
     Route::post('report_cards/{id}', 'Admin\ReportCardsController@update');

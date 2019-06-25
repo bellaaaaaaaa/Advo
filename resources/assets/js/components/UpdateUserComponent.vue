@@ -3,81 +3,91 @@
     <form v-on:submit.prevent="updateUser" class="col-md-12 ">
 
       <!-- User Details -->
-      <div class='row col-md-12'><h5>User Details</h5></div>
-      <div class='row'>
-        <div class='col-md-4'>
-          <label>Name</label>
-          <input v-model="userParams.name" class="form-control"></input>
-        </div>
+      <div class='card'>
+        <div class='card-body'>
+          <div class='row col-md-12'><h5>User Details</h5></div>
+          <div class='row'>
+            <div class='col-md-4'>
+              <label>Name</label>
+              <input v-model="userParams.name" class="form-control"></input>
+            </div>
 
-        <div class='col-md-4'>
-          <label>Email</label>
-          <input v-model="userParams.email" class="form-control"></input>
-        </div>
+            <div class='col-md-4'>
+              <label>Email</label>
+              <input v-model="userParams.email" class="form-control"></input>
+            </div>
 
-        <div class='col-md-4'>
-          <label>Role</label>
-          <select v-model="userParams.role" type="submit" class='form-control'>
-            <option v-for='key, value in roles' :value='value'>{{ key }}</option>
-          </select>
-        </div>
-      </div> <!-- end row -->
+            <div class='col-md-4'>
+              <label>Role</label>
+              <select v-model="userParams.role" type="submit" class='form-control'>
+                <option v-for='key, value in roles' :value='value'>{{ key }}</option>
+              </select>
+            </div>
+          </div> <!-- end row -->
 
-      <div class='row'>
-        <div class='col-md-4'>
-          <label>Date of Birth</label>
-          <input v-model="userParams.date_of_birth" type='date' class="form-control"></input>
-        </div>
+          <div class='row'>
+            <div class='col-md-4'>
+              <label>Date of Birth</label>
+              <input v-model="userParams.date_of_birth" type='date' class="form-control"></input>
+            </div>
 
-        <div class='col-md-4'>
-          <label>Phone Number</label>
-          <input v-model="userParams.phone_number" class="form-control"></input>
-        </div>
+            <div class='col-md-4'>
+              <label>Phone Number</label>
+              <input v-model="userParams.phone_number" class="form-control"></input>
+            </div>
 
-        <div class='col-md-4'>
-          <label>IC/Passport Number</label>
-          <input v-model="userParams.ic_passport_number" class="form-control"></input>
-        </div>
-      </div> <!-- end row -->
+            <div class='col-md-4'>
+              <label>IC/Passport Number</label>
+              <input v-model="userParams.ic_passport_number" class="form-control"></input>
+            </div>
+          </div> <!-- end row -->
 
-      <div class='row'>
-        <div class='col-md-6'>
-          <label>Bio</label>
-          <input v-model="userParams.bio" class="form-control"></input>
-        </div>
-        <div class='col-md-6'>
-          <label>Avatar</label>
-          <input type="file" v-on:change="onInputChange" class="form-control">
+          <div class='row'>
+            <div class='col-md-6'>
+              <label>Bio</label>
+              <input v-model="userParams.bio" class="form-control"></input>
+            </div>
+            <div class='col-md-6'>
+              <label>Avatar</label>
+              <input type="file" v-on:change="onInputChange" class="form-control">
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- User Badges -->
-      <div class='row col-md-12'><h5>User Badges</h5></div>
-      <select @change='selectBadge()' v-model="selectedBadge" type="submit" class='form-control'>
-        <option v-for='badge in badges' :value='badge'>{{ badge.title }}</option>
-      </select>
-      <div class="row" style="padding: 0px 15px !important;">
-        <div style="padding: 5px;" v-for="(badge) in selectedBadges" v-bind:key="badge.id">
-          <span :id='badge.id' :value='badge.id' class="badge badge-secondary">{{badge.title}}<i v-on:click="unselectBadge" class="fa fa-close" style="color:white"></i></span> <!-- <i v-on:click="deleteUserBadge(badge.id)" class="fa fa-close" style="color:white"></i>-->
+      <div class='card'>
+        <div class='card-body'>
+          <div class='row col-md-12'><h5>User Badges</h5></div>
+          <select @change='selectBadge()' v-model="selectedBadge" type="submit" class='form-control'>
+            <option v-for='badge in badges' :value='badge'>{{ badge.title }}</option>
+          </select>
+          <div class="row" style="padding: 0px 15px !important;">
+            <div style="padding: 5px;" v-for="(badge) in selectedBadges" v-bind:key="badge.id">
+              <span :id='badge.id' :value='badge.id' class="badge badge-secondary">{{badge.title}}<i v-on:click="unselectBadge" class="fa fa-close" style="color:white"></i></span>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- User Interests -->
-      <div class='row col-md-12'><h5>User Interests</h5></div>
-      <select @change='selectInterest()' v-model="selectedInterest" type="submit" class='form-control'>
-        <option v-for='interest in interests' :value='interest'>{{ interest.title }}</option>
-      </select>
-      <div class="row" style="padding: 0px 15px !important;">
-        <div style="padding: 5px;" v-for="(interest) in selectedInterests" v-bind:key="interest.id">
-          <span :id='interest.id' :value='interest.id' class="badge badge-secondary">{{interest.title}}<i v-on:click="unselectInterest" class="fa fa-close" style="color:white"></i></span> <!-- <i v-on:click="deleteUserBadge(badge.id)" class="fa fa-close" style="color:white"></i>-->
+      <div class='card'>
+        <div class='card-body'>
+          <div class='row col-md-12'><h5>User Interests</h5></div>
+          <select @change='selectInterest()' v-model="selectedInterest" type="submit" class='form-control'>
+            <option v-for='interest in interests' :value='interest'>{{ interest.title }}</option>
+          </select>
+          <div class="row" style="padding: 0px 15px !important;">
+            <div style="padding: 5px;" v-for="(interest) in selectedInterests" v-bind:key="interest.id">
+              <span :id='interest.id' :value='interest.id' class="badge badge-secondary">{{interest.title}}<i v-on:click="unselectInterest" class="fa fa-close" style="color:white"></i></span>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Report Cards -->
-      <div>
-        <h5>New Report Card</h5>
-        <report-card-component v-on:newReportCards='receiveNewReportCards'></report-card-component>
-      </div>
+      <report-card-component :report-cards='reportCards' :user-id='userId' v-on:newReportCards='receiveNewReportCards' v-on:existingReportCards='receiveExistingReportCards' v-on:updatedReportCards='receiveUpdatedReportCards'></report-card-component>
+      
       <button type='submit' class='btn btn-primary'>Submit</button>
 
     </form>
@@ -88,7 +98,7 @@
   import moment from 'moment'
   Vue.prototype.moment = moment
   export default {
-    props: ['userId', 'user', 'userBadges'],
+    props: ['userId', 'user', 'userBadges', 'reportCards'],
 
     data() {
       return {
@@ -104,7 +114,9 @@
           avatar: this.user.avatar,
           badges: this.selectedBadges,
           interests: this.selectedInterests,
-          newReportCards: []
+          newReportCards: [],
+          updatedReportCards: [],
+          existingReportCards: []
         },
         roles: {'0' : 'Admin', '1' : 'Benefactor', '2' : 'Scholar'},
         selectedBadge: '',
@@ -144,10 +156,9 @@
         this.userParams.badges = this.selectedBadges
         this.userParams.interests = this.selectedInterests
         formData.append('userParams', JSON.stringify(this.userParams))
-        debugger;
         var i;
         for (i = 0; i < this.userParams.newReportCards.length; i++) {
-          formData.append('rc_files[]', this.userParams.newReportCards[i].file)
+          formData.append('nrc_files[]', this.userParams.newReportCards[i].file)
         }
         axios.post(`/admin/users/${this.userId}`, formData, config)
         .then(res => {
@@ -251,7 +262,15 @@
       receiveNewReportCards(reportCards){
         this.userParams.newReportCards = reportCards;
 
-      }
+      },
+      receiveExistingReportCards(reportCards){
+        this.userParams.existingReportCards = reportCards;
+
+      },
+      receiveUpdatedReportCards(reportCards){
+        this.userParams.updatedReportCards = reportCards;
+        console.log(this.userParams.updatedReportCards)
+      },
     }
   }
 </script>

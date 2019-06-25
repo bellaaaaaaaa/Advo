@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\ReportCard;
+use App\User;
 use Illuminate\Support\Facades\Storage;
 use Aws\S3\S3Client;
 use App\Services\AwsService;
@@ -102,5 +103,9 @@ class ReportCardsController extends Controller
         $this->awsService->removeUpload($rc, $rc->file, 'Users/Reportcards/');
         $rc->delete();
         return 204;
+    }
+    public function usersreportcards($id){
+        $user = User::find($id);
+        return $user->report_cards;
     }
 }

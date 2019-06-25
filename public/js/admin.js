@@ -108019,6 +108019,14 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_moment__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_moment__);
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -108045,11 +108053,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
+
+Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_0_moment___default.a;
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['rc', 'index', 'nrc', 'erc'],
+
   data: function data() {
     return {
       imageSrc: '',
       newReportCard: {
+        id: '',
         title: '',
         term_start: '',
         term_end: '',
@@ -108058,11 +108071,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     };
   },
   mounted: function mounted() {
-    console.log('Component mounted.');
-    // this.$emit('newReportCard', formData)
+    this.setDefaults(), this.reportCardListeners(), this.editReportCardListeners();
   },
 
   methods: {
+    setDefaults: function setDefaults() {
+      if (typeof this.erc != 'undefined') {
+        this.edit = true;
+        this.newReportCard.id = this.erc.id;
+        this.newReportCard.title = this.erc.title;
+        this.newReportCard.term_start = __WEBPACK_IMPORTED_MODULE_0_moment___default()(this.erc.term_start).format('YYYY-MM-DD');
+        this.newReportCard.term_end = __WEBPACK_IMPORTED_MODULE_0_moment___default()(this.erc.term_end).format('YYYY-MM-DD');
+        this.newReportCard.file = this.erc.file;
+      }
+    },
     onInputChange: function onInputChange(event) {
       var input = event.target;
       if (input.files && input.files[0]) {
@@ -108074,12 +108096,75 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         reader.readAsDataURL(input.files[0]);
       }
       this.newReportCard.file = input.files[0];
+      var self = this;
+      this.$emit('newReportCardComponent', self.newReportCard, this.index);
     },
-    submitData: function submitData() {
-      console.log('arc', this.newReportCard);
-      this.$emit('newReportCard', this.newReportCard);
-      this.newReportCard = {};
+
+    reportCardListeners: function reportCardListeners() {
+      var self = this;
+      this.id = this.index;
+      var timer;
+      $("#title" + this.index).on("keyup", function (event) {
+        var searchid = $(this).val().trim();
+
+        clearInterval(timer);
+        timer = setTimeout(function () {
+          self.newReportCard.title = event.target.value;
+          self.onReportCardUpdated();
+        }, 200);
+      });
+
+      $('.term_start' + this.index).on('change', function (event) {
+        self.newReportCard.term_start = event.target.value;
+        self.onReportCardUpdated();
+      });
+      $('.term_end' + this.index).on('change', function (event) {
+        self.newReportCard.term_end = event.target.value;
+        self.onReportCardUpdated();
+      });
+    },
+    // editReportCardListeners: function() {
+    //   let self = this;
+    //   // this.id = this.index;
+    //   var timer;
+    //   if (typeof this.erc != 'undefined') {
+    //     $(".existing_title").on("keyup", function(event){
+    //       var searchid = $(this).val().trim();
+
+    //       clearInterval(timer);
+    //       timer = setTimeout(function() {
+    //           self.newReportCard.title = event.target.value
+    //           self.onReportCardUpdated();
+    //       }, 200);
+    //     });
+
+    //     $('.existing_term_start').on('change', function(event) {
+    //       self.newReportCard.term_start = event.target.value
+    //       self.onReportCardUpdated();
+    //     });
+    //     $('.existing_term_end').on('change', function(event) {
+    //       self.newReportCard.term_end = event.target.value
+    //       self.onReportCardUpdated();
+    //     });
+    //   }
+    // },
+    onReportCardUpdated: function onReportCardUpdated() {
+      var reportCard = {
+        id: this.newReportCard.id,
+        title: this.newReportCard.title ? this.newReportCard.title : null,
+        term_start: this.newReportCard.term_start ? this.newReportCard.term_start : null,
+        term_end: this.newReportCard.term_end ? this.newReportCard.term_end : null,
+        file: this.newReportCard.file ? this.newReportCard.file : null
+      };
+      if (typeof this.erc != 'undefined') {
+        this.$emit('existingReportCardComponent', reportCard, this.newReportCard.id);
+      } else {
+        this.$emit('newReportCardComponent', reportCard, this.index);
+      }
     }
+    // updateReportCard(){
+    //   this.$emit('updatedReportCard', this.newReportCard)
+    // },
   }
 });
 
@@ -108105,9 +108190,10 @@ var render = function() {
           }
         ],
         staticClass: "form-control",
+        class: "form-control existing_title",
         attrs: {
+          id: "title" + _vm.index,
           type: "text",
-          id: "title_input",
           placeholder: "Eg. Mid-Term Exams"
         },
         domProps: { value: _vm.newReportCard.title },
@@ -108123,7 +108209,25 @@ var render = function() {
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "col" }, [
-      _c("label", { attrs: { for: "file" } }, [_vm._v("Upload")]),
+      _c("div", { staticClass: "row" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c("div", { staticClass: "col" }, [
+          typeof this.rc != "undefined"
+            ? _c(
+                "a",
+                { staticClass: "text-right", attrs: { href: _vm.rc.file } },
+                [
+                  _c("label", [_vm._v("Current")]),
+                  _c("i", {
+                    staticClass: "fa fa-external-link",
+                    attrs: { "aria-hidden": "true" }
+                  })
+                ]
+              )
+            : _vm._e()
+        ])
+      ]),
       _vm._v(" "),
       _c("input", {
         staticClass: "form-control",
@@ -108147,6 +108251,7 @@ var render = function() {
           }
         ],
         staticClass: "form-control",
+        class: "form-control existing_term_start term_start" + _vm.index,
         attrs: { type: "date", id: "term_start_input" },
         domProps: { value: _vm.newReportCard.term_start },
         on: {
@@ -108172,7 +108277,7 @@ var render = function() {
             expression: "newReportCard.term_end"
           }
         ],
-        staticClass: "form-control",
+        class: "form-control existing_term_end term_end" + _vm.index,
         attrs: { type: "date", id: "term_end_input" },
         domProps: { value: _vm.newReportCard.term_end },
         on: {
@@ -108186,23 +108291,35 @@ var render = function() {
       })
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "col" }, [
-      _c(
-        "button",
-        {
-          staticClass: "btn btn-xs btn-primary align-middle",
-          on: {
-            click: function($event) {
-              _vm.submitData()
-            }
-          }
-        },
-        [_vm._v("Add")]
-      )
-    ])
+    _vm._m(1)
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col" }, [
+      _c("label", { staticClass: "text-left", attrs: { for: "file" } }, [
+        _vm._v("File")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-1 pt-4" }, [
+      _c("a", { attrs: { href: "#" } }, [
+        _c("i", {
+          staticClass: "fa fa-close",
+          staticStyle: { "padding-top": "5px" },
+          attrs: { "aria-hidden": "true" }
+        })
+      ])
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -109360,21 +109477,6 @@ module.exports = Component.exports
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_moment__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -109397,14 +109499,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 
-
-Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['userId'],
+  props: ['userId', 'reportCards'],
 
   data: function data() {
     return {
-      reportCards: [],
       files: [],
       images: [],
       imgSrc: '',
@@ -109416,30 +109515,24 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
       }],
       user_id: this.userId,
       isEdit: false,
-      newReportCards: []
+      newReportCards: [],
+      updatedReportCards: [],
+      newReportCardComponents: [],
+      existingReportCards: []
     };
   },
   mounted: function mounted() {
-    this.getReportCards();
+    console.log(this.reportCards);
   },
 
   methods: {
-    getReportCards: function getReportCards() {
-      var _this = this;
-
-      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/admin/report_cards' }).then(function (result) {
-        _this.reportCards = result.data;
-      }, function (error) {
-        console.log('getReportCards ' + error);
-      });
-    },
     addNewReportCard: function addNewReportCard(e) {
       // this.$emit('newReportCard', this.newReportCard);
     },
     editReportCard: function editReportCard(term_start, term_end, id, rc) {
       this.newReportCard.title = rc.title;
-      this.newReportCard.term_start = __WEBPACK_IMPORTED_MODULE_1_moment___default()(rc.term_start).format('YYYY-MM-DD');
-      this.newReportCard.term_end = __WEBPACK_IMPORTED_MODULE_1_moment___default()(rc.term_end).format('YYYY-MM-DD');
+      this.newReportCard.term_start = moment(rc.term_start).format('YYYY-MM-DD');
+      this.newReportCard.term_end = moment(rc.term_end).format('YYYY-MM-DD');
       this.id = id;
       this.term_start = term_start;
       this.term_end = term_end;
@@ -109453,48 +109546,44 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
       formData.append('term_start', this.newReportCard.term_start);
       formData.append('term_end', this.newReportCard.term_end);
       formData.append('user_id', this.newReportCard.user_id);
-
-      // axios.post(`/api/admin/report_cards/${this.id}`, formData)
-      // .then(res => {
-      //   this.newReportCard.term_start = ''
-      //   this.newReportCard.term_end = ''
-      //   this.newReportCard.title = ''
-      //   this.isEdit = false
-      //   this.getReportCards()
-      //   console.log(res)
-      // })
-      // .catch(err => {
-      //   console.log(err)
-      // })
     },
     deleteReportCard: function deleteReportCard(id) {
-      var _this2 = this;
+      var _this = this;
 
       __WEBPACK_IMPORTED_MODULE_0_axios___default.a.delete('/api/admin/report_cards/' + id).then(function (res) {
-        _this2.getReportCards();
-        _this2.term_start = '';
+        _this.getUsersReportCards();
+        _this.term_start = '';
       }).catch(function (err) {
         console.log(err);
       });
     },
-    onInputChange: function onInputChange(event) {
-      var input = event.target;
-      if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        var vm = this;
-        reader.onload = function (e) {
-          vm.imageSrc = e.target.result;
-        };
-        reader.readAsDataURL(input.files[0]);
-      }
-      this.newReportCard.file = input.files[0];
-    },
-    createReportCard: function createReportCard(newReportCard) {
-      this.newReportCards.push(newReportCard);
-      this.$emit('newReportCards', this.newReportCards);
+    pushUpdatedReportCard: function pushUpdatedReportCard(updatedReportCard) {
+      this.updatedReportCards.push(updatedReportCard);
+      this.$emit('updatedReportCards', this.updatedReportCards);
     },
     removeNewReportCard: function removeNewReportCard(e) {
       this.newReportCards.splice(e.target.id, 1);
+    },
+    renderNewReportCardForm: function renderNewReportCardForm() {
+      this.newReportCardComponents.push({
+        id: '',
+        title: '',
+        term_start: '',
+        term_end: '',
+        file: ''
+      });
+    },
+    pushNewReportCardComponent: function pushNewReportCardComponent(reportCard, index) {
+      this.newReportCards[index] = reportCard;
+      console.log('new rcs', this.newReportCards);
+      var self = this;
+      this.$emit('newReportCards', self.newReportCards);
+    },
+    pushExistingReportCardComponent: function pushExistingReportCardComponent(reportCard, id) {
+      this.existingReportCards[id] = reportCard;
+      console.log('existing rcs', this.existingReportCards);
+      var self = this;
+      this.$emit('existingReportCards', self.existingReportCards);
     }
   }
 });
@@ -109507,42 +109596,43 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c("add-report-card-component", {
-        on: { newReportCard: _vm.createReportCard }
-      }),
-      _vm._v(" "),
-      _c("div", { staticClass: "row" }, [
-        _c(
-          "table",
-          { staticClass: "table col-md-6" },
-          [
-            _c("label", [_vm._v(" New Report Cards")]),
+  return _c("div", [
+    _c("div", { staticClass: "card" }, [
+      _c(
+        "div",
+        { staticClass: "card-body" },
+        [
+          _c("div", { staticClass: "row" }, [
+            _c("h5", { staticClass: "col" }, [_vm._v("Report Cards")]),
             _vm._v(" "),
-            _vm._l(_vm.newReportCards, function(nrc, i) {
-              return _c("tr", [
-                _c("td", { staticClass: "text-left" }, [
-                  _vm._v(_vm._s(nrc.title))
-                ]),
-                _vm._v(" "),
-                _c("td", { staticClass: "text-right" }, [
-                  _c("i", {
-                    staticClass: "fa fa-close",
-                    attrs: { id: i },
-                    on: { click: _vm.removeNewReportCard }
-                  })
-                ])
-              ])
+            _c(
+              "a",
+              {
+                key: _vm.index + 1,
+                staticClass: "col text-right",
+                staticStyle: { color: "#0645AD" },
+                attrs: { index: _vm.index },
+                on: { click: _vm.renderNewReportCardForm }
+              },
+              [_vm._v("Add new report card")]
+            )
+          ]),
+          _vm._v(" "),
+          _vm._l(_vm.newReportCardComponents, function(nrc, index) {
+            return _c("add-report-card-component", {
+              key: index + 1,
+              attrs: { index: index, nrc: nrc },
+              on: {
+                newReportCardComponent: _vm.pushNewReportCardComponent,
+                existingReportCardComponent: _vm.pushExistingReportCardComponent
+              }
             })
-          ],
-          2
-        )
-      ])
-    ],
-    1
-  )
+          })
+        ],
+        2
+      )
+    ])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -110327,12 +110417,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
 Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['userId', 'user', 'userBadges'],
+  props: ['userId', 'user', 'userBadges', 'reportCards'],
 
   data: function data() {
     return {
@@ -110348,7 +110448,9 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
         avatar: this.user.avatar,
         badges: this.selectedBadges,
         interests: this.selectedInterests,
-        newReportCards: []
+        newReportCards: [],
+        updatedReportCards: [],
+        existingReportCards: []
       },
       roles: { '0': 'Admin', '1': 'Benefactor', '2': 'Scholar' },
       selectedBadge: '',
@@ -110385,10 +110487,9 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
       this.userParams.badges = this.selectedBadges;
       this.userParams.interests = this.selectedInterests;
       formData.append('userParams', JSON.stringify(this.userParams));
-      debugger;
       var i;
       for (i = 0; i < this.userParams.newReportCards.length; i++) {
-        formData.append('rc_files[]', this.userParams.newReportCards[i].file);
+        formData.append('nrc_files[]', this.userParams.newReportCards[i].file);
       }
       __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/admin/users/' + this.userId, formData, config).then(function (res) {
         console.log(res);
@@ -110487,6 +110588,13 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
     },
     receiveNewReportCards: function receiveNewReportCards(reportCards) {
       this.userParams.newReportCards = reportCards;
+    },
+    receiveExistingReportCards: function receiveExistingReportCards(reportCards) {
+      this.userParams.existingReportCards = reportCards;
+    },
+    receiveUpdatedReportCards: function receiveUpdatedReportCards(reportCards) {
+      this.userParams.updatedReportCards = reportCards;
+      console.log(this.userParams.updatedReportCards);
     }
   }
 });
@@ -110512,61 +110620,238 @@ var render = function() {
         }
       },
       [
-        _vm._m(0),
+        _c("div", { staticClass: "card" }, [
+          _c("div", { staticClass: "card-body" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-md-4" }, [
+                _c("label", [_vm._v("Name")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.userParams.name,
+                      expression: "userParams.name"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  domProps: { value: _vm.userParams.name },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.userParams, "name", $event.target.value)
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-4" }, [
+                _c("label", [_vm._v("Email")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.userParams.email,
+                      expression: "userParams.email"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  domProps: { value: _vm.userParams.email },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.userParams, "email", $event.target.value)
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-4" }, [
+                _c("label", [_vm._v("Role")]),
+                _vm._v(" "),
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.userParams.role,
+                        expression: "userParams.role"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: { type: "submit" },
+                    on: {
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.$set(
+                          _vm.userParams,
+                          "role",
+                          $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        )
+                      }
+                    }
+                  },
+                  _vm._l(_vm.roles, function(key, value) {
+                    return _c("option", { domProps: { value: value } }, [
+                      _vm._v(_vm._s(key))
+                    ])
+                  })
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-md-4" }, [
+                _c("label", [_vm._v("Date of Birth")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.userParams.date_of_birth,
+                      expression: "userParams.date_of_birth"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: { type: "date" },
+                  domProps: { value: _vm.userParams.date_of_birth },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(
+                        _vm.userParams,
+                        "date_of_birth",
+                        $event.target.value
+                      )
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-4" }, [
+                _c("label", [_vm._v("Phone Number")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.userParams.phone_number,
+                      expression: "userParams.phone_number"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  domProps: { value: _vm.userParams.phone_number },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(
+                        _vm.userParams,
+                        "phone_number",
+                        $event.target.value
+                      )
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-4" }, [
+                _c("label", [_vm._v("IC/Passport Number")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.userParams.ic_passport_number,
+                      expression: "userParams.ic_passport_number"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  domProps: { value: _vm.userParams.ic_passport_number },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(
+                        _vm.userParams,
+                        "ic_passport_number",
+                        $event.target.value
+                      )
+                    }
+                  }
+                })
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-md-6" }, [
+                _c("label", [_vm._v("Bio")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.userParams.bio,
+                      expression: "userParams.bio"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  domProps: { value: _vm.userParams.bio },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.userParams, "bio", $event.target.value)
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-6" }, [
+                _c("label", [_vm._v("Avatar")]),
+                _vm._v(" "),
+                _c("input", {
+                  staticClass: "form-control",
+                  attrs: { type: "file" },
+                  on: { change: _vm.onInputChange }
+                })
+              ])
+            ])
+          ])
+        ]),
         _vm._v(" "),
-        _c("div", { staticClass: "row" }, [
-          _c("div", { staticClass: "col-md-4" }, [
-            _c("label", [_vm._v("Name")]),
-            _vm._v(" "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.userParams.name,
-                  expression: "userParams.name"
-                }
-              ],
-              staticClass: "form-control",
-              domProps: { value: _vm.userParams.name },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.$set(_vm.userParams, "name", $event.target.value)
-                }
-              }
-            })
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "col-md-4" }, [
-            _c("label", [_vm._v("Email")]),
-            _vm._v(" "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.userParams.email,
-                  expression: "userParams.email"
-                }
-              ],
-              staticClass: "form-control",
-              domProps: { value: _vm.userParams.email },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.$set(_vm.userParams, "email", $event.target.value)
-                }
-              }
-            })
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "col-md-4" }, [
-            _c("label", [_vm._v("Role")]),
+        _c("div", { staticClass: "card" }, [
+          _c("div", { staticClass: "card-body" }, [
+            _vm._m(1),
             _vm._v(" "),
             _c(
               "select",
@@ -110575,324 +110860,167 @@ var render = function() {
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.userParams.role,
-                    expression: "userParams.role"
+                    value: _vm.selectedBadge,
+                    expression: "selectedBadge"
                   }
                 ],
                 staticClass: "form-control",
                 attrs: { type: "submit" },
                 on: {
-                  change: function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.$set(
-                      _vm.userParams,
-                      "role",
-                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                    )
-                  }
+                  change: [
+                    function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.selectedBadge = $event.target.multiple
+                        ? $$selectedVal
+                        : $$selectedVal[0]
+                    },
+                    function($event) {
+                      _vm.selectBadge()
+                    }
+                  ]
                 }
               },
-              _vm._l(_vm.roles, function(key, value) {
-                return _c("option", { domProps: { value: value } }, [
-                  _vm._v(_vm._s(key))
+              _vm._l(_vm.badges, function(badge) {
+                return _c("option", { domProps: { value: badge } }, [
+                  _vm._v(_vm._s(badge.title))
                 ])
+              })
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass: "row",
+                staticStyle: { padding: "0px 15px !important" }
+              },
+              _vm._l(_vm.selectedBadges, function(badge) {
+                return _c(
+                  "div",
+                  { key: badge.id, staticStyle: { padding: "5px" } },
+                  [
+                    _c(
+                      "span",
+                      {
+                        staticClass: "badge badge-secondary",
+                        attrs: { id: badge.id, value: badge.id }
+                      },
+                      [
+                        _vm._v(_vm._s(badge.title)),
+                        _c("i", {
+                          staticClass: "fa fa-close",
+                          staticStyle: { color: "white" },
+                          on: { click: _vm.unselectBadge }
+                        })
+                      ]
+                    )
+                  ]
+                )
               })
             )
           ])
         ]),
         _vm._v(" "),
-        _c("div", { staticClass: "row" }, [
-          _c("div", { staticClass: "col-md-4" }, [
-            _c("label", [_vm._v("Date of Birth")]),
+        _c("div", { staticClass: "card" }, [
+          _c("div", { staticClass: "card-body" }, [
+            _vm._m(2),
             _vm._v(" "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.userParams.date_of_birth,
-                  expression: "userParams.date_of_birth"
-                }
-              ],
-              staticClass: "form-control",
-              attrs: { type: "date" },
-              domProps: { value: _vm.userParams.date_of_birth },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.selectedInterest,
+                    expression: "selectedInterest"
                   }
-                  _vm.$set(_vm.userParams, "date_of_birth", $event.target.value)
+                ],
+                staticClass: "form-control",
+                attrs: { type: "submit" },
+                on: {
+                  change: [
+                    function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.selectedInterest = $event.target.multiple
+                        ? $$selectedVal
+                        : $$selectedVal[0]
+                    },
+                    function($event) {
+                      _vm.selectInterest()
+                    }
+                  ]
                 }
-              }
-            })
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "col-md-4" }, [
-            _c("label", [_vm._v("Phone Number")]),
+              },
+              _vm._l(_vm.interests, function(interest) {
+                return _c("option", { domProps: { value: interest } }, [
+                  _vm._v(_vm._s(interest.title))
+                ])
+              })
+            ),
             _vm._v(" "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.userParams.phone_number,
-                  expression: "userParams.phone_number"
-                }
-              ],
-              staticClass: "form-control",
-              domProps: { value: _vm.userParams.phone_number },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.$set(_vm.userParams, "phone_number", $event.target.value)
-                }
-              }
-            })
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "col-md-4" }, [
-            _c("label", [_vm._v("IC/Passport Number")]),
-            _vm._v(" "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.userParams.ic_passport_number,
-                  expression: "userParams.ic_passport_number"
-                }
-              ],
-              staticClass: "form-control",
-              domProps: { value: _vm.userParams.ic_passport_number },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.$set(
-                    _vm.userParams,
-                    "ic_passport_number",
-                    $event.target.value
-                  )
-                }
-              }
-            })
+            _c(
+              "div",
+              {
+                staticClass: "row",
+                staticStyle: { padding: "0px 15px !important" }
+              },
+              _vm._l(_vm.selectedInterests, function(interest) {
+                return _c(
+                  "div",
+                  { key: interest.id, staticStyle: { padding: "5px" } },
+                  [
+                    _c(
+                      "span",
+                      {
+                        staticClass: "badge badge-secondary",
+                        attrs: { id: interest.id, value: interest.id }
+                      },
+                      [
+                        _vm._v(_vm._s(interest.title)),
+                        _c("i", {
+                          staticClass: "fa fa-close",
+                          staticStyle: { color: "white" },
+                          on: { click: _vm.unselectInterest }
+                        })
+                      ]
+                    )
+                  ]
+                )
+              })
+            )
           ])
         ]),
         _vm._v(" "),
-        _c("div", { staticClass: "row" }, [
-          _c("div", { staticClass: "col-md-6" }, [
-            _c("label", [_vm._v("Bio")]),
-            _vm._v(" "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.userParams.bio,
-                  expression: "userParams.bio"
-                }
-              ],
-              staticClass: "form-control",
-              domProps: { value: _vm.userParams.bio },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.$set(_vm.userParams, "bio", $event.target.value)
-                }
-              }
-            })
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "col-md-6" }, [
-            _c("label", [_vm._v("Avatar")]),
-            _vm._v(" "),
-            _c("input", {
-              staticClass: "form-control",
-              attrs: { type: "file" },
-              on: { change: _vm.onInputChange }
-            })
-          ])
-        ]),
-        _vm._v(" "),
-        _vm._m(1),
-        _vm._v(" "),
-        _c(
-          "select",
-          {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.selectedBadge,
-                expression: "selectedBadge"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: { type: "submit" },
-            on: {
-              change: [
-                function($event) {
-                  var $$selectedVal = Array.prototype.filter
-                    .call($event.target.options, function(o) {
-                      return o.selected
-                    })
-                    .map(function(o) {
-                      var val = "_value" in o ? o._value : o.value
-                      return val
-                    })
-                  _vm.selectedBadge = $event.target.multiple
-                    ? $$selectedVal
-                    : $$selectedVal[0]
-                },
-                function($event) {
-                  _vm.selectBadge()
-                }
-              ]
-            }
-          },
-          _vm._l(_vm.badges, function(badge) {
-            return _c("option", { domProps: { value: badge } }, [
-              _vm._v(_vm._s(badge.title))
-            ])
-          })
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
-            staticClass: "row",
-            staticStyle: { padding: "0px 15px !important" }
-          },
-          _vm._l(_vm.selectedBadges, function(badge) {
-            return _c(
-              "div",
-              { key: badge.id, staticStyle: { padding: "5px" } },
-              [
-                _c(
-                  "span",
-                  {
-                    staticClass: "badge badge-secondary",
-                    attrs: { id: badge.id, value: badge.id }
-                  },
-                  [
-                    _vm._v(_vm._s(badge.title)),
-                    _c("i", {
-                      staticClass: "fa fa-close",
-                      staticStyle: { color: "white" },
-                      on: { click: _vm.unselectBadge }
-                    })
-                  ]
-                )
-              ]
-            )
-          })
-        ),
-        _vm._v(" "),
-        _vm._m(2),
-        _vm._v(" "),
-        _c(
-          "select",
-          {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.selectedInterest,
-                expression: "selectedInterest"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: { type: "submit" },
-            on: {
-              change: [
-                function($event) {
-                  var $$selectedVal = Array.prototype.filter
-                    .call($event.target.options, function(o) {
-                      return o.selected
-                    })
-                    .map(function(o) {
-                      var val = "_value" in o ? o._value : o.value
-                      return val
-                    })
-                  _vm.selectedInterest = $event.target.multiple
-                    ? $$selectedVal
-                    : $$selectedVal[0]
-                },
-                function($event) {
-                  _vm.selectInterest()
-                }
-              ]
-            }
-          },
-          _vm._l(_vm.interests, function(interest) {
-            return _c("option", { domProps: { value: interest } }, [
-              _vm._v(_vm._s(interest.title))
-            ])
-          })
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
-            staticClass: "row",
-            staticStyle: { padding: "0px 15px !important" }
-          },
-          _vm._l(_vm.selectedInterests, function(interest) {
-            return _c(
-              "div",
-              { key: interest.id, staticStyle: { padding: "5px" } },
-              [
-                _c(
-                  "span",
-                  {
-                    staticClass: "badge badge-secondary",
-                    attrs: { id: interest.id, value: interest.id }
-                  },
-                  [
-                    _vm._v(_vm._s(interest.title)),
-                    _c("i", {
-                      staticClass: "fa fa-close",
-                      staticStyle: { color: "white" },
-                      on: { click: _vm.unselectInterest }
-                    })
-                  ]
-                )
-              ]
-            )
-          })
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          [
-            _c("h5", [_vm._v("New Report Card")]),
-            _vm._v(" "),
-            _c("report-card-component", {
-              on: { newReportCards: _vm.receiveNewReportCards }
-            })
-          ],
-          1
-        ),
+        _c("report-card-component", {
+          attrs: { "report-cards": _vm.reportCards, "user-id": _vm.userId },
+          on: {
+            newReportCards: _vm.receiveNewReportCards,
+            existingReportCards: _vm.receiveExistingReportCards,
+            updatedReportCards: _vm.receiveUpdatedReportCards
+          }
+        }),
         _vm._v(" "),
         _c(
           "button",
           { staticClass: "btn btn-primary", attrs: { type: "submit" } },
           [_vm._v("Submit")]
         )
-      ]
+      ],
+      1
     )
   ])
 }

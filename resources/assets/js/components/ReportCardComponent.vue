@@ -1,46 +1,30 @@
 <template>
   <div>
-    <add-report-card-component v-on:newReportCard='createReportCard'></add-report-card-component>
-    <div class='row'>
-      <table class='table col-md-6'>
-        <label> New Report Cards</label>
-        <tr v-for="(nrc, i) in newReportCards">
-          <td class='text-left'>{{ nrc.title }}</td>
-          <td class='text-right'><i :id="i" class='fa fa-close' v-on:click="removeNewReportCard" ></i></td>
-        </tr>
-      </table>
-    </div>  
-
-    <!--
-    <button v-if="this.isEdit == false" v-on:click="addNewReportCard" class="btn btn-success btn-block" style="background-color: rgb(101, 140, 247); border-color:  rgb(101, 140, 247); margin-top: 10px">Add</button>
-    <button v-else v-on:click="updateReportCard()" type="button" class="btn btn-primary btn-block">Update</button>
-    -->
-
-    <!--
-    <table class="table">
-      <tr v-for="(rc) in reportCards" v-bind:key="rc.id" v-bind:title="rc.term_start">
-      
-        <td class="text-left">{{rc.title}} | <span style="color: grey">{{moment(rc.term_start).format("MMM Do YY") + ' - ' + moment(rc.term_end).format("MMM Do YY")}}</span></td> 
-        <td class="text-right">
-          <a class="btn btn-info" v-bind:href="rc.file" style="color: white">View</a>
-          <button v-on:click="editReportCard(rc.term_start, rc.term_end, rc.id, rc)" class="btn btn-info" style="background-color: rgb(101, 140, 247); border-color:  rgb(101, 140, 247)">Edit</button>
-          <button v-on:click="deleteReportCard(rc.id)" class="btn btn-danger">Delete</button>
-        </td>
-      </tr>
-    </table> -->
+    <div class='card'>
+      <div class='card-body'>
+        <div class='row'>
+          <h5 class='col'>Report Cards</h5>
+          <a class='col text-right' style="color:#0645AD;" :index='index' :key='index+1' v-on:click="renderNewReportCardForm" >Add new report card</a>
+        </div>
+        <add-report-card-component  v-on:newReportCardComponent='pushNewReportCardComponent' v-on:existingReportCardComponent='pushExistingReportCardComponent' v-for="(nrc, index) in newReportCardComponents" :key='index+1' :index='index' :nrc='nrc'></add-report-card-component>
+      </div>
+    </div>
+    <!--<div class='card'>
+      <div class='card-body'>
+        <h5>Existing Report Cards</h5>
+        <add-report-card-component v-for='(rc) in reportCards' :erc='rc' v-on:updatedReportCard='pushUpdatedReportCard'></add-report-card-component>
+      </div>
+    </div> -->
   </div>
 </template>
 
 <script>
   import axios from 'axios'
-  import moment from 'moment'
-  Vue.prototype.moment = moment
   export default {
-    props: ['userId'],
+    props: ['userId', 'reportCards'],
 
     data() {
       return {
-        reportCards: [],
         files: [],
         images: [],
         imgSrc: '',
@@ -52,23 +36,16 @@
         }],
         user_id: this.userId,
         isEdit: false,
-        newReportCards: []
+        newReportCards: [],
+        updatedReportCards: [],
+        newReportCardComponents: [],
+        existingReportCards: []
       }
     },
     mounted() {
-      this.getReportCards()
+      console.log(this.reportCards)
     },
     methods: {
-      getReportCards() {
-        axios({method: 'GET', url: '/api/admin/report_cards'}).then(
-          result => {
-            this.reportCards = result.data
-          },
-          error => {
-            console.log('getReportCards ' + error)
-          }
-        )
-      },
       addNewReportCard(e) {
         // this.$emit('newReportCard', this.newReportCard);
       },
@@ -89,48 +66,44 @@
         formData.append('term_start', this.newReportCard.term_start);
         formData.append('term_end', this.newReportCard.term_end);
         formData.append('user_id', this.newReportCard.user_id);
-        
-        // axios.post(`/api/admin/report_cards/${this.id}`, formData)
-        // .then(res => {
-        //   this.newReportCard.term_start = ''
-        //   this.newReportCard.term_end = ''
-        //   this.newReportCard.title = ''
-        //   this.isEdit = false
-        //   this.getReportCards()
-        //   console.log(res)
-        // })
-        // .catch(err => {
-        //   console.log(err)
-        // })
       },
       deleteReportCard(id) {
         axios.delete(`/api/admin/report_cards/${id}`)
         .then(res => {
-          this.getReportCards()
+          this.getUsersReportCards()
           this.term_start = ''
         })
         .catch(err => {
           console.log(err)
         })
       },
-      onInputChange(event) {
-        var input = event.target;
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            var vm = this;
-            reader.onload = function(e) {
-                vm.imageSrc = e.target.result;
-            }
-            reader.readAsDataURL(input.files[0]);
-        }
-        this.newReportCard.file = input.files[0];
-      },
-      createReportCard(newReportCard){
-        this.newReportCards.push(newReportCard)
-        this.$emit('newReportCards', this.newReportCards)
+      pushUpdatedReportCard(updatedReportCard){
+        this.updatedReportCards.push(updatedReportCard)
+        this.$emit('updatedReportCards', this.updatedReportCards)
       },
       removeNewReportCard(e){
         this.newReportCards.splice(e.target.id, 1)
+      },
+      renderNewReportCardForm(){
+        this.newReportCardComponents.push({
+          id: '',
+          title: '',
+          term_start: '',
+          term_end: '',
+          file: ''
+        })
+      },
+      pushNewReportCardComponent(reportCard, index){
+        this.newReportCards[index] = reportCard
+        console.log('new rcs', this.newReportCards)
+        let self = this;
+        this.$emit('newReportCards', self.newReportCards);
+      },
+      pushExistingReportCardComponent(reportCard, id){
+        this.existingReportCards[id] = reportCard
+        console.log('existing rcs', this.existingReportCards)
+        let self = this;
+        this.$emit('existingReportCards', self.existingReportCards);
       }
     }
   }
