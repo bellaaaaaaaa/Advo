@@ -114,9 +114,7 @@
           avatar: this.user.avatar,
           badges: this.selectedBadges,
           interests: this.selectedInterests,
-          newReportCards: [],
-          updatedReportCards: [],
-          existingReportCards: []
+          reportCards: []
         },
         roles: {'0' : 'Admin', '1' : 'Benefactor', '2' : 'Scholar'},
         selectedBadge: '',
@@ -265,7 +263,6 @@
       },
       receiveExistingReportCards(reportCards){
         this.userParams.existingReportCards = reportCards;
-
       },
       receiveUpdatedReportCards(reportCards){
         this.userParams.updatedReportCards = reportCards;

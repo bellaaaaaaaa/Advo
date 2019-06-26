@@ -108071,18 +108071,26 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_0_moment___default.a;
     };
   },
   mounted: function mounted() {
-    this.setDefaults(), this.reportCardListeners(), this.editReportCardListeners();
+    this.setDefaults(), this.reportCardListeners();
+    this.onReportCardUpdated();
   },
 
   methods: {
     setDefaults: function setDefaults() {
-      if (typeof this.erc != 'undefined') {
+      if (this.nrc.id == '') {
+        this.edit = false;
+        this.newReportCard.id = '';
+        this.newReportCard.title = '';
+        this.newReportCard.term_start = null;
+        this.newReportCard.term_end = null;
+        this.newReportCard.file = null;
+      } else {
         this.edit = true;
-        this.newReportCard.id = this.erc.id;
-        this.newReportCard.title = this.erc.title;
-        this.newReportCard.term_start = __WEBPACK_IMPORTED_MODULE_0_moment___default()(this.erc.term_start).format('YYYY-MM-DD');
-        this.newReportCard.term_end = __WEBPACK_IMPORTED_MODULE_0_moment___default()(this.erc.term_end).format('YYYY-MM-DD');
-        this.newReportCard.file = this.erc.file;
+        this.newReportCard.id = this.nrc.id;
+        this.newReportCard.title = this.nrc.title;
+        this.newReportCard.term_start = __WEBPACK_IMPORTED_MODULE_0_moment___default()(this.nrc.term_start).format('YYYY-MM-DD');
+        this.newReportCard.term_end = __WEBPACK_IMPORTED_MODULE_0_moment___default()(this.nrc.term_end).format('YYYY-MM-DD');
+        this.newReportCard.file = this.nrc.file;
       }
     },
     onInputChange: function onInputChange(event) {
@@ -108123,31 +108131,6 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_0_moment___default.a;
         self.onReportCardUpdated();
       });
     },
-    // editReportCardListeners: function() {
-    //   let self = this;
-    //   // this.id = this.index;
-    //   var timer;
-    //   if (typeof this.erc != 'undefined') {
-    //     $(".existing_title").on("keyup", function(event){
-    //       var searchid = $(this).val().trim();
-
-    //       clearInterval(timer);
-    //       timer = setTimeout(function() {
-    //           self.newReportCard.title = event.target.value
-    //           self.onReportCardUpdated();
-    //       }, 200);
-    //     });
-
-    //     $('.existing_term_start').on('change', function(event) {
-    //       self.newReportCard.term_start = event.target.value
-    //       self.onReportCardUpdated();
-    //     });
-    //     $('.existing_term_end').on('change', function(event) {
-    //       self.newReportCard.term_end = event.target.value
-    //       self.onReportCardUpdated();
-    //     });
-    //   }
-    // },
     onReportCardUpdated: function onReportCardUpdated() {
       var reportCard = {
         id: this.newReportCard.id,
@@ -108161,10 +108144,11 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_0_moment___default.a;
       } else {
         this.$emit('newReportCardComponent', reportCard, this.index);
       }
+    },
+    removeReportCard: function removeReportCard() {
+      this.newReportCard.deleted = true;
+      this.$emit('deleteReportCard', this.newReportCard, this.index);
     }
-    // updateReportCard(){
-    //   this.$emit('updatedReportCard', this.newReportCard)
-    // },
   }
 });
 
@@ -108190,7 +108174,7 @@ var render = function() {
           }
         ],
         staticClass: "form-control",
-        class: "form-control existing_title",
+        class: "form-control",
         attrs: {
           id: "title" + _vm.index,
           type: "text",
@@ -108251,7 +108235,7 @@ var render = function() {
           }
         ],
         staticClass: "form-control",
-        class: "form-control existing_term_start term_start" + _vm.index,
+        class: "form-control term_start" + _vm.index,
         attrs: { type: "date", id: "term_start_input" },
         domProps: { value: _vm.newReportCard.term_start },
         on: {
@@ -108277,7 +108261,7 @@ var render = function() {
             expression: "newReportCard.term_end"
           }
         ],
-        class: "form-control existing_term_end term_end" + _vm.index,
+        class: "form-control term_end" + _vm.index,
         attrs: { type: "date", id: "term_end_input" },
         domProps: { value: _vm.newReportCard.term_end },
         on: {
@@ -108291,7 +108275,15 @@ var render = function() {
       })
     ]),
     _vm._v(" "),
-    _vm._m(1)
+    _c("div", { staticClass: "col-md-1 pt-4" }, [
+      _c("a", { on: { click: _vm.removeReportCard } }, [
+        _c("i", {
+          staticClass: "fa fa-close",
+          staticStyle: { "padding-top": "5px", color: "red" },
+          attrs: { "aria-hidden": "true" }
+        })
+      ])
+    ])
   ])
 }
 var staticRenderFns = [
@@ -108302,20 +108294,6 @@ var staticRenderFns = [
     return _c("div", { staticClass: "col" }, [
       _c("label", { staticClass: "text-left", attrs: { for: "file" } }, [
         _vm._v("File")
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-1 pt-4" }, [
-      _c("a", { attrs: { href: "#" } }, [
-        _c("i", {
-          staticClass: "fa fa-close",
-          staticStyle: { "padding-top": "5px" },
-          attrs: { "aria-hidden": "true" }
-        })
       ])
     ])
   }
@@ -109491,12 +109469,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -109514,58 +109486,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         term_end: ''
       }],
       user_id: this.userId,
-      isEdit: false,
-      newReportCards: [],
-      updatedReportCards: [],
-      newReportCardComponents: [],
-      existingReportCards: []
+      reportCardComponents: []
     };
   },
   mounted: function mounted() {
-    console.log(this.reportCards);
+    this.setDefaults();
   },
 
   methods: {
-    addNewReportCard: function addNewReportCard(e) {
-      // this.$emit('newReportCard', this.newReportCard);
+    setDefaults: function setDefaults() {
+      this.reportCardComponents = this.reportCardComponents.concat(this.reportCards);
     },
-    editReportCard: function editReportCard(term_start, term_end, id, rc) {
-      this.newReportCard.title = rc.title;
-      this.newReportCard.term_start = moment(rc.term_start).format('YYYY-MM-DD');
-      this.newReportCard.term_end = moment(rc.term_end).format('YYYY-MM-DD');
-      this.id = id;
-      this.term_start = term_start;
-      this.term_end = term_end;
-      this.isEdit = true;
-    },
-    updateReportCard: function updateReportCard() {
-      var form = $('form')[0];
-      var formData = new FormData(form);
-      formData.append('report_file', this.newReportCard.file);
-      formData.append('title', this.newReportCard.title);
-      formData.append('term_start', this.newReportCard.term_start);
-      formData.append('term_end', this.newReportCard.term_end);
-      formData.append('user_id', this.newReportCard.user_id);
-    },
-    deleteReportCard: function deleteReportCard(id) {
-      var _this = this;
-
-      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.delete('/api/admin/report_cards/' + id).then(function (res) {
-        _this.getUsersReportCards();
-        _this.term_start = '';
-      }).catch(function (err) {
-        console.log(err);
+    removeReportCard: function removeReportCard(deletedReportCard, index) {
+      var reportCards = _.reject(this.reportCardComponents, function (item) {
+        return item.title == deletedReportCard.title;
       });
-    },
-    pushUpdatedReportCard: function pushUpdatedReportCard(updatedReportCard) {
-      this.updatedReportCards.push(updatedReportCard);
-      this.$emit('updatedReportCards', this.updatedReportCards);
-    },
-    removeNewReportCard: function removeNewReportCard(e) {
-      this.newReportCards.splice(e.target.id, 1);
+      this.reportCardComponents = reportCards;
     },
     renderNewReportCardForm: function renderNewReportCardForm() {
-      this.newReportCardComponents.push({
+      this.reportCardComponents.push({
         id: '',
         title: '',
         term_start: '',
@@ -109574,16 +109513,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       });
     },
     pushNewReportCardComponent: function pushNewReportCardComponent(reportCard, index) {
-      this.newReportCards[index] = reportCard;
-      console.log('new rcs', this.newReportCards);
+      this.reportCardComponents[index] = reportCard;
+      console.log('report card components', this.reportCardComponents);
       var self = this;
-      this.$emit('newReportCards', self.newReportCards);
-    },
-    pushExistingReportCardComponent: function pushExistingReportCardComponent(reportCard, id) {
-      this.existingReportCards[id] = reportCard;
-      console.log('existing rcs', this.existingReportCards);
-      var self = this;
-      this.$emit('existingReportCards', self.existingReportCards);
+      this.$emit('report card components', self.reportCardComponents);
     }
   }
 });
@@ -109608,25 +109541,27 @@ var render = function() {
             _c(
               "a",
               {
-                key: _vm.index + 1,
                 staticClass: "col text-right",
                 staticStyle: { color: "#0645AD" },
-                attrs: { index: _vm.index },
                 on: { click: _vm.renderNewReportCardForm }
               },
               [_vm._v("Add new report card")]
             )
           ]),
           _vm._v(" "),
-          _vm._l(_vm.newReportCardComponents, function(nrc, index) {
-            return _c("add-report-card-component", {
-              key: index + 1,
-              attrs: { index: index, nrc: nrc },
-              on: {
-                newReportCardComponent: _vm.pushNewReportCardComponent,
-                existingReportCardComponent: _vm.pushExistingReportCardComponent
-              }
-            })
+          _vm._l(_vm.reportCardComponents, function(nrc, index) {
+            return !nrc.deleted
+              ? _c("add-report-card-component", {
+                  key: index + 1,
+                  ref: "add-rc-components",
+                  refInFor: true,
+                  attrs: { index: index, nrc: nrc },
+                  on: {
+                    newReportCardComponent: _vm.pushNewReportCardComponent,
+                    deleteReportCard: _vm.removeReportCard
+                  }
+                })
+              : _vm._e()
           })
         ],
         2
@@ -110448,9 +110383,7 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
         avatar: this.user.avatar,
         badges: this.selectedBadges,
         interests: this.selectedInterests,
-        newReportCards: [],
-        updatedReportCards: [],
-        existingReportCards: []
+        reportCards: []
       },
       roles: { '0': 'Admin', '1': 'Benefactor', '2': 'Scholar' },
       selectedBadge: '',

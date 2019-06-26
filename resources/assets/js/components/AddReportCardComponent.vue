@@ -2,7 +2,7 @@
   <div class='row'>
     <div class='col'>
       <label for="title_input">Title</label>
-      <input :id="'title' + index" :class="'form-control existing_title'" v-model="newReportCard.title" type="text" class="form-control" placeholder="Eg. Mid-Term Exams"></input>
+      <input :id="'title' + index" :class="'form-control'" v-model="newReportCard.title" type="text" class="form-control" placeholder="Eg. Mid-Term Exams"></input>
     </div>
     <div class='col'>
       <div class='row'>
@@ -17,14 +17,14 @@
     </div>
     <div class='col'>
       <label for="term_start_input">Term Start</label>
-      <input :class="'form-control existing_term_start term_start' + index" v-model="newReportCard.term_start" type="date" id="term_start_input" class="form-control"></input>
+      <input :class="'form-control term_start' + index" v-model="newReportCard.term_start" type="date" id="term_start_input" class="form-control"></input>
     </div>
     <div class='col'>
       <label for="term_end_input">Term End</label>
-      <input :class="'form-control existing_term_end term_end' + index" v-model="newReportCard.term_end" type="date" id="term_end_input"></input>
+      <input :class="'form-control term_end' + index" v-model="newReportCard.term_end" type="date" id="term_end_input"></input>
     </div>
     <div class='col-md-1 pt-4'>
-      <a href='#'><i style='padding-top: 5px' class='fa fa-close' aria-hidden='true'></i></a>
+      <a v-on:click="removeReportCard"><i style='padding-top: 5px; color: red' class='fa fa-close' aria-hidden='true'></i></a>
     </div>
   </div>
 </template>
@@ -49,18 +49,25 @@
     },
       mounted() {
         this.setDefaults(),
-        this.reportCardListeners(),
-        this.editReportCardListeners()
+        this.reportCardListeners()
+        this.onReportCardUpdated()
       },
       methods: {
         setDefaults: function(){
-          if(typeof this.erc != 'undefined'){
+          if(this.nrc.id == ''){
+            this.edit = false;
+            this.newReportCard.id = '';
+            this.newReportCard.title = '';
+            this.newReportCard.term_start = null;
+            this.newReportCard.term_end = null;
+            this.newReportCard.file = null;
+          }else{
             this.edit = true;
-            this.newReportCard.id = this.erc.id;
-            this.newReportCard.title = this.erc.title;
-            this.newReportCard.term_start = moment(this.erc.term_start).format('YYYY-MM-DD');
-            this.newReportCard.term_end = moment(this.erc.term_end).format('YYYY-MM-DD');
-            this.newReportCard.file = this.erc.file;
+            this.newReportCard.id = this.nrc.id;
+            this.newReportCard.title = this.nrc.title;
+            this.newReportCard.term_start = moment(this.nrc.term_start).format('YYYY-MM-DD');
+            this.newReportCard.term_end = moment(this.nrc.term_end).format('YYYY-MM-DD');
+            this.newReportCard.file = this.nrc.file;
           }
         },
         onInputChange(event) {
@@ -100,31 +107,6 @@
             self.onReportCardUpdated();
           });
         },
-        // editReportCardListeners: function() {
-        //   let self = this;
-        //   // this.id = this.index;
-        //   var timer;
-        //   if (typeof this.erc != 'undefined') {
-        //     $(".existing_title").on("keyup", function(event){
-        //       var searchid = $(this).val().trim();
-
-        //       clearInterval(timer);
-        //       timer = setTimeout(function() {
-        //           self.newReportCard.title = event.target.value
-        //           self.onReportCardUpdated();
-        //       }, 200);
-        //     });
-
-        //     $('.existing_term_start').on('change', function(event) {
-        //       self.newReportCard.term_start = event.target.value
-        //       self.onReportCardUpdated();
-        //     });
-        //     $('.existing_term_end').on('change', function(event) {
-        //       self.newReportCard.term_end = event.target.value
-        //       self.onReportCardUpdated();
-        //     });
-        //   }
-        // },
         onReportCardUpdated: function() {
           let reportCard = {
             id: this.newReportCard.id,
@@ -139,9 +121,10 @@
             this.$emit('newReportCardComponent', reportCard, this.index);
           }
         },
-      // updateReportCard(){
-      //   this.$emit('updatedReportCard', this.newReportCard)
-      // },
+        removeReportCard: function(){
+          this.newReportCard.deleted = true
+          this.$emit('deleteReportCard', this.newReportCard, this.index);
+        }
       }
     }
 </script>
