@@ -24,7 +24,7 @@
       <input :class="'form-control term_end' + index" v-model="newReportCard.term_end" type="date" id="term_end_input"></input>
     </div>
     <div class='col-md-1 pt-4'>
-      <a v-on:click="removeReportCard"><i style='padding-top: 5px; color: red' class='fa fa-close' aria-hidden='true'></i></a>
+      <a v-on:click="removeReportCard()"><i style='padding-top: 5px; color: red' class='fa fa-close' aria-hidden='true'></i></a>
     </div>
   </div>
 </template>
@@ -33,7 +33,7 @@
     import moment from 'moment'
     Vue.prototype.moment = moment
     export default {
-      props: ['rc', 'index', 'nrc', 'erc'],
+      props: ['rc', 'index', 'nrc'],
      
       data() {
         return {
@@ -55,15 +55,13 @@
       methods: {
         setDefaults: function(){
           if(this.nrc.id == ''){
-            this.edit = false;
-            this.newReportCard.id = '';
+            this.newReportCard.id = this.index;
             this.newReportCard.title = '';
             this.newReportCard.term_start = null;
             this.newReportCard.term_end = null;
             this.newReportCard.file = null;
           }else{
-            this.edit = true;
-            this.newReportCard.id = this.nrc.id;
+            this.newReportCard.id = this.index;
             this.newReportCard.title = this.nrc.title;
             this.newReportCard.term_start = moment(this.nrc.term_start).format('YYYY-MM-DD');
             this.newReportCard.term_end = moment(this.nrc.term_end).format('YYYY-MM-DD');
@@ -113,7 +111,7 @@
             title: this.newReportCard.title ? this.newReportCard.title: null,
             term_start: this.newReportCard.term_start ? this.newReportCard.term_start : null,
             term_end: this.newReportCard.term_end ? this.newReportCard.term_end : null,
-            file: this.newReportCard.file ? this.newReportCard.file : null,
+            file: this.newReportCard.file ? this.newReportCard.file : null
           }
           if (typeof this.erc != 'undefined') {
             this.$emit('existingReportCardComponent', reportCard, this.newReportCard.id);
@@ -122,7 +120,7 @@
           }
         },
         removeReportCard: function(){
-          this.newReportCard.deleted = true
+          this.newReportCard.deleted = true;
           this.$emit('deleteReportCard', this.newReportCard, this.index);
         }
       }

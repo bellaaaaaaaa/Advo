@@ -108056,7 +108056,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_0_moment___default.a;
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['rc', 'index', 'nrc', 'erc'],
+  props: ['rc', 'index', 'nrc'],
 
   data: function data() {
     return {
@@ -108078,15 +108078,13 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_0_moment___default.a;
   methods: {
     setDefaults: function setDefaults() {
       if (this.nrc.id == '') {
-        this.edit = false;
-        this.newReportCard.id = '';
+        this.newReportCard.id = this.index;
         this.newReportCard.title = '';
         this.newReportCard.term_start = null;
         this.newReportCard.term_end = null;
         this.newReportCard.file = null;
       } else {
-        this.edit = true;
-        this.newReportCard.id = this.nrc.id;
+        this.newReportCard.id = this.index;
         this.newReportCard.title = this.nrc.title;
         this.newReportCard.term_start = __WEBPACK_IMPORTED_MODULE_0_moment___default()(this.nrc.term_start).format('YYYY-MM-DD');
         this.newReportCard.term_end = __WEBPACK_IMPORTED_MODULE_0_moment___default()(this.nrc.term_end).format('YYYY-MM-DD');
@@ -108276,13 +108274,23 @@ var render = function() {
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "col-md-1 pt-4" }, [
-      _c("a", { on: { click: _vm.removeReportCard } }, [
-        _c("i", {
-          staticClass: "fa fa-close",
-          staticStyle: { "padding-top": "5px", color: "red" },
-          attrs: { "aria-hidden": "true" }
-        })
-      ])
+      _c(
+        "a",
+        {
+          on: {
+            click: function($event) {
+              _vm.removeReportCard()
+            }
+          }
+        },
+        [
+          _c("i", {
+            staticClass: "fa fa-close",
+            staticStyle: { "padding-top": "5px", color: "red" },
+            attrs: { "aria-hidden": "true" }
+          })
+        ]
+      )
     ])
   ])
 }
@@ -109469,6 +109477,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -109495,13 +109505,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   methods: {
     setDefaults: function setDefaults() {
-      this.reportCardComponents = this.reportCardComponents.concat(this.reportCards);
+      this.reportCardComponents = _.cloneDeep(this.reportCardComponents.concat(this.reportCards));
     },
     removeReportCard: function removeReportCard(deletedReportCard, index) {
-      var reportCards = _.reject(this.reportCardComponents, function (item) {
-        return item.title == deletedReportCard.title;
+      var filterReportCards = _.reject(this.reportCardComponents, function (rc) {
+        return rc.id == deletedReportCard.id;
       });
-      this.reportCardComponents = reportCards;
+      filterReportCards.splice(index, 0, deletedReportCard);
+      this.reportCardComponents = filterReportCards;
     },
     renderNewReportCardForm: function renderNewReportCardForm() {
       this.reportCardComponents.push({
@@ -109514,7 +109525,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     pushNewReportCardComponent: function pushNewReportCardComponent(reportCard, index) {
       this.reportCardComponents[index] = reportCard;
-      console.log('report card components', this.reportCardComponents);
       var self = this;
       this.$emit('report card components', self.reportCardComponents);
     }

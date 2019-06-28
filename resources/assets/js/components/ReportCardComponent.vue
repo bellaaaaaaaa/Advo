@@ -6,7 +6,9 @@
           <h5 class='col'>Report Cards</h5>
           <a class='col text-right' style="color:#0645AD;" v-on:click="renderNewReportCardForm" >Add new report card</a>
         </div>
-        <add-report-card-component v-on:newReportCardComponent='pushNewReportCardComponent' v-on:deleteReportCard='removeReportCard' v-for="(nrc, index) in reportCardComponents" :key='index+1' :index='index' :nrc='nrc' v-if="!nrc.deleted" ref='add-rc-components'></add-report-card-component>
+        <add-report-card-component v-on:newReportCardComponent='pushNewReportCardComponent' v-on:deleteReportCard='removeReportCard' 
+        v-for="(nrc, index) in reportCardComponents" :key='index+1' :index='index' :nrc='nrc' v-if='!nrc.deleted' 
+        ref='add-rc-components'></add-report-card-component>
       </div>
     </div>
   </div>
@@ -37,13 +39,14 @@
     },
     methods: {
       setDefaults() {
-        this.reportCardComponents = this.reportCardComponents.concat(this.reportCards)
+        this.reportCardComponents = _.cloneDeep(this.reportCardComponents.concat(this.reportCards));
       },
       removeReportCard(deletedReportCard, index){
-        let reportCards = _.reject(this.reportCardComponents, function(item){
-          return item.title == deletedReportCard.title;
+        let filterReportCards = _.reject(this.reportCardComponents, function(rc){
+          return rc.id == deletedReportCard.id;
         })
-        this.reportCardComponents = reportCards;
+        filterReportCards.splice(index, 0, deletedReportCard)
+        this.reportCardComponents = filterReportCards;
       },
       renderNewReportCardForm(){
         this.reportCardComponents.push({
@@ -56,7 +59,6 @@
       },
       pushNewReportCardComponent(reportCard, index){
         this.reportCardComponents[index] = reportCard
-        console.log('report card components', this.reportCardComponents)
         let self = this;
         this.$emit('report card components', self.reportCardComponents);
       }
