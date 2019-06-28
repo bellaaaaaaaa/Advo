@@ -81,8 +81,8 @@
     </div>
   </div>
 </div>
-@if ($user->is_admin())
-  @include('layouts.partials.admin._admin_show')
+@if ($user->is_benefactor())
+  @include('layouts.partials.admin._benefactor_show')
 @endif
 @if ($user->is_scholar())
   @include('layouts.partials.admin._scholar_show')

@@ -1,8 +1,9 @@
 <div>
-  <user-interests-component :user-id="{{ $user->id }}"></user-interests-component>
+  <update-user-component :user-id="{{ $user->id }}"></update-user-component>
+  {{-- <user-interests-component :user-id="{{ $user->id }}"></user-interests-component> --}}
 </div>
 <div>
-  <user-badges-component :user-id="{{ $user->id }}"></user-badges-component>
+  {{-- <user-badges-component :user-id="{{ $user->id }}"></user-badges-component> --}}
 </div>
 @if ($funding_target && $user->role == 2)
   <div class="card col-md-10 offset-md-1 target-wheel">
@@ -18,7 +19,7 @@
   <h4>Report Cards</h4>
   <div class="container">
     <div class="box">
-      <report-card-component :user-id="{{ $user->id }}"></report-card-component>
+      {{-- <report-card-component :user-id="{{ $user->id }}"></report-card-component> --}}
     </div>
   </div>
 </div>

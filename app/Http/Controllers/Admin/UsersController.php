@@ -8,6 +8,7 @@ use DB;
 use App\Services\UsersService;
 use App\Interest;
 use App\Badge;
+use App\ReportCard;
 use Illuminate\Support\Facades\Storage;
 use Aws\S3\S3Client;
 class UsersController extends Controller
@@ -80,7 +81,8 @@ class UsersController extends Controller
         };
         $user = User::find($id);
         $roles = ['Admin', 'Benefactor', 'Scholar'];
-        return view('admin.users.edit', ['roles' => $roles, 'user' => $user, 'badges' => $badges2, 'interests' => $interests2]);
+        $reportCards = ReportCard::where('user_id', $id);
+        return view('admin.users.edit', ['roles' => $roles, 'user' => $user, 'badges' => $badges2, 'interests' => $interests2, 'report_cards' => $reportCards]);
     }
 
     /**
@@ -92,6 +94,9 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $userParams = json_decode($request->input('userParams'));
+        $rc = $userParams->newReportCards;
+        dd($request, $userParams);
         $user = User::find($id);
         $this->validate($request, array(
             'name' => 'required|max:255',
@@ -178,5 +183,13 @@ class UsersController extends Controller
         $user->badges()->detach($request->badge_id);
         return 204;
     }
+    public function getselectedbadge(Request $request, $id) {
+        dd($id);
+    }
 
+    // Update user routes
+    public function get_user($id){
+        $user = User::find($id);
+        return $user;
+    }
 }

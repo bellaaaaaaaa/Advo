@@ -15,7 +15,8 @@ class CreateFundingTransactionsTable extends Migration
     {
         Schema::create('funding_transactions', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned();
+            $table->integer('benefactor_id')->unsigned();
+            $table->integer('scholar_id')->unsigned();
             $table->integer('funding_target_id')->unsigned();
             $table->integer('funding_package_id')->unsigned();
             $table->string('payment_method');
