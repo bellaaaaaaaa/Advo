@@ -107940,8 +107940,10 @@ $().ready(function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
+	"./components/AddFundingTargetComponent.vue": 244,
 	"./components/AddReportCardComponent.vue": 195,
 	"./components/ExampleComponent.vue": 198,
+	"./components/FundingTargetComponent.vue": 238,
 	"./components/NewFundingTransactionComponent.vue": 201,
 	"./components/NewReportCardComponent.vue": 204,
 	"./components/ReportCardComponent.vue": 207,
@@ -110377,7 +110379,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['userId', 'user', 'userBadges', 'reportCards'],
+  props: ['userId', 'user', 'userBadges', 'reportCards', 'fundingTarget'],
 
   data: function data() {
     return {
@@ -110957,6 +110959,10 @@ var render = function() {
           }
         }),
         _vm._v(" "),
+        _c("funding-target-component", {
+          attrs: { user: _vm.user, "user-funding-target": _vm.fundingTarget }
+        }),
+        _vm._v(" "),
         _c(
           "button",
           { staticClass: "btn btn-primary", attrs: { type: "submit" } },
@@ -111520,6 +111526,402 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-ef7e79d4", module.exports)
+  }
+}
+
+/***/ }),
+/* 222 */,
+/* 223 */,
+/* 224 */,
+/* 225 */,
+/* 226 */,
+/* 227 */,
+/* 228 */,
+/* 229 */,
+/* 230 */,
+/* 231 */,
+/* 232 */,
+/* 233 */,
+/* 234 */,
+/* 235 */,
+/* 236 */,
+/* 237 */,
+/* 238 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(6)
+/* script */
+var __vue_script__ = __webpack_require__(240)
+/* template */
+var __vue_template__ = __webpack_require__(241)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/FundingTargetComponent.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-84eefdb4", Component.options)
+  } else {
+    hotAPI.reload("data-v-84eefdb4", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 239 */,
+/* 240 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['user', 'userFundingTarget'],
+
+  data: function data() {
+    return {
+      fundingTarget: {
+        user_id: this.user.id,
+        title: '',
+        amount: ''
+      },
+      fundingTargetComponents: [],
+      enableAddFt: true
+    };
+  },
+  mounted: function mounted() {
+    this.setDefaults();
+  },
+
+  methods: {
+    setDefaults: function setDefaults() {
+      if (this.userFundingTarget == 0) {
+        this.fundingTargetComponents.push({
+          user_id: this.user.id,
+          title: '',
+          amount: ''
+        });
+      } else {
+        this.fundingTargetComponents.push(this.userFundingTarget[0]);
+      }
+    },
+    renderNewFtForm: function renderNewFtForm() {
+      if (this.fundingTargetComponents.length < 2) {
+        this.fundingTargetComponents.push({
+          user_id: this.user.id,
+          title: '',
+          amount: ''
+        });
+      }
+      this.enableAddFt = false;
+    },
+    removeFt: function removeFt(deletedFt, index) {
+      var filterFts = _.reject(this.fundingTargetComponents, function (ft) {
+        return ft.id == deletedFt.id;
+      });
+      filterFts.splice(index, 0, deletedFt);
+      this.fundingTargetComponents = filterFts;
+      if (this.fundingTargetComponents.length < 2) {
+        this.enableAddFt = true;
+      }
+    }
+  }
+});
+
+/***/ }),
+/* 241 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "card" }, [
+    _c(
+      "div",
+      { staticClass: "card-body" },
+      [
+        _c("div", { staticClass: "row" }, [
+          _c("h5", { staticClass: "col" }, [_vm._v("Funding Targets")]),
+          _vm._v(" "),
+          _vm.enableAddFt
+            ? _c(
+                "a",
+                {
+                  staticClass: "col text-right",
+                  staticStyle: { color: "#0645AD" },
+                  on: { click: _vm.renderNewFtForm }
+                },
+                [_vm._v("Add new funding target")]
+              )
+            : _vm._e()
+        ]),
+        _vm._v(" "),
+        _vm._l(_vm.fundingTargetComponents, function(ft, index) {
+          return !ft.deleted
+            ? _c("add-funding-target-component", {
+                key: index + 1,
+                attrs: { index: index, ft: ft },
+                on: { deleteFt: _vm.removeFt }
+              })
+            : _vm._e()
+        })
+      ],
+      2
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-84eefdb4", module.exports)
+  }
+}
+
+/***/ }),
+/* 242 */,
+/* 243 */,
+/* 244 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(6)
+/* script */
+var __vue_script__ = __webpack_require__(245)
+/* template */
+var __vue_template__ = __webpack_require__(246)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/AddFundingTargetComponent.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-4d9574ee", Component.options)
+  } else {
+    hotAPI.reload("data-v-4d9574ee", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 245 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_moment__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_moment__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_0_moment___default.a;
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['ft', 'index'],
+  data: function data() {
+    return {
+      fundingTarget: {
+        id: '',
+        title: '',
+        amount: ''
+      }
+    };
+  },
+  mounted: function mounted() {
+    this.setDefaults();
+  },
+
+  methods: {
+    setDefaults: function setDefaults() {
+      // debugger;
+      if (this.ft == 0) {
+        this.fundingTarget.id = '';
+        this.fundingTarget.title = '';
+        this.fundingTarget.amount = '';
+      } else {
+        this.fundingTarget.id = this.ft.id;
+        this.fundingTarget.title = this.ft.title;
+        this.fundingTarget.amount = this.ft.amount;
+      }
+    },
+    removeFt: function removeFt() {
+      this.fundingTarget.deleted = true;
+      this.$emit('deleteFt', this.fundingTarget, this.index);
+    }
+  }
+});
+
+/***/ }),
+/* 246 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "row" }, [
+    _c("div", { staticClass: "col" }, [
+      _c("label", { attrs: { for: "title_input" } }, [_vm._v("Title")]),
+      _vm._v(" "),
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.fundingTarget.title,
+            expression: "fundingTarget.title"
+          }
+        ],
+        staticClass: "form-control",
+        class: "form-control",
+        attrs: {
+          id: "fttitle" + _vm.index,
+          type: "text",
+          placeholder: "Eg. College Fund"
+        },
+        domProps: { value: _vm.fundingTarget.title },
+        on: {
+          input: function($event) {
+            if ($event.target.composing) {
+              return
+            }
+            _vm.$set(_vm.fundingTarget, "title", $event.target.value)
+          }
+        }
+      })
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "col" }, [
+      _c("label", { attrs: { for: "term_end_input" } }, [_vm._v("Amount")]),
+      _vm._v(" "),
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.fundingTarget.amount,
+            expression: "fundingTarget.amount"
+          }
+        ],
+        class: "form-control term_end" + _vm.index,
+        attrs: { type: "integer" },
+        domProps: { value: _vm.fundingTarget.amount },
+        on: {
+          input: function($event) {
+            if ($event.target.composing) {
+              return
+            }
+            _vm.$set(_vm.fundingTarget, "amount", $event.target.value)
+          }
+        }
+      })
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "col-md-2 pt-4" }, [
+      _c(
+        "a",
+        {
+          on: {
+            click: function($event) {
+              _vm.removeFt()
+            }
+          }
+        },
+        [_c("label", { staticStyle: { color: "red" } }, [_vm._v("Close")])]
+      )
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-4d9574ee", module.exports)
   }
 }
 

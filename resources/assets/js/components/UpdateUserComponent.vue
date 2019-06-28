@@ -87,7 +87,7 @@
 
       <!-- Report Cards -->
       <report-card-component :report-cards='reportCards' :user-id='userId' v-on:newReportCards='receiveNewReportCards' v-on:existingReportCards='receiveExistingReportCards' v-on:updatedReportCards='receiveUpdatedReportCards'></report-card-component>
-      
+      <funding-target-component :user="user" :user-funding-target='fundingTarget'></funding-target-component>
       <button type='submit' class='btn btn-primary'>Submit</button>
 
     </form>
@@ -98,7 +98,7 @@
   import moment from 'moment'
   Vue.prototype.moment = moment
   export default {
-    props: ['userId', 'user', 'userBadges', 'reportCards'],
+    props: ['userId', 'user', 'userBadges', 'reportCards', 'fundingTarget'],
 
     data() {
       return {

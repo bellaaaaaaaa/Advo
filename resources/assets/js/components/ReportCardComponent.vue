@@ -4,7 +4,7 @@
       <div class='card-body'>
         <div class='row'>
           <h5 class='col'>Report Cards</h5>
-          <a class='col text-right' style="color:#0645AD;" v-on:click="renderNewReportCardForm" >Add new report card</a>
+          <a class='col text-right' style="color:#0645AD;" v-on:click="renderNewReportCardForm">Add new report card</a>
         </div>
         <add-report-card-component v-on:newReportCardComponent='pushNewReportCardComponent' v-on:deleteReportCard='removeReportCard' 
         v-for="(nrc, index) in reportCardComponents" :key='index+1' :index='index' :nrc='nrc' v-if='!nrc.deleted' 

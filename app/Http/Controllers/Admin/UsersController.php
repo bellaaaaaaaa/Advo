@@ -8,6 +8,7 @@ use DB;
 use App\Services\UsersService;
 use App\Interest;
 use App\Badge;
+use App\FundingTarget;
 use App\ReportCard;
 use Illuminate\Support\Facades\Storage;
 use Aws\S3\S3Client;
@@ -82,7 +83,11 @@ class UsersController extends Controller
         $user = User::find($id);
         $roles = ['Admin', 'Benefactor', 'Scholar'];
         $reportCards = ReportCard::where('user_id', $id);
-        return view('admin.users.edit', ['roles' => $roles, 'user' => $user, 'badges' => $badges2, 'interests' => $interests2, 'report_cards' => $reportCards]);
+        $fundingTarget = DB::table('funding_targets')->where('status', '=', 'open')->where('user_id', '=', $user->id)->orderBy('created_at', 'desc')->get();
+        if (count($fundingTarget) == 0){
+            $fundingTarget = 0;
+        };
+        return view('admin.users.edit', ['roles' => $roles, 'user' => $user, 'badges' => $badges2, 'interests' => $interests2, 'report_cards' => $reportCards, 'fundingTarget' => $fundingTarget]);
     }
 
     /**
