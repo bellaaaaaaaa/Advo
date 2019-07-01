@@ -86,8 +86,8 @@
       </div>
 
       <!-- Report Cards -->
-      <report-card-component :report-cards='reportCards' :user-id='userId' v-on:newReportCards='receiveNewReportCards' v-on:existingReportCards='receiveExistingReportCards' v-on:updatedReportCards='receiveUpdatedReportCards'></report-card-component>
-      <funding-target-component :user="user" :user-funding-target='fundingTarget'></funding-target-component>
+      <report-card-component :report-cards='reportCards' :user-id='userId' v-on:sendReportCards='receiveNewReportCards'></report-card-component>
+      <funding-target-component :user="user" :user-funding-target='fundingTarget' v-on:sendFts='receiveFts'></funding-target-component>
       <button type='submit' class='btn btn-primary'>Submit</button>
 
     </form>
@@ -259,15 +259,13 @@
       },
       receiveNewReportCards(reportCards){
         this.userParams.newReportCards = reportCards;
+         console.log('received rcs')
 
       },
-      receiveExistingReportCards(reportCards){
-        this.userParams.existingReportCards = reportCards;
-      },
-      receiveUpdatedReportCards(reportCards){
-        this.userParams.updatedReportCards = reportCards;
-        console.log(this.userParams.updatedReportCards)
-      },
+      receiveFts(fts){
+        this.userParams.fundingTargets = fts;
+        console.log('fts', fts)
+      }
     }
   }
 </script>

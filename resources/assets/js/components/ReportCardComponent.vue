@@ -60,7 +60,7 @@
       pushNewReportCardComponent(reportCard, index){
         this.reportCardComponents[index] = reportCard
         let self = this;
-        this.$emit('report card components', self.reportCardComponents);
+        this.$emit('sendReportCards', self.reportCardComponents);
       }
     }
   }

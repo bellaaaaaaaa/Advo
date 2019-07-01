@@ -5,8 +5,8 @@
       <input :id="'fttitle' + index" :class="'form-control'" v-model="fundingTarget.title" type="text" class="form-control" placeholder="Eg. College Fund"></input>
     </div>
     <div class='col'>
-      <label for="term_end_input">Amount</label>
-      <input :class="'form-control term_end' + index" v-model="fundingTarget.amount" type="integer"></input>
+      <label>Amount</label>
+      <input :class="'form-control amount' + index" v-model="fundingTarget.amount" type="integer"></input>
     </div>
     <div class='col-md-2 pt-4'>
       <a v-on:click="removeFt()"><label style="color: red">Close</label></a>
@@ -23,17 +23,18 @@
         return{
           fundingTarget: {
             id: '',
+            key: '',
             title: '',
             amount: ''
           }
         }
       },
       mounted() {
-        this.setDefaults()
+        this.setDefaults(),
+        this.ftListeners()
       },
       methods: {
         setDefaults: function(){
-          // debugger;
           if(this.ft == 0){
             this.fundingTarget.id = '';
             this.fundingTarget.title = '';
@@ -42,7 +43,46 @@
             this.fundingTarget.id = this.ft.id;
             this.fundingTarget.title = this.ft.title;
             this.fundingTarget.amount = this.ft.amount;
+            this.fundingTarget.deleted = this.ft.deleted;
           }
+        },
+        ftListeners: function() {
+
+          let self = this;
+          this.id = this.index;
+          var timer;
+          $("#fttitle" + this.index).on("keyup", function(event){
+            var searchid = $(this).val().trim();
+
+            clearInterval(timer);
+            timer = setTimeout(function() {
+                self.fundingTarget.title = event.target.value
+                self.fundingTarget.deleted = false
+                console.log('title updated')
+                self.onFtUpdated();
+            }, 200);
+          });
+
+          $(".amount" + this.index).on("keyup", function(event){
+            var searchid = $(this).val().trim();
+
+            clearInterval(timer);
+            timer = setTimeout(function() {
+                self.fundingTarget.amount = event.target.value
+                self.fundingTarget.deleted = false
+                console.log('amount updated')
+                self.onFtUpdated();
+            }, 200);
+          });
+        },
+        onFtUpdated: function() {
+          let ft = {
+            id: this.fundingTarget.id,
+            title: this.fundingTarget.title ? this.fundingTarget.title: null,
+            amount: this.fundingTarget.amount ? this.fundingTarget.amount : null,
+            deleted: false
+          }
+          this.$emit('newFtComponent', ft, this.index);
         },
         removeFt(){
           this.fundingTarget.deleted = true

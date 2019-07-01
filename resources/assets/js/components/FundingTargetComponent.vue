@@ -5,7 +5,7 @@
         <h5 class='col'>Funding Targets</h5>
         <a class='col text-right' style="color:#0645AD;" v-if="enableAddFt" v-on:click="renderNewFtForm" >Add new funding target</a>
       </div>
-        <add-funding-target-component  v-on:deleteFt='removeFt'  v-for="(ft, index) in fundingTargetComponents" :key='index+1' :index='index' :ft='ft' v-if='!ft.deleted'>
+        <add-funding-target-component v-on:newFtComponent='pushFtComponent'  v-on:deleteFt='removeFt'  v-for="(ft, index) in fundingTargetComponents" :key='index+1' :index='index' :ft='ft' v-if='!ft.deleted'>
         </add-funding-target-component>
       </div>
     </div>
@@ -25,7 +25,7 @@
           amount: ''
         },
         fundingTargetComponents: [],
-        enableAddFt: true
+        enableAddFt: null
       }
     },
     mounted() {
@@ -37,21 +37,36 @@
           this.fundingTargetComponents.push({
             user_id: this.user.id,
             title: '',
-            amount: ''
+            amount: '',
+            deleted: false
           })
         }else{
+          this.userFundingTarget[0].deleted = false;
           this.fundingTargetComponents.push(this.userFundingTarget[0])
+          this.enableAddFt = false
         }
       },
       renderNewFtForm(){
-        if (this.fundingTargetComponents.length < 2){
+        if (this.enableAddFt == true){
           this.fundingTargetComponents.push({
             user_id: this.user.id,
             title: '',
-            amount: ''
+            amount: '',
+            deleted: false
           })
         }
-        this.enableAddFt = false
+        var numRemainingFts = [];
+        var i;
+        for(i=0; i<this.fundingTargetComponents.length; i++){
+          if (this.fundingTargetComponents[i].deleted == false){
+            numRemainingFts.push(this.fundingTargetComponents[i])
+          }
+        }
+        if (numRemainingFts.length < 1){
+          this.enableAddFt = true
+        }else {
+          this.enableAddFt = false
+        }
       },
       removeFt(deletedFt, index){
         let filterFts = _.reject(this.fundingTargetComponents, function(ft){
@@ -59,10 +74,22 @@
         })
         filterFts.splice(index, 0, deletedFt)
         this.fundingTargetComponents = filterFts;
-        if (this.fundingTargetComponents.length < 2){
+        var numRemainingFts = [];
+        var i;
+        for(i=0; i<filterFts.length; i++){
+          if (filterFts[i].deleted == false){
+            numRemainingFts.push(filterFts[i])
+          }
+        }
+        if (numRemainingFts.length < 1){
           this.enableAddFt = true
         }
       },
+      pushFtComponent(ft, index){
+        this.fundingTargetComponents[index] = ft
+        let self = this;
+        this.$emit('sendFts', self.fundingTargetComponents);
+      }
     }
   }
 </script>
