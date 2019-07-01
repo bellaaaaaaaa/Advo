@@ -147,7 +147,7 @@
         )
       },
       updateUser(e){
-        const config = { headers: { 'Content-Type': 'multipart/form-data'}}
+        const config = { headers: { 'Content-Type': undefined}}
 
         var formData = new FormData(e.target)
         formData.append('_method', 'PATCH')
@@ -156,7 +156,7 @@
         formData.append('userParams', JSON.stringify(this.userParams))
         var i;
         for (i = 0; i < this.userParams.newReportCards.length; i++) {
-          formData.append('nrc_files[]', this.userParams.newReportCards[i].file)
+          formData.append("belongs_to_rc_" + this.userParams.newReportCards[i].index, this.userParams.newReportCards[i].file)
         }
         axios.post(`/admin/users/${this.userId}`, formData, config)
         .then(res => {
@@ -259,12 +259,11 @@
       },
       receiveNewReportCards(reportCards){
         this.userParams.newReportCards = reportCards;
-         console.log('received rcs')
+        console.log('report cards', this.userParams.newReportCards )
 
       },
       receiveFts(fts){
         this.userParams.fundingTargets = fts;
-        console.log('fts', fts)
       }
     }
   }

@@ -43,10 +43,12 @@
       },
       removeReportCard(deletedReportCard, index){
         let filterReportCards = _.reject(this.reportCardComponents, function(rc){
-          return rc.id == deletedReportCard.id;
+          return rc.index == deletedReportCard.index;
         })
         filterReportCards.splice(index, 0, deletedReportCard)
         this.reportCardComponents = filterReportCards;
+        this.$emit('sendReportCards', filterReportCards);
+        
       },
       renderNewReportCardForm(){
         this.reportCardComponents.push({
@@ -54,7 +56,8 @@
           title: '',
           term_start: '',
           term_end: '',
-          file: ''
+          file: '',
+          index: ''
         })
       },
       pushNewReportCardComponent(reportCard, index){

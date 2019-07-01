@@ -55,13 +55,15 @@
       methods: {
         setDefaults: function(){
           if(this.nrc.id == ''){
-            this.newReportCard.id = this.index;
+            this.newReportCard.id = '';
+            this.newReportCard.index = this.index;
             this.newReportCard.title = '';
             this.newReportCard.term_start = null;
             this.newReportCard.term_end = null;
             this.newReportCard.file = null;
           }else{
-            this.newReportCard.id = this.index;
+            this.newReportCard.id = this.nrc.id;
+            this.newReportCard.index = this.index;
             this.newReportCard.title = this.nrc.title;
             this.newReportCard.term_start = moment(this.nrc.term_start).format('YYYY-MM-DD');
             this.newReportCard.term_end = moment(this.nrc.term_end).format('YYYY-MM-DD');
@@ -108,6 +110,7 @@
         onReportCardUpdated: function() {
           let reportCard = {
             id: this.newReportCard.id,
+            index: this.index,
             title: this.newReportCard.title ? this.newReportCard.title: null,
             term_start: this.newReportCard.term_start ? this.newReportCard.term_start : null,
             term_end: this.newReportCard.term_end ? this.newReportCard.term_end : null,

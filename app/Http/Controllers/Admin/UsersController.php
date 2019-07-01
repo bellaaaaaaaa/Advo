@@ -101,40 +101,60 @@ class UsersController extends Controller
     {
         $userParams = json_decode($request->input('userParams'));
         $rc = $userParams->newReportCards;
-        dd($request, $userParams);
-        $user = User::find($id);
-        $this->validate($request, array(
-            'name' => 'required|max:255',
-            'email' => 'required',
-            'role' => 'required',
-            'date_of_birth' => 'required',
-            'phone_number' => 'required|numeric',
-            'ic_passport_number' => 'required',
-            'bio' => 'required'
-        ));
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->role = $request->input('role');
-        $user->date_of_birth = $request->input('date_of_birth');
-        $user->phone_number = $request->input('phone_number');
-        $user->ic_passport_number = $request->input('ic_passport_number');
-        $user->bio = $request->input('bio');
-        $user->avatar = $request->input('avatar');
+        $user = User::find($userParams->user_id);
+        // $this->validate($request, array(
+        //     'name' => 'required|max:255',
+        //     //
+        // ));
+        $user->name = $userParams->name;
+        $user->email = $userParams->email;
+        $user->role = $userParams->role;
+        $user->date_of_birth = $userParams->date_of_birth;
+        $user->phone_number = $userParams->phone_number;
+        $user->ic_passport_number = $userParams->ic_passport_number;
+        $user->bio = $userParams->bio;
+
         $user->save();
-        $s3 = Storage::disk('s3');
-        $avatar = str_replace("https://s3-ap-southeast-1.amazonaws.com/advoedu-testing", '', $user->avatar);
-        $s3->delete($avatar);
+        // Add Interests
+        $user->interests()->detach();
+        foreach($userParams->interests as $interest){
+            $user->interests()->attach($interest->id);
+        }
+
+        // Add Badges
+        $user->badges()->detach();
+        foreach($userParams->badges as $badge){
+            $user->badges()->attach($badge->id);
+        }
+
+        // dd(is_numeric($rc[0]->id));
+        dd($rc);
+        // Update existing report cards
         
-        if (isset($request->badges)) {
-            $user->badges()->sync($request->badges, true);
-        } else {
-            $user->badges()->sync(array());
-        }
-        if (isset($request->interests)) {
-            $user->interests()->sync($request->interests, true);
-        } else {
-            $user->interests()->sync(array());
-        }
+
+        // $s3 = Storage::disk('s3');
+        // $avatar = str_replace("https://s3-ap-southeast-1.amazonaws.com/advoedu-testing", '', $user->avatar);
+        // $s3->delete($avatar);
+
+        // $filenamewithextension = $request->file('cover_image')->getClientOriginalName(); 	//get filename with extension
+        // $filename = pathinfo($filenamewithextension, PATHINFO_FILENAME); //get filename without extension
+        // $extension = $request->file('cover_image')->getClientOriginalExtension(); //get file extension
+        // $filenametostore =  "Users/Scholarposts/User_".$scholarPost->user_id."/".$filename.'_'.time().'.'.$extension;	//filename to store
+        // Storage::disk('s3')->put($filenametostore, fopen($request->file('cover_image'), 'r+'), 'public');	//Upload File to s3
+        // $report_url = "https://s3-ap-southeast-1.amazonaws.com/advoedu-testing/".$filenametostore;
+        // $scholarPost->cover_image = $report_url;
+        // $scholarPost->save();
+        
+        // if (isset($request->badges)) {
+        //     $user->badges()->sync($request->badges, true);
+        // } else {
+        //     $user->badges()->sync(array());
+        // }
+        // if (isset($request->interests)) {
+        //     $user->interests()->sync($request->interests, true);
+        // } else {
+        //     $user->interests()->sync(array());
+        // }
 
         return view('admin.users.index');
         

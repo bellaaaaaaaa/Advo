@@ -108319,13 +108319,15 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_0_moment___default.a;
   methods: {
     setDefaults: function setDefaults() {
       if (this.nrc.id == '') {
-        this.newReportCard.id = this.index;
+        this.newReportCard.id = '';
+        this.newReportCard.index = this.index;
         this.newReportCard.title = '';
         this.newReportCard.term_start = null;
         this.newReportCard.term_end = null;
         this.newReportCard.file = null;
       } else {
-        this.newReportCard.id = this.index;
+        this.newReportCard.id = this.nrc.id;
+        this.newReportCard.index = this.index;
         this.newReportCard.title = this.nrc.title;
         this.newReportCard.term_start = __WEBPACK_IMPORTED_MODULE_0_moment___default()(this.nrc.term_start).format('YYYY-MM-DD');
         this.newReportCard.term_end = __WEBPACK_IMPORTED_MODULE_0_moment___default()(this.nrc.term_end).format('YYYY-MM-DD');
@@ -108373,6 +108375,7 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_0_moment___default.a;
     onReportCardUpdated: function onReportCardUpdated() {
       var reportCard = {
         id: this.newReportCard.id,
+        index: this.index,
         title: this.newReportCard.title ? this.newReportCard.title : null,
         term_start: this.newReportCard.term_start ? this.newReportCard.term_start : null,
         term_end: this.newReportCard.term_end ? this.newReportCard.term_end : null,
@@ -109957,10 +109960,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     removeReportCard: function removeReportCard(deletedReportCard, index) {
       var filterReportCards = _.reject(this.reportCardComponents, function (rc) {
-        return rc.id == deletedReportCard.id;
+        return rc.index == deletedReportCard.index;
       });
       filterReportCards.splice(index, 0, deletedReportCard);
       this.reportCardComponents = filterReportCards;
+      this.$emit('sendReportCards', filterReportCards);
     },
     renderNewReportCardForm: function renderNewReportCardForm() {
       this.reportCardComponents.push({
@@ -109968,7 +109972,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         title: '',
         term_start: '',
         term_end: '',
-        file: ''
+        file: '',
+        index: ''
       });
     },
     pushNewReportCardComponent: function pushNewReportCardComponent(reportCard, index) {
@@ -110871,7 +110876,7 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
       });
     },
     updateUser: function updateUser(e) {
-      var config = { headers: { 'Content-Type': 'multipart/form-data' } };
+      var config = { headers: { 'Content-Type': undefined } };
 
       var formData = new FormData(e.target);
       formData.append('_method', 'PATCH');
@@ -110880,7 +110885,7 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
       formData.append('userParams', JSON.stringify(this.userParams));
       var i;
       for (i = 0; i < this.userParams.newReportCards.length; i++) {
-        formData.append('nrc_files[]', this.userParams.newReportCards[i].file);
+        formData.append("belongs_to_rc_" + this.userParams.newReportCards[i].index, this.userParams.newReportCards[i].file);
       }
       __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/admin/users/' + this.userId, formData, config).then(function (res) {
         console.log(res);
@@ -110979,11 +110984,10 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
     },
     receiveNewReportCards: function receiveNewReportCards(reportCards) {
       this.userParams.newReportCards = reportCards;
-      console.log('received rcs');
+      console.log('report cards', this.userParams.newReportCards);
     },
     receiveFts: function receiveFts(fts) {
       this.userParams.fundingTargets = fts;
-      console.log('fts', fts);
     }
   }
 });
