@@ -86,8 +86,8 @@
       </div>
 
       <!-- Report Cards -->
-      <report-card-component :report-cards='reportCards' :user-id='userId' v-on:newReportCards='receiveNewReportCards' v-on:existingReportCards='receiveExistingReportCards' v-on:updatedReportCards='receiveUpdatedReportCards'></report-card-component>
-      
+      <report-card-component :report-cards='reportCards' :user-id='userId' v-on:sendReportCards='receiveNewReportCards'></report-card-component>
+      <funding-target-component :user="user" :user-funding-target='fundingTarget' v-on:sendFts='receiveFts'></funding-target-component>
       <button type='submit' class='btn btn-primary'>Submit</button>
 
     </form>
@@ -98,7 +98,7 @@
   import moment from 'moment'
   Vue.prototype.moment = moment
   export default {
-    props: ['userId', 'user', 'userBadges', 'reportCards'],
+    props: ['userId', 'user', 'userBadges', 'reportCards', 'fundingTarget'],
 
     data() {
       return {
@@ -147,20 +147,24 @@
         )
       },
       updateUser(e){
-        const config = { headers: { 'Content-Type': 'multipart/form-data'}}
+        const config = { headers: { 'Content-Type': undefined}}
 
         var formData = new FormData(e.target)
         formData.append('_method', 'PATCH')
         this.userParams.badges = this.selectedBadges
         this.userParams.interests = this.selectedInterests
         formData.append('userParams', JSON.stringify(this.userParams))
-        var i;
-        for (i = 0; i < this.userParams.newReportCards.length; i++) {
-          formData.append('nrc_files[]', this.userParams.newReportCards[i].file)
+        if (typeof this.userParams.newReportCards != "undefined") {
+          var i;
+          for (i = 0; i < this.userParams.newReportCards.length; i++) {
+            formData.append("belongs_to_rc_" + this.userParams.newReportCards[i].index, this.userParams.newReportCards[i].file)
+          }
         }
+        formData.append('avatar', this.userParams.avatar)
         axios.post(`/admin/users/${this.userId}`, formData, config)
-        .then(res => {
-          console.log(res)
+        .then(response => {
+          	location.href = response.data;
+          // window.location = res.data.redirect;
         })
         .catch(err => {
           console.log(err)
@@ -259,15 +263,12 @@
       },
       receiveNewReportCards(reportCards){
         this.userParams.newReportCards = reportCards;
+        console.log('report cards', this.userParams.newReportCards )
 
       },
-      receiveExistingReportCards(reportCards){
-        this.userParams.existingReportCards = reportCards;
-      },
-      receiveUpdatedReportCards(reportCards){
-        this.userParams.updatedReportCards = reportCards;
-        console.log(this.userParams.updatedReportCards)
-      },
+      receiveFts(fts){
+        this.userParams.fundingTargets = fts;
+      }
     }
   }
 </script>

@@ -8,15 +8,19 @@ use DB;
 use App\Services\UsersService;
 use App\Interest;
 use App\Badge;
+use App\FundingTarget;
 use App\ReportCard;
+use Session;
+use App\Services\AwsService;
 use Illuminate\Support\Facades\Storage;
 use Aws\S3\S3Client;
 class UsersController extends Controller
 {
     protected $usersService;
 
-    public function __construct(UsersService $usersService){ // Make service accessible in controller
-        $this->usersService = $usersService;   
+    public function __construct(UsersService $usersService,  AwsService $awsService){ // Make service accessible in controller
+        $this->usersService = $usersService;  
+        $this->awsService = $awsService; 
     }
     /**
      * Display a listing of the resource.
@@ -82,7 +86,11 @@ class UsersController extends Controller
         $user = User::find($id);
         $roles = ['Admin', 'Benefactor', 'Scholar'];
         $reportCards = ReportCard::where('user_id', $id);
-        return view('admin.users.edit', ['roles' => $roles, 'user' => $user, 'badges' => $badges2, 'interests' => $interests2, 'report_cards' => $reportCards]);
+        $fundingTarget = DB::table('funding_targets')->where('status', '=', 'open')->where('user_id', '=', $user->id)->orderBy('created_at', 'desc')->get();
+        // if (count($fundingTarget) == 0){
+        //     $fundingTarget = 0;
+        // };
+        return view('admin.users.edit', ['roles' => $roles, 'user' => $user, 'badges' => $badges2, 'interests' => $interests2, 'report_cards' => $reportCards, 'fundingTarget' => $fundingTarget]);
     }
 
     /**
@@ -95,44 +103,91 @@ class UsersController extends Controller
     public function update(Request $request, $id)
     {
         $userParams = json_decode($request->input('userParams'));
-        $rc = $userParams->newReportCards;
-        dd($request, $userParams);
-        $user = User::find($id);
-        $this->validate($request, array(
-            'name' => 'required|max:255',
-            'email' => 'required',
-            'role' => 'required',
-            'date_of_birth' => 'required',
-            'phone_number' => 'required|numeric',
-            'ic_passport_number' => 'required',
-            'bio' => 'required'
-        ));
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->role = $request->input('role');
-        $user->date_of_birth = $request->input('date_of_birth');
-        $user->phone_number = $request->input('phone_number');
-        $user->ic_passport_number = $request->input('ic_passport_number');
-        $user->bio = $request->input('bio');
-        $user->avatar = $request->input('avatar');
-        $user->save();
-        $s3 = Storage::disk('s3');
-        $avatar = str_replace("https://s3-ap-southeast-1.amazonaws.com/advoedu-testing", '', $user->avatar);
-        $s3->delete($avatar);
-        
-        if (isset($request->badges)) {
-            $user->badges()->sync($request->badges, true);
-        } else {
-            $user->badges()->sync(array());
+        $user = User::find($userParams->user_id);
+        // $this->validate($request, array(
+        //     'name' => 'required|max:255',
+        //     //
+        // ));
+        $user->name = $userParams->name;
+        $user->email = $userParams->email;
+        $user->role = $userParams->role;
+        $user->date_of_birth = $userParams->date_of_birth;
+        $user->phone_number = $userParams->phone_number;
+        $user->ic_passport_number = $userParams->ic_passport_number;
+        $user->bio = $userParams->bio;
+
+        // Set user avatar
+        if($request->file('avatar')){
+            if ($user->avatar != null){
+                $this->awsService->removeUpload($user, $user->avatar, "Users/Profiles/User_".$user->id."/");
+            }   
+            $fileUrl = $this->awsService->upload($request, 'avatar', "Users/Profiles/User_".$user->id);
+            $user->avatar = $fileUrl;
         }
-        if (isset($request->interests)) {
-            $user->interests()->sync($request->interests, true);
-        } else {
-            $user->interests()->sync(array());
+        $user->save();
+
+        // Add Interests
+        $user->interests()->detach();
+        foreach($userParams->interests as $interest){
+            $user->interests()->attach($interest->id);
         }
 
-        return view('admin.users.index');
-        
+        // Add Badges
+        $user->badges()->detach();
+        foreach($userParams->badges as $badge){
+            $user->badges()->attach($badge->id);
+        }
+
+        // Update existing report cards
+        if(isset($userParams->newReportCards)) {
+            $reportCards = $userParams->newReportCards;
+            foreach($reportCards as $report){
+                if($report->deleted == false){
+                    is_numeric($report->id) ? $currentReport = (ReportCard::find($report->id)) : $currentReport = new ReportCard;
+                    $currentReport->title = $report->title;
+                    $currentReport->term_start = $report->term_start;
+                    $currentReport->term_end = $report->term_end;
+                    $currentReport->user_id = $user->id;
+                    
+                    $filePath = "belongs_to_rc_".strval($report->index);
+                    if ($request->file($filePath)){
+                        $filenamewithextension = $request->file($filePath)->getClientOriginalName(); 	//get filename with extension
+                        $filename = pathinfo($filenamewithextension, PATHINFO_FILENAME); //get filename without extension
+                        $extension = $request->file($filePath)->getClientOriginalExtension(); //get file extension
+                        $filenametostore =  "Users/ReportCards/User_".$user->id."/".$filename.'_'.time().'.'.$extension;	//filename to store
+                        Storage::disk('s3')->put($filenametostore, fopen($request->file($filePath), 'r+'), 'public');	//Upload File to s3
+                        $report_url = "https://s3-ap-southeast-1.amazonaws.com/advoedu-testing/".$filenametostore;
+                        $currentReport->file = $report_url;
+                    } else {
+                      $currentReport->file = $report->file;
+                    }
+                    $currentReport->save();
+                }
+                if ($report->deleted == true && is_numeric($report->id)){
+                    $currentReport = ReportCard::find($report->id);
+                    $this->awsService->removeUpload($currentReport, $currentReport->file, "Users/ReportCards/User_".$user->id."/");
+                    $currentReport->delete();
+                }
+            }
+        }
+
+        // Update funding targets
+        if(isset($userParams->fundingTargets)){
+            foreach($userParams->fundingTargets as $ft){
+                if($ft->deleted == false){
+                    is_numeric($ft->id) ? $currentFt = (FundingTarget::find($ft->id)) : $currentFt = new FundingTarget;
+                    $currentFt->title = $ft->title;
+                    $currentFt->amount = $ft->amount;
+                    $currentFt->user_id = $user->id;
+                } elseif ($ft->deleted == true && is_numeric($ft->id)) {
+                    $currentFt = FundingTarget::find($ft->id);
+                    $currentFt->status = 'closed';
+                }
+                $currentFt->save();
+            }
+        };
+        Session::flash('success', 'User updated!');
+        return route('users.show', ['user' => $user]);
     }
 
     /**
@@ -184,7 +239,6 @@ class UsersController extends Controller
         return 204;
     }
     public function getselectedbadge(Request $request, $id) {
-        dd($id);
     }
 
     // Update user routes
