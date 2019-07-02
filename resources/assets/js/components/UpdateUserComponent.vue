@@ -160,6 +160,7 @@
             formData.append("belongs_to_rc_" + this.userParams.newReportCards[i].index, this.userParams.newReportCards[i].file)
           }
         }
+        formData.append('avatar', this.userParams.avatar)
         axios.post(`/admin/users/${this.userId}`, formData, config)
         .then(response => {
           	location.href = response.data;

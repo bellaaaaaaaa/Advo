@@ -116,7 +116,16 @@ class UsersController extends Controller
         $user->ic_passport_number = $userParams->ic_passport_number;
         $user->bio = $userParams->bio;
 
+        // Set user avatar
+        if($request->file('avatar')){
+            if ($user->avatar != null){
+                $this->awsService->removeUpload($user, $user->avatar, "Users/Profiles/User_".$user->id."/");
+            }   
+            $fileUrl = $this->awsService->upload($request, 'avatar', "Users/Profiles/User_".$user->id);
+            $user->avatar = $fileUrl;
+        }
         $user->save();
+
         // Add Interests
         $user->interests()->detach();
         foreach($userParams->interests as $interest){

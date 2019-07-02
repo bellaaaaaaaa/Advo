@@ -51,6 +51,15 @@ class AwsService extends TransformerService{
 		}
 		return $object->save();
 	}
+	public function upload($request, $requestFilePath, $remoteLocation){
+		$filenamewithextension = $request->file($requestFilePath)->getClientOriginalName(); 	//get filename with extension
+		$filename = pathinfo($filenamewithextension, PATHINFO_FILENAME); //get filename without extension
+		$extension = $request->file($requestFilePath)->getClientOriginalExtension(); //get file extension
+		$filenametostore =  $remoteLocation."/".$filename.'_'.time().'.'.$extension;	//filename to store
+		Storage::disk('s3')->put($filenametostore, fopen($request->file($requestFilePath), 'r+'), 'public');	//Upload File to s3
+		$url = "https://s3-ap-southeast-1.amazonaws.com/advoedu-testing/".$filenametostore;
+		return $url;
+	}
 	// every service needs a transform function
   public function transform($badge){
     return [];
