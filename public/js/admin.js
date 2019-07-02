@@ -110884,9 +110884,11 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
       this.userParams.badges = this.selectedBadges;
       this.userParams.interests = this.selectedInterests;
       formData.append('userParams', JSON.stringify(this.userParams));
-      var i;
-      for (i = 0; i < this.userParams.newReportCards.length; i++) {
-        formData.append("belongs_to_rc_" + this.userParams.newReportCards[i].index, this.userParams.newReportCards[i].file);
+      if (typeof this.userParams.newReportCards != "undefined") {
+        var i;
+        for (i = 0; i < this.userParams.newReportCards.length; i++) {
+          formData.append("belongs_to_rc_" + this.userParams.newReportCards[i].index, this.userParams.newReportCards[i].file);
+        }
       }
       __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/admin/users/' + this.userId, formData, config).then(function (res) {
         console.log(res);

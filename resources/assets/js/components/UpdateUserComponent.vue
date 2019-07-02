@@ -154,9 +154,11 @@
         this.userParams.badges = this.selectedBadges
         this.userParams.interests = this.selectedInterests
         formData.append('userParams', JSON.stringify(this.userParams))
-        var i;
-        for (i = 0; i < this.userParams.newReportCards.length; i++) {
-          formData.append("belongs_to_rc_" + this.userParams.newReportCards[i].index, this.userParams.newReportCards[i].file)
+        if (typeof this.userParams.newReportCards != "undefined") {
+          var i;
+          for (i = 0; i < this.userParams.newReportCards.length; i++) {
+            formData.append("belongs_to_rc_" + this.userParams.newReportCards[i].index, this.userParams.newReportCards[i].file)
+          }
         }
         axios.post(`/admin/users/${this.userId}`, formData, config)
         .then(res => {
