@@ -33,18 +33,11 @@
     },
     methods: {
       setDefaults(){
-        if(this.userFundingTarget == 0){
-          this.fundingTargetComponents.push({
-            user_id: this.user.id,
-            title: '',
-            amount: '',
-            deleted: false
-          })
-        }else{
-          this.userFundingTarget[0].deleted = false;
-          this.fundingTargetComponents.push(this.userFundingTarget[0])
-          this.enableAddFt = false
+        this.fundingTargetComponents = _.cloneDeep(this.fundingTargetComponents.concat(this.userFundingTarget));
+        if (this.userFundingTarget.length == 0){
+          this.enableAddFt = true
         }
+        console.log('setDefaults fts', this.fundingTargetComponents)
       },
       renderNewFtForm(){
         if (this.enableAddFt == true){
@@ -52,7 +45,10 @@
             user_id: this.user.id,
             title: '',
             amount: '',
-            deleted: false
+            deleted: false,
+            index: '',
+            id: '',
+            key: ''
           })
         }
         var numRemainingFts = [];
@@ -69,8 +65,9 @@
         }
       },
       removeFt(deletedFt, index){
+        console.log('funding target components', this.fundingTargetComponents)
         let filterFts = _.reject(this.fundingTargetComponents, function(ft){
-          return ft.id == deletedFt.id;
+          return ft.index == deletedFt.index;
         })
         filterFts.splice(index, 0, deletedFt)
         this.fundingTargetComponents = filterFts;
@@ -84,6 +81,7 @@
         if (numRemainingFts.length < 1){
           this.enableAddFt = true
         }
+        this.pushFtComponent(deletedFt, index);
       },
       pushFtComponent(ft, index){
         this.fundingTargetComponents[index] = ft

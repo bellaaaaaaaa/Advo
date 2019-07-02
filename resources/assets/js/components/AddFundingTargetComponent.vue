@@ -24,6 +24,7 @@
           fundingTarget: {
             id: '',
             key: '',
+            index: this.index,
             title: '',
             amount: ''
           }
@@ -31,19 +32,25 @@
       },
       mounted() {
         this.setDefaults(),
-        this.ftListeners()
+        this.ftListeners(),
+        this.onFtUpdated()
       },
       methods: {
         setDefaults: function(){
-          if(this.ft == 0){
+          if(this.ft.id == ''){
             this.fundingTarget.id = '';
             this.fundingTarget.title = '';
-            this.fundingTarget.amount = '';
+            this.fundingTarget.index = this.index;
+            this.fundingTarget.deleted = false;
+            this.fundingTarget.amount = '',
+            this.fundingTarget.amount_gained = ''
           }else{
             this.fundingTarget.id = this.ft.id;
             this.fundingTarget.title = this.ft.title;
+            this.fundingTarget.index = this.index;
+            this.fundingTarget.deleted = false;
             this.fundingTarget.amount = this.ft.amount;
-            this.fundingTarget.deleted = this.ft.deleted;
+            this.fundingTarget.amount_gained = this.ft.amount_gained;
           }
         },
         ftListeners: function() {
@@ -58,7 +65,6 @@
             timer = setTimeout(function() {
                 self.fundingTarget.title = event.target.value
                 self.fundingTarget.deleted = false
-                console.log('title updated')
                 self.onFtUpdated();
             }, 200);
           });
@@ -70,14 +76,14 @@
             timer = setTimeout(function() {
                 self.fundingTarget.amount = event.target.value
                 self.fundingTarget.deleted = false
-                console.log('amount updated')
                 self.onFtUpdated();
             }, 200);
           });
         },
         onFtUpdated: function() {
           let ft = {
-            id: this.fundingTarget.id,
+            id: this.fundingTarget.id ? this.fundingTarget.id: '',
+            index: this.index,
             title: this.fundingTarget.title ? this.fundingTarget.title: null,
             amount: this.fundingTarget.amount ? this.fundingTarget.amount : null,
             deleted: false
@@ -86,6 +92,7 @@
         },
         removeFt(){
           this.fundingTarget.deleted = true
+          this.fundingTarget.index = this.index
           this.$emit('deleteFt', this.fundingTarget, this.index);
         }
       }

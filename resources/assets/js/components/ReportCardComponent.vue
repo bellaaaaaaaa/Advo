@@ -41,6 +41,7 @@
     methods: {
       setDefaults() {
         this.reportCardComponents = _.cloneDeep(this.reportCardComponents.concat(this.reportCards));
+        console.log('setDefaults rcs', this.reportCardComponents)
       },
       removeReportCard(deletedReportCard, index){
         let filterReportCards = _.reject(this.reportCardComponents, function(rc){

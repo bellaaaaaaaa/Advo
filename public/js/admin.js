@@ -108049,26 +108049,31 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_0_moment___default.a;
       fundingTarget: {
         id: '',
         key: '',
+        index: this.index,
         title: '',
         amount: ''
       }
     };
   },
   mounted: function mounted() {
-    this.setDefaults(), this.ftListeners();
+    this.setDefaults(), this.ftListeners(), this.onFtUpdated();
   },
 
   methods: {
     setDefaults: function setDefaults() {
-      if (this.ft == 0) {
+      if (this.ft.id == '') {
         this.fundingTarget.id = '';
         this.fundingTarget.title = '';
-        this.fundingTarget.amount = '';
+        this.fundingTarget.index = this.index;
+        this.fundingTarget.deleted = false;
+        this.fundingTarget.amount = '', this.fundingTarget.amount_gained = '';
       } else {
         this.fundingTarget.id = this.ft.id;
         this.fundingTarget.title = this.ft.title;
+        this.fundingTarget.index = this.index;
+        this.fundingTarget.deleted = false;
         this.fundingTarget.amount = this.ft.amount;
-        this.fundingTarget.deleted = this.ft.deleted;
+        this.fundingTarget.amount_gained = this.ft.amount_gained;
       }
     },
     ftListeners: function ftListeners() {
@@ -108083,7 +108088,6 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_0_moment___default.a;
         timer = setTimeout(function () {
           self.fundingTarget.title = event.target.value;
           self.fundingTarget.deleted = false;
-          console.log('title updated');
           self.onFtUpdated();
         }, 200);
       });
@@ -108095,14 +108099,14 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_0_moment___default.a;
         timer = setTimeout(function () {
           self.fundingTarget.amount = event.target.value;
           self.fundingTarget.deleted = false;
-          console.log('amount updated');
           self.onFtUpdated();
         }, 200);
       });
     },
     onFtUpdated: function onFtUpdated() {
       var ft = {
-        id: this.fundingTarget.id,
+        id: this.fundingTarget.id ? this.fundingTarget.id : '',
+        index: this.index,
         title: this.fundingTarget.title ? this.fundingTarget.title : null,
         amount: this.fundingTarget.amount ? this.fundingTarget.amount : null,
         deleted: false
@@ -108111,6 +108115,7 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_0_moment___default.a;
     },
     removeFt: function removeFt() {
       this.fundingTarget.deleted = true;
+      this.fundingTarget.index = this.index;
       this.$emit('deleteFt', this.fundingTarget, this.index);
     }
   }
@@ -108768,18 +108773,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   methods: {
     setDefaults: function setDefaults() {
-      if (this.userFundingTarget == 0) {
-        this.fundingTargetComponents.push({
-          user_id: this.user.id,
-          title: '',
-          amount: '',
-          deleted: false
-        });
-      } else {
-        this.userFundingTarget[0].deleted = false;
-        this.fundingTargetComponents.push(this.userFundingTarget[0]);
-        this.enableAddFt = false;
+      this.fundingTargetComponents = _.cloneDeep(this.fundingTargetComponents.concat(this.userFundingTarget));
+      if (this.userFundingTarget.length == 0) {
+        this.enableAddFt = true;
       }
+      console.log('setDefaults fts', this.fundingTargetComponents);
     },
     renderNewFtForm: function renderNewFtForm() {
       if (this.enableAddFt == true) {
@@ -108787,7 +108785,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           user_id: this.user.id,
           title: '',
           amount: '',
-          deleted: false
+          deleted: false,
+          index: '',
+          id: '',
+          key: ''
         });
       }
       var numRemainingFts = [];
@@ -108804,8 +108805,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }
     },
     removeFt: function removeFt(deletedFt, index) {
+      console.log('funding target components', this.fundingTargetComponents);
       var filterFts = _.reject(this.fundingTargetComponents, function (ft) {
-        return ft.id == deletedFt.id;
+        return ft.index == deletedFt.index;
       });
       filterFts.splice(index, 0, deletedFt);
       this.fundingTargetComponents = filterFts;
@@ -108819,6 +108821,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       if (numRemainingFts.length < 1) {
         this.enableAddFt = true;
       }
+      this.pushFtComponent(deletedFt, index);
     },
     pushFtComponent: function pushFtComponent(ft, index) {
       this.fundingTargetComponents[index] = ft;
@@ -109957,6 +109960,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   methods: {
     setDefaults: function setDefaults() {
       this.reportCardComponents = _.cloneDeep(this.reportCardComponents.concat(this.reportCards));
+      console.log('setDefaults rcs', this.reportCardComponents);
     },
     removeReportCard: function removeReportCard(deletedReportCard, index) {
       var filterReportCards = _.reject(this.reportCardComponents, function (rc) {
@@ -110890,8 +110894,9 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
           formData.append("belongs_to_rc_" + this.userParams.newReportCards[i].index, this.userParams.newReportCards[i].file);
         }
       }
-      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/admin/users/' + this.userId, formData, config).then(function (res) {
-        console.log(res);
+      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/admin/users/' + this.userId, formData, config).then(function (response) {
+        location.href = response.data;
+        // window.location = res.data.redirect;
       }).catch(function (err) {
         console.log(err);
       });

@@ -10,6 +10,7 @@ use App\Interest;
 use App\Badge;
 use App\FundingTarget;
 use App\ReportCard;
+use Session;
 use App\Services\AwsService;
 use Illuminate\Support\Facades\Storage;
 use Aws\S3\S3Client;
@@ -86,9 +87,9 @@ class UsersController extends Controller
         $roles = ['Admin', 'Benefactor', 'Scholar'];
         $reportCards = ReportCard::where('user_id', $id);
         $fundingTarget = DB::table('funding_targets')->where('status', '=', 'open')->where('user_id', '=', $user->id)->orderBy('created_at', 'desc')->get();
-        if (count($fundingTarget) == 0){
-            $fundingTarget = 0;
-        };
+        // if (count($fundingTarget) == 0){
+        //     $fundingTarget = 0;
+        // };
         return view('admin.users.edit', ['roles' => $roles, 'user' => $user, 'badges' => $badges2, 'interests' => $interests2, 'report_cards' => $reportCards, 'fundingTarget' => $fundingTarget]);
     }
 
@@ -162,18 +163,22 @@ class UsersController extends Controller
         }
 
         // Update funding targets
-        dd($userParams);
         if(isset($userParams->fundingTargets)){
             foreach($userParams->fundingTargets as $ft){
                 if($ft->deleted == false){
                     is_numeric($ft->id) ? $currentFt = (FundingTarget::find($ft->id)) : $currentFt = new FundingTarget;
                     $currentFt->title = $ft->title;
                     $currentFt->amount = $ft->amount;
-                    $currentFt->save();
+                    $currentFt->user_id = $user->id;
+                } elseif ($ft->deleted == true && is_numeric($ft->id)) {
+                    $currentFt = FundingTarget::find($ft->id);
+                    $currentFt->status = 'closed';
                 }
+                $currentFt->save();
             }
         };
-        return view('admin.users.index');
+        Session::flash('success', 'User updated!');
+        return route('users.show', ['user' => $user]);
     }
 
     /**
@@ -225,7 +230,6 @@ class UsersController extends Controller
         return 204;
     }
     public function getselectedbadge(Request $request, $id) {
-        dd($id);
     }
 
     // Update user routes

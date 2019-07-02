@@ -161,8 +161,9 @@
           }
         }
         axios.post(`/admin/users/${this.userId}`, formData, config)
-        .then(res => {
-          console.log(res)
+        .then(response => {
+          	location.href = response.data;
+          // window.location = res.data.redirect;
         })
         .catch(err => {
           console.log(err)

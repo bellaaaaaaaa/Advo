@@ -16,9 +16,10 @@ class CreateFundingTargetsTable extends Migration
         Schema::create('funding_targets', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
+            $table->string('title');
             $table->integer('amount')->unsigned();
-            $table->integer('amount_gained')->unsigned();
-            $table->string('status');
+            $table->integer('amount_gained')->unsigned()->default(0);
+            $table->string('status')->default('open');
             $table->timestamps();
         });
     }
