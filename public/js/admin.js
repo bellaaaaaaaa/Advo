@@ -108325,6 +108325,7 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_0_moment___default.a;
         this.newReportCard.term_start = null;
         this.newReportCard.term_end = null;
         this.newReportCard.file = null;
+        this.newReportCard.deleted = false;
       } else {
         this.newReportCard.id = this.nrc.id;
         this.newReportCard.index = this.index;
@@ -108332,6 +108333,7 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_0_moment___default.a;
         this.newReportCard.term_start = __WEBPACK_IMPORTED_MODULE_0_moment___default()(this.nrc.term_start).format('YYYY-MM-DD');
         this.newReportCard.term_end = __WEBPACK_IMPORTED_MODULE_0_moment___default()(this.nrc.term_end).format('YYYY-MM-DD');
         this.newReportCard.file = this.nrc.file;
+        this.newReportCard.deleted = false;
       }
     },
     onInputChange: function onInputChange(event) {
@@ -108379,13 +108381,10 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_0_moment___default.a;
         title: this.newReportCard.title ? this.newReportCard.title : null,
         term_start: this.newReportCard.term_start ? this.newReportCard.term_start : null,
         term_end: this.newReportCard.term_end ? this.newReportCard.term_end : null,
-        file: this.newReportCard.file ? this.newReportCard.file : null
+        file: this.newReportCard.file ? this.newReportCard.file : null,
+        deleted: false
       };
-      if (typeof this.erc != 'undefined') {
-        this.$emit('existingReportCardComponent', reportCard, this.newReportCard.id);
-      } else {
-        this.$emit('newReportCardComponent', reportCard, this.index);
-      }
+      this.$emit('newReportCardComponent', reportCard, this.index);
     },
     removeReportCard: function removeReportCard() {
       this.newReportCard.deleted = true;
@@ -109944,7 +109943,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         user_id: this.userId,
         title: '',
         term_start: '',
-        term_end: ''
+        term_end: '',
+        deleted: false
       }],
       user_id: this.userId,
       reportCardComponents: []
@@ -109973,7 +109973,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         term_start: '',
         term_end: '',
         file: '',
-        index: ''
+        index: '',
+        deleted: false
       });
     },
     pushNewReportCardComponent: function pushNewReportCardComponent(reportCard, index) {

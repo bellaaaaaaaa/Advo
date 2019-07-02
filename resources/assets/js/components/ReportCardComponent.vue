@@ -28,7 +28,8 @@
           user_id: this.userId,
           title: '',
           term_start: '',
-          term_end: ''
+          term_end: '',
+          deleted: false
         }],
         user_id: this.userId,
         reportCardComponents: [],
@@ -57,7 +58,8 @@
           term_start: '',
           term_end: '',
           file: '',
-          index: ''
+          index: '',
+          deleted: false
         })
       },
       pushNewReportCardComponent(reportCard, index){

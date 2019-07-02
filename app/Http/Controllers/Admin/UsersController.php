@@ -10,14 +10,16 @@ use App\Interest;
 use App\Badge;
 use App\FundingTarget;
 use App\ReportCard;
+use App\Services\AwsService;
 use Illuminate\Support\Facades\Storage;
 use Aws\S3\S3Client;
 class UsersController extends Controller
 {
     protected $usersService;
 
-    public function __construct(UsersService $usersService){ // Make service accessible in controller
-        $this->usersService = $usersService;   
+    public function __construct(UsersService $usersService,  AwsService $awsService){ // Make service accessible in controller
+        $this->usersService = $usersService;  
+        $this->awsService = $awsService; 
     }
     /**
      * Display a listing of the resource.
@@ -100,7 +102,7 @@ class UsersController extends Controller
     public function update(Request $request, $id)
     {
         $userParams = json_decode($request->input('userParams'));
-        $rc = $userParams->newReportCards;
+        $reportCards = $userParams->newReportCards;
         $user = User::find($userParams->user_id);
         // $this->validate($request, array(
         //     'name' => 'required|max:255',
@@ -127,37 +129,36 @@ class UsersController extends Controller
             $user->badges()->attach($badge->id);
         }
 
-        // dd(is_numeric($rc[0]->id));
-        dd($rc);
         // Update existing report cards
-        
-
-        // $s3 = Storage::disk('s3');
-        // $avatar = str_replace("https://s3-ap-southeast-1.amazonaws.com/advoedu-testing", '', $user->avatar);
-        // $s3->delete($avatar);
-
-        // $filenamewithextension = $request->file('cover_image')->getClientOriginalName(); 	//get filename with extension
-        // $filename = pathinfo($filenamewithextension, PATHINFO_FILENAME); //get filename without extension
-        // $extension = $request->file('cover_image')->getClientOriginalExtension(); //get file extension
-        // $filenametostore =  "Users/Scholarposts/User_".$scholarPost->user_id."/".$filename.'_'.time().'.'.$extension;	//filename to store
-        // Storage::disk('s3')->put($filenametostore, fopen($request->file('cover_image'), 'r+'), 'public');	//Upload File to s3
-        // $report_url = "https://s3-ap-southeast-1.amazonaws.com/advoedu-testing/".$filenametostore;
-        // $scholarPost->cover_image = $report_url;
-        // $scholarPost->save();
-        
-        // if (isset($request->badges)) {
-        //     $user->badges()->sync($request->badges, true);
-        // } else {
-        //     $user->badges()->sync(array());
-        // }
-        // if (isset($request->interests)) {
-        //     $user->interests()->sync($request->interests, true);
-        // } else {
-        //     $user->interests()->sync(array());
-        // }
-
+        foreach($reportCards as $report){
+            if($report->deleted == false){
+                is_numeric($report->id) ? $currentReport = (ReportCard::find($report->id)) : $currentReport = new ReportCard;
+                $currentReport->title = $report->title;
+                $currentReport->term_start = $report->term_start;
+                $currentReport->term_end = $report->term_end;
+                $currentReport->user_id = $user->id;
+                
+                $filePath = "belongs_to_rc_".strval($report->index);
+                if ($request->file($filePath)){
+                    $filenamewithextension = $request->file($filePath)->getClientOriginalName(); 	//get filename with extension
+                    $filename = pathinfo($filenamewithextension, PATHINFO_FILENAME); //get filename without extension
+                    $extension = $request->file($filePath)->getClientOriginalExtension(); //get file extension
+                    $filenametostore =  "Users/ReportCards/User_".$user->id."/".$filename.'_'.time().'.'.$extension;	//filename to store
+                    Storage::disk('s3')->put($filenametostore, fopen($request->file($filePath), 'r+'), 'public');	//Upload File to s3
+                    $report_url = "https://s3-ap-southeast-1.amazonaws.com/advoedu-testing/".$filenametostore;
+                    $currentReport->file = $report_url;
+                } else {
+                  $currentReport->file = $report->file;
+                }
+                $currentReport->save();
+            }
+            if ($report->deleted == true && is_numeric($report->id)){
+                $currentReport = ReportCard::find($report->id);
+                $this->awsService->removeUpload($currentReport, $currentReport->file, "Users/ReportCards/User_".$user->id."/");
+                $currentReport->delete();
+            }
+        }
         return view('admin.users.index');
-        
     }
 
     /**
