@@ -238,12 +238,4 @@ class UsersController extends Controller
         $user->badges()->detach($request->badge_id);
         return 204;
     }
-    public function getselectedbadge(Request $request, $id) {
-    }
-
-    // Update user routes
-    public function get_user($id){
-        $user = User::find($id);
-        return $user;
-    }
 }

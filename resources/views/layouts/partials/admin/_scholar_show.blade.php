@@ -1,10 +1,3 @@
-<div>
-  <update-user-component :user-id="{{ $user->id }}"></update-user-component>
-  {{-- <user-interests-component :user-id="{{ $user->id }}"></user-interests-component> --}}
-</div>
-<div>
-  {{-- <user-badges-component :user-id="{{ $user->id }}"></user-badges-component> --}}
-</div>
 @if ($funding_target && $user->role == 2)
   <div class="card col-md-10 offset-md-1 target-wheel">
     <h4>Target: {{ $funding_target == false ? "No funding target created." : "$$funding_target->amount" }} | Earned: ${{$funding_target->amount_gained}}</h4>
@@ -15,14 +8,6 @@
     </div>
   </div>
 @endif
-<div class="card col-md-10 offset-md-1">
-  <h4>Report Cards</h4>
-  <div class="container">
-    <div class="box">
-      {{-- <report-card-component :user-id="{{ $user->id }}"></report-card-component> --}}
-    </div>
-  </div>
-</div>
 <div class="col-md-10 offset-md-1">
   <div class="row">
     <h4 style="margin: 0">Posts</h4>

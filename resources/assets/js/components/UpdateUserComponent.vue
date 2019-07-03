@@ -85,8 +85,8 @@
         </div>
       </div>
 
-      <!-- Report Cards -->
       <report-card-component :report-cards='reportCards' :user-id='userId' v-on:sendReportCards='receiveNewReportCards'></report-card-component>
+      
       <funding-target-component :user="user" :user-funding-target='fundingTarget' v-on:sendFts='receiveFts'></funding-target-component>
       <button type='submit' class='btn btn-primary'>Submit</button>
 
@@ -139,13 +139,6 @@
     },
     methods: {
       // User Methods
-      getUser(){
-        axios({method: 'GET', url: `/api/get_user/${this.userId}`}).then(
-          result => {
-            this.userToEdit = result.data
-          }
-        )
-      },
       updateUser(e){
         const config = { headers: { 'Content-Type': undefined}}
 
