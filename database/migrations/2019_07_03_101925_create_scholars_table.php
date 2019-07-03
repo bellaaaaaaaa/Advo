@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateScholarPostCommentsTable extends Migration
+class CreateScholarsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateScholarPostCommentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('scholar_post_comments', function (Blueprint $table) {
+        Schema::create('scholars', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
-            $table->integer('scholar_post_id')->unsigned();
-            $table->text('body');
+            $table->ingeter('school_id')->unsigned();
+            $table->string('school_file');
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateScholarPostCommentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('scholar_post_comments');
+        Schema::dropIfExists('scholars');
     }
 }
