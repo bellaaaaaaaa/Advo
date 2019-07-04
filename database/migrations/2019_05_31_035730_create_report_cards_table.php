@@ -15,7 +15,8 @@ class CreateReportCardsTable extends Migration
     {
         Schema::create('report_cards', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned()->default(16);
+            $table->integer('user_id')->unsigned()->default(10);
+            $table->integer('scholar_id')->unsigned()->default(10);
             $table->string('title');
             $table->dateTime('term_start');
             $table->dateTime('term_end');

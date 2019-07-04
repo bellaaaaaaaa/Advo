@@ -16,4 +16,7 @@ class Scholar extends Model
     public function report_cards(){
         return $this->hasMany('App\ReportCard');
     }
+    public function funding_targets(){
+        return $this->hasMany('App\FundingTarget');
+    }
 }

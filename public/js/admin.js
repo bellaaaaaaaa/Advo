@@ -110260,7 +110260,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['userId', 'user', 'userBadges', 'reportCards', 'fundingTarget'],
+  props: ['userId', 'user', 'reportCards', 'fundingTarget'],
 
   data: function data() {
     return {
@@ -110307,7 +110307,7 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
         }
       }
       formData.append('avatar', this.userParams.avatar);
-      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/admin/users/' + this.userId, formData, config).then(function (response) {
+      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/admin/scholars/' + this.userId, formData, config).then(function (response) {
         location.href = response.data;
         // window.location = res.data.redirect;
       }).catch(function (err) {

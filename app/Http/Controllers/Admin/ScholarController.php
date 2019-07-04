@@ -35,11 +35,12 @@ class ScholarController extends Controller
         };
         $user = $scholar->user;
         $reportCards = ReportCard::where('user_id', $scholar->user_id);
-        $fundingTarget = DB::table('funding_targets')->where('status', '=', 'open')->where('user_id', '=', $user->id)->orderBy('created_at', 'desc')->get();
+        $fundingTarget = $scholar->funding_targets->where('status', 'open');
         return view('admin.scholars.edit', ['user' => $user, 'interests' => $interests2, 'report_cards' => $reportCards, 'fundingTarget' => $fundingTarget]);
     }
     public function update(Request $request, $id)
     {
+        dd($request);
         $userParams = json_decode($request->input('userParams'));
         $user = User::find($userParams->user_id);
         // $this->validate($request, array(
@@ -68,12 +69,6 @@ class ScholarController extends Controller
         $user->interests()->detach();
         foreach($userParams->interests as $interest){
             $user->interests()->attach($interest->id);
-        }
-
-        // Add Badges
-        $user->badges()->detach();
-        foreach($userParams->badges as $badge){
-            $user->badges()->attach($badge->id);
         }
 
         // Update existing report cards

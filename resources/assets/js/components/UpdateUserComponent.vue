@@ -83,7 +83,7 @@
   import moment from 'moment'
   Vue.prototype.moment = moment
   export default {
-    props: ['userId', 'user', 'userBadges', 'reportCards', 'fundingTarget'],
+    props: ['userId', 'user', 'reportCards', 'fundingTarget'],
 
     data() {
       return {
@@ -130,7 +130,7 @@
           }
         }
         formData.append('avatar', this.userParams.avatar)
-        axios.post(`/admin/users/${this.userId}`, formData, config)
+        axios.post(`/admin/scholars/${this.userId}`, formData, config)
         .then(response => {
           	location.href = response.data;
           // window.location = res.data.redirect;
