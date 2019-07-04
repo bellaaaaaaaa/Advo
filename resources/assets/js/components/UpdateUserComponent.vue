@@ -55,25 +55,10 @@
         </div>
       </div>
 
-      <!-- User Badges -->
-      <div class='card'>
-        <div class='card-body'>
-          <div class='row col-md-12'><h5>User Badges</h5></div>
-          <select @change='selectBadge()' v-model="selectedBadge" type="submit" class='form-control'>
-            <option v-for='badge in badges' :value='badge'>{{ badge.title }}</option>
-          </select>
-          <div class="row" style="padding: 0px 15px !important;">
-            <div style="padding: 5px;" v-for="(badge) in selectedBadges" v-bind:key="badge.id">
-              <span :id='badge.id' :value='badge.id' class="badge badge-secondary">{{badge.title}}<i v-on:click="unselectBadge" class="fa fa-close" style="color:white"></i></span>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- User Interests -->
       <div class='card'>
         <div class='card-body'>
-          <div class='row col-md-12'><h5>User Interests</h5></div>
+          <div class='row col-md-12'><h5>Interests</h5></div>
           <select @change='selectInterest()' v-model="selectedInterest" type="submit" class='form-control'>
             <option v-for='interest in interests' :value='interest'>{{ interest.title }}</option>
           </select>
@@ -112,15 +97,10 @@
           ic_passport_number: this.user.ic_passport_number,
           bio: this.user.bio,
           avatar: this.user.avatar,
-          badges: this.selectedBadges,
           interests: this.selectedInterests,
           reportCards: []
         },
         roles: {'0' : 'Admin', '1' : 'Benefactor', '2' : 'Scholar'},
-        selectedBadge: '',
-        selectedBadges: [],
-        badges: [],
-        unselectedBadge: '',
 
         selectedInterest: '',
         selectedInterests: [],
@@ -131,9 +111,6 @@
       }
     },
     mounted() {
-      this.getUser(),
-      this.getAllBadges(),
-      this.getUserBadges(this.userId),
       this.getAllInterests(),
       this.getUserInterests(this.userId)
     },
@@ -144,7 +121,6 @@
 
         var formData = new FormData(e.target)
         formData.append('_method', 'PATCH')
-        this.userParams.badges = this.selectedBadges
         this.userParams.interests = this.selectedInterests
         formData.append('userParams', JSON.stringify(this.userParams))
         if (typeof this.userParams.newReportCards != "undefined") {
@@ -175,48 +151,9 @@
         }
         this.userParams.avatar = input.files[0];
       },
-      // Badge Methods
-      getAllBadges(){
-        axios({method: 'GET', url: `/api/user_badges_options/${this.userId}`}).then(
-          result => {
-            this.badges = result.data
-          }
-        )
-      },
-      getUserBadges(){
-        axios({method: 'GET', url: `/api/user_badges/${this.userId}`}).then(
-          result => {
-            this.selectedBadges = result.data
-          },
-          error => {
-            console.log(error)
-          }
-        )
-      },
-      selectBadge() {
-        var array = [];
-        var i;
-        for (i= 0; i < this.selectedBadges.length; i++) {
-          array.push(this.selectedBadges[i].id)
-        }
-
-        if (array.includes(this.selectedBadge.id) == false ){
-          this.selectedBadges.push(this.selectedBadge)
-        }
-      },
-      unselectBadge(event){
-        console.log('unselected badge id', event.target.parentElement.id)
-        var unselectedBadgeId =  event.target.parentElement.id;
-        var x;
-        for (x = 0; x < this.selectedBadges.length; x ++){
-          if(this.selectedBadges[x].id == unselectedBadgeId){
-            this.selectedBadges.splice(x, 1)
-          }
-        }
-
-      },
       // Interest Methods
       getAllInterests(){
+        console.log('getAllInterests')
         axios({method: 'GET', url: `/api/user_interests_options/${this.userId}`}).then(
           result => {
             this.interests = result.data
@@ -224,6 +161,7 @@
         )
       },
       getUserInterests(){
+        console.log('getUserInterests')
         axios({method: 'GET', url: `/api/user_interests/${this.userId}`}).then(
           result => {
             this.selectedInterests = result.data
@@ -234,6 +172,7 @@
         )
       },
       selectInterest() {
+        console.log('selectInterest')
         var array = [];
         var i;
         for (i= 0; i < this.selectedInterests.length; i++) {
@@ -245,6 +184,7 @@
         }
       },
       unselectInterest(event){
+        console.log('unselectInterest')
         var unselectedInterestId =  event.target.parentElement.id;
         var x;
         for (x = 0; x < this.selectedInterests.length; x ++){

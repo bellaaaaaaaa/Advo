@@ -110255,21 +110255,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -110289,15 +110274,10 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
         ic_passport_number: this.user.ic_passport_number,
         bio: this.user.bio,
         avatar: this.user.avatar,
-        badges: this.selectedBadges,
         interests: this.selectedInterests,
         reportCards: []
       },
       roles: { '0': 'Admin', '1': 'Benefactor', '2': 'Scholar' },
-      selectedBadge: '',
-      selectedBadges: [],
-      badges: [],
-      unselectedBadge: '',
 
       selectedInterest: '',
       selectedInterests: [],
@@ -110308,7 +110288,7 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
     };
   },
   mounted: function mounted() {
-    this.getUser(), this.getAllBadges(), this.getUserBadges(this.userId), this.getAllInterests(), this.getUserInterests(this.userId);
+    this.getAllInterests(), this.getUserInterests(this.userId);
   },
 
   methods: {
@@ -110318,7 +110298,6 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
 
       var formData = new FormData(e.target);
       formData.append('_method', 'PATCH');
-      this.userParams.badges = this.selectedBadges;
       this.userParams.interests = this.selectedInterests;
       formData.append('userParams', JSON.stringify(this.userParams));
       if (typeof this.userParams.newReportCards != "undefined") {
@@ -110348,63 +110327,27 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
       this.userParams.avatar = input.files[0];
     },
 
-    // Badge Methods
-    getAllBadges: function getAllBadges() {
-      var _this = this;
-
-      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/user_badges_options/' + this.userId }).then(function (result) {
-        _this.badges = result.data;
-      });
-    },
-    getUserBadges: function getUserBadges() {
-      var _this2 = this;
-
-      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/user_badges/' + this.userId }).then(function (result) {
-        _this2.selectedBadges = result.data;
-      }, function (error) {
-        console.log(error);
-      });
-    },
-    selectBadge: function selectBadge() {
-      var array = [];
-      var i;
-      for (i = 0; i < this.selectedBadges.length; i++) {
-        array.push(this.selectedBadges[i].id);
-      }
-
-      if (array.includes(this.selectedBadge.id) == false) {
-        this.selectedBadges.push(this.selectedBadge);
-      }
-    },
-    unselectBadge: function unselectBadge(event) {
-      console.log('unselected badge id', event.target.parentElement.id);
-      var unselectedBadgeId = event.target.parentElement.id;
-      var x;
-      for (x = 0; x < this.selectedBadges.length; x++) {
-        if (this.selectedBadges[x].id == unselectedBadgeId) {
-          this.selectedBadges.splice(x, 1);
-        }
-      }
-    },
-
     // Interest Methods
     getAllInterests: function getAllInterests() {
-      var _this3 = this;
+      var _this = this;
 
+      console.log('getAllInterests');
       __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/user_interests_options/' + this.userId }).then(function (result) {
-        _this3.interests = result.data;
+        _this.interests = result.data;
       });
     },
     getUserInterests: function getUserInterests() {
-      var _this4 = this;
+      var _this2 = this;
 
+      console.log('getUserInterests');
       __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/user_interests/' + this.userId }).then(function (result) {
-        _this4.selectedInterests = result.data;
+        _this2.selectedInterests = result.data;
       }, function (error) {
         console.log(error);
       });
     },
     selectInterest: function selectInterest() {
+      console.log('selectInterest');
       var array = [];
       var i;
       for (i = 0; i < this.selectedInterests.length; i++) {
@@ -110416,6 +110359,7 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
       }
     },
     unselectInterest: function unselectInterest(event) {
+      console.log('unselectInterest');
       var unselectedInterestId = event.target.parentElement.id;
       var x;
       for (x = 0; x < this.selectedInterests.length; x++) {
@@ -110695,84 +110639,6 @@ var render = function() {
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.selectedBadge,
-                    expression: "selectedBadge"
-                  }
-                ],
-                staticClass: "form-control",
-                attrs: { type: "submit" },
-                on: {
-                  change: [
-                    function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.selectedBadge = $event.target.multiple
-                        ? $$selectedVal
-                        : $$selectedVal[0]
-                    },
-                    function($event) {
-                      _vm.selectBadge()
-                    }
-                  ]
-                }
-              },
-              _vm._l(_vm.badges, function(badge) {
-                return _c("option", { domProps: { value: badge } }, [
-                  _vm._v(_vm._s(badge.title))
-                ])
-              })
-            ),
-            _vm._v(" "),
-            _c(
-              "div",
-              {
-                staticClass: "row",
-                staticStyle: { padding: "0px 15px !important" }
-              },
-              _vm._l(_vm.selectedBadges, function(badge) {
-                return _c(
-                  "div",
-                  { key: badge.id, staticStyle: { padding: "5px" } },
-                  [
-                    _c(
-                      "span",
-                      {
-                        staticClass: "badge badge-secondary",
-                        attrs: { id: badge.id, value: badge.id }
-                      },
-                      [
-                        _vm._v(_vm._s(badge.title)),
-                        _c("i", {
-                          staticClass: "fa fa-close",
-                          staticStyle: { color: "white" },
-                          on: { click: _vm.unselectBadge }
-                        })
-                      ]
-                    )
-                  ]
-                )
-              })
-            )
-          ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "card-body" }, [
-            _vm._m(2),
-            _vm._v(" "),
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
                     value: _vm.selectedInterest,
                     expression: "selectedInterest"
                   }
@@ -110874,15 +110740,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "row col-md-12" }, [
-      _c("h5", [_vm._v("User Badges")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row col-md-12" }, [
-      _c("h5", [_vm._v("User Interests")])
+      _c("h5", [_vm._v("Interests")])
     ])
   }
 ]
