@@ -110260,20 +110260,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['userId', 'user', 'reportCards', 'fundingTarget'],
+  props: ['scholar', 'userId', 'user', 'reportCards', 'fundingTarget'],
 
   data: function data() {
     return {
-      userParams: {
+      scholarParams: {
         user_id: this.userId,
-        name: this.user.name,
-        email: this.user.email,
-        role: this.user.role,
-        date_of_birth: this.user.date_of_birth,
-        phone_number: this.user.phone_number,
-        ic_passport_number: this.user.ic_passport_number,
-        bio: this.user.bio,
-        avatar: this.user.avatar,
+        name: this.scholar.user.name,
+        email: this.scholar.user.email,
+        role: this.scholar.user.role,
+        date_of_birth: this.scholar.user.date_of_birth,
+        phone_number: this.scholar.user.phone_number,
+        ic_passport_number: this.scholar.user.ic_passport_number,
+        bio: this.scholar.user.bio,
+        avatar: this.scholar.user.avatar,
         interests: this.selectedInterests,
         reportCards: []
       },
@@ -110288,7 +110288,7 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
     };
   },
   mounted: function mounted() {
-    this.getAllInterests(), this.getUserInterests(this.userId);
+    console.log('this.scholar.user', this.scholar.user), this.getAllInterests(), this.getUserInterests(this.userId);
   },
 
   methods: {
@@ -110298,15 +110298,15 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
 
       var formData = new FormData(e.target);
       formData.append('_method', 'PATCH');
-      this.userParams.interests = this.selectedInterests;
-      formData.append('userParams', JSON.stringify(this.userParams));
-      if (typeof this.userParams.newReportCards != "undefined") {
+      this.scholarParams.interests = this.selectedInterests;
+      formData.append('scholarParams', JSON.stringify(this.scholarParams));
+      if (typeof this.scholarParams.newReportCards != "undefined") {
         var i;
-        for (i = 0; i < this.userParams.newReportCards.length; i++) {
-          formData.append("belongs_to_rc_" + this.userParams.newReportCards[i].index, this.userParams.newReportCards[i].file);
+        for (i = 0; i < this.scholarParams.newReportCards.length; i++) {
+          formData.append("belongs_to_rc_" + this.scholarParams.newReportCards[i].index, this.scholarParams.newReportCards[i].file);
         }
       }
-      formData.append('avatar', this.userParams.avatar);
+      formData.append('avatar', this.scholarParams.avatar);
       __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/admin/scholars/' + this.userId, formData, config).then(function (response) {
         location.href = response.data;
         // window.location = res.data.redirect;
@@ -110324,7 +110324,7 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
         };
         reader.readAsDataURL(input.files[0]);
       }
-      this.userParams.avatar = input.files[0];
+      this.scholarParams.avatar = input.files[0];
     },
 
     // Interest Methods
@@ -110332,15 +110332,14 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
       var _this = this;
 
       console.log('getAllInterests');
-      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/user_interests_options/' + this.userId }).then(function (result) {
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/available_interests/' + this.scholar.id }).then(function (result) {
         _this.interests = result.data;
       });
     },
     getUserInterests: function getUserInterests() {
       var _this2 = this;
 
-      console.log('getUserInterests');
-      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/user_interests/' + this.userId }).then(function (result) {
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/scholar_interests/' + this.scholar.id }).then(function (result) {
         _this2.selectedInterests = result.data;
       }, function (error) {
         console.log(error);
@@ -110369,11 +110368,11 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
       }
     },
     receiveNewReportCards: function receiveNewReportCards(reportCards) {
-      this.userParams.newReportCards = reportCards;
-      console.log('report cards', this.userParams.newReportCards);
+      this.scholarParams.newReportCards = reportCards;
+      console.log('report cards', this.scholarParams.newReportCards);
     },
     receiveFts: function receiveFts(fts) {
-      this.userParams.fundingTargets = fts;
+      this.scholarParams.fundingTargets = fts;
     }
   }
 });
@@ -110412,18 +110411,18 @@ var render = function() {
                     {
                       name: "model",
                       rawName: "v-model",
-                      value: _vm.userParams.name,
-                      expression: "userParams.name"
+                      value: _vm.scholarParams.name,
+                      expression: "scholarParams.name"
                     }
                   ],
                   staticClass: "form-control",
-                  domProps: { value: _vm.userParams.name },
+                  domProps: { value: _vm.scholarParams.name },
                   on: {
                     input: function($event) {
                       if ($event.target.composing) {
                         return
                       }
-                      _vm.$set(_vm.userParams, "name", $event.target.value)
+                      _vm.$set(_vm.scholarParams, "name", $event.target.value)
                     }
                   }
                 })
@@ -110437,18 +110436,18 @@ var render = function() {
                     {
                       name: "model",
                       rawName: "v-model",
-                      value: _vm.userParams.email,
-                      expression: "userParams.email"
+                      value: _vm.scholarParams.email,
+                      expression: "scholarParams.email"
                     }
                   ],
                   staticClass: "form-control",
-                  domProps: { value: _vm.userParams.email },
+                  domProps: { value: _vm.scholarParams.email },
                   on: {
                     input: function($event) {
                       if ($event.target.composing) {
                         return
                       }
-                      _vm.$set(_vm.userParams, "email", $event.target.value)
+                      _vm.$set(_vm.scholarParams, "email", $event.target.value)
                     }
                   }
                 })
@@ -110464,8 +110463,8 @@ var render = function() {
                       {
                         name: "model",
                         rawName: "v-model",
-                        value: _vm.userParams.role,
-                        expression: "userParams.role"
+                        value: _vm.scholarParams.role,
+                        expression: "scholarParams.role"
                       }
                     ],
                     staticClass: "form-control",
@@ -110481,7 +110480,7 @@ var render = function() {
                             return val
                           })
                         _vm.$set(
-                          _vm.userParams,
+                          _vm.scholarParams,
                           "role",
                           $event.target.multiple
                             ? $$selectedVal
@@ -110508,20 +110507,20 @@ var render = function() {
                     {
                       name: "model",
                       rawName: "v-model",
-                      value: _vm.userParams.date_of_birth,
-                      expression: "userParams.date_of_birth"
+                      value: _vm.scholarParams.date_of_birth,
+                      expression: "scholarParams.date_of_birth"
                     }
                   ],
                   staticClass: "form-control",
                   attrs: { type: "date" },
-                  domProps: { value: _vm.userParams.date_of_birth },
+                  domProps: { value: _vm.scholarParams.date_of_birth },
                   on: {
                     input: function($event) {
                       if ($event.target.composing) {
                         return
                       }
                       _vm.$set(
-                        _vm.userParams,
+                        _vm.scholarParams,
                         "date_of_birth",
                         $event.target.value
                       )
@@ -110538,19 +110537,19 @@ var render = function() {
                     {
                       name: "model",
                       rawName: "v-model",
-                      value: _vm.userParams.phone_number,
-                      expression: "userParams.phone_number"
+                      value: _vm.scholarParams.phone_number,
+                      expression: "scholarParams.phone_number"
                     }
                   ],
                   staticClass: "form-control",
-                  domProps: { value: _vm.userParams.phone_number },
+                  domProps: { value: _vm.scholarParams.phone_number },
                   on: {
                     input: function($event) {
                       if ($event.target.composing) {
                         return
                       }
                       _vm.$set(
-                        _vm.userParams,
+                        _vm.scholarParams,
                         "phone_number",
                         $event.target.value
                       )
@@ -110567,19 +110566,19 @@ var render = function() {
                     {
                       name: "model",
                       rawName: "v-model",
-                      value: _vm.userParams.ic_passport_number,
-                      expression: "userParams.ic_passport_number"
+                      value: _vm.scholarParams.ic_passport_number,
+                      expression: "scholarParams.ic_passport_number"
                     }
                   ],
                   staticClass: "form-control",
-                  domProps: { value: _vm.userParams.ic_passport_number },
+                  domProps: { value: _vm.scholarParams.ic_passport_number },
                   on: {
                     input: function($event) {
                       if ($event.target.composing) {
                         return
                       }
                       _vm.$set(
-                        _vm.userParams,
+                        _vm.scholarParams,
                         "ic_passport_number",
                         $event.target.value
                       )
@@ -110598,18 +110597,18 @@ var render = function() {
                     {
                       name: "model",
                       rawName: "v-model",
-                      value: _vm.userParams.bio,
-                      expression: "userParams.bio"
+                      value: _vm.scholarParams.bio,
+                      expression: "scholarParams.bio"
                     }
                   ],
                   staticClass: "form-control",
-                  domProps: { value: _vm.userParams.bio },
+                  domProps: { value: _vm.scholarParams.bio },
                   on: {
                     input: function($event) {
                       if ($event.target.composing) {
                         return
                       }
-                      _vm.$set(_vm.userParams, "bio", $event.target.value)
+                      _vm.$set(_vm.scholarParams, "bio", $event.target.value)
                     }
                   }
                 })

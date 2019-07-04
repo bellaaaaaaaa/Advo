@@ -10,18 +10,12 @@ class User extends Authenticatable
     return $this->hasOne('App\Scholar');
   }
   // old maybe idk
-  public function interests(){
-    return $this->belongsToMany('App\Interest');
-  }
-  public function badges(){
-    return $this->belongsToMany('App\Badge');
-  }
   public function funding_targets(){
     return $this->hasMany('App\FundingTarget');
   }
-  public function report_cards(){
-    return $this->hasMany('App\ReportCard');
-  }
+  // public function report_cards(){
+  //   return $this->hasMany('App\ReportCard');
+  // }
   public function scholar_posts(){
     return $this->hasMany('App\ScholarPost');
   }

@@ -9,17 +9,17 @@
           <div class='row'>
             <div class='col-md-4'>
               <label>Name</label>
-              <input v-model="userParams.name" class="form-control"></input>
+              <input v-model="scholarParams.name" class="form-control"></input>
             </div>
 
             <div class='col-md-4'>
               <label>Email</label>
-              <input v-model="userParams.email" class="form-control"></input>
+              <input v-model="scholarParams.email" class="form-control"></input>
             </div>
 
             <div class='col-md-4'>
               <label>Role</label>
-              <select v-model="userParams.role" type="submit" class='form-control'>
+              <select v-model="scholarParams.role" type="submit" class='form-control'>
                 <option v-for='key, value in roles' :value='value'>{{ key }}</option>
               </select>
             </div>
@@ -28,24 +28,24 @@
           <div class='row'>
             <div class='col-md-4'>
               <label>Date of Birth</label>
-              <input v-model="userParams.date_of_birth" type='date' class="form-control"></input>
+              <input v-model="scholarParams.date_of_birth" type='date' class="form-control"></input>
             </div>
 
             <div class='col-md-4'>
               <label>Phone Number</label>
-              <input v-model="userParams.phone_number" class="form-control"></input>
+              <input v-model="scholarParams.phone_number" class="form-control"></input>
             </div>
 
             <div class='col-md-4'>
               <label>IC/Passport Number</label>
-              <input v-model="userParams.ic_passport_number" class="form-control"></input>
+              <input v-model="scholarParams.ic_passport_number" class="form-control"></input>
             </div>
           </div> <!-- end row -->
 
           <div class='row'>
             <div class='col-md-6'>
               <label>Bio</label>
-              <input v-model="userParams.bio" class="form-control"></input>
+              <input v-model="scholarParams.bio" class="form-control"></input>
             </div>
             <div class='col-md-6'>
               <label>Avatar</label>
@@ -83,20 +83,20 @@
   import moment from 'moment'
   Vue.prototype.moment = moment
   export default {
-    props: ['userId', 'user', 'reportCards', 'fundingTarget'],
+    props: ['scholar', 'userId', 'user', 'reportCards', 'fundingTarget'],
 
     data() {
       return {
-        userParams: {
+        scholarParams: {
           user_id: this.userId,
-          name: this.user.name,
-          email: this.user.email,
-          role: this.user.role,
-          date_of_birth: this.user.date_of_birth,
-          phone_number: this.user.phone_number,
-          ic_passport_number: this.user.ic_passport_number,
-          bio: this.user.bio,
-          avatar: this.user.avatar,
+          name: this.scholar.user.name,
+          email: this.scholar.user.email,
+          role: this.scholar.user.role,
+          date_of_birth: this.scholar.user.date_of_birth,
+          phone_number: this.scholar.user.phone_number,
+          ic_passport_number: this.scholar.user.ic_passport_number,
+          bio: this.scholar.user.bio,
+          avatar: this.scholar.user.avatar,
           interests: this.selectedInterests,
           reportCards: []
         },
@@ -111,6 +111,7 @@
       }
     },
     mounted() {
+      console.log('this.scholar.user', this.scholar.user),
       this.getAllInterests(),
       this.getUserInterests(this.userId)
     },
@@ -121,15 +122,15 @@
 
         var formData = new FormData(e.target)
         formData.append('_method', 'PATCH')
-        this.userParams.interests = this.selectedInterests
-        formData.append('userParams', JSON.stringify(this.userParams))
-        if (typeof this.userParams.newReportCards != "undefined") {
+        this.scholarParams.interests = this.selectedInterests
+        formData.append('scholarParams', JSON.stringify(this.scholarParams))
+        if (typeof this.scholarParams.newReportCards != "undefined") {
           var i;
-          for (i = 0; i < this.userParams.newReportCards.length; i++) {
-            formData.append("belongs_to_rc_" + this.userParams.newReportCards[i].index, this.userParams.newReportCards[i].file)
+          for (i = 0; i < this.scholarParams.newReportCards.length; i++) {
+            formData.append("belongs_to_rc_" + this.scholarParams.newReportCards[i].index, this.scholarParams.newReportCards[i].file)
           }
         }
-        formData.append('avatar', this.userParams.avatar)
+        formData.append('avatar', this.scholarParams.avatar)
         axios.post(`/admin/scholars/${this.userId}`, formData, config)
         .then(response => {
           	location.href = response.data;
@@ -149,20 +150,19 @@
             }
             reader.readAsDataURL(input.files[0]);
         }
-        this.userParams.avatar = input.files[0];
+        this.scholarParams.avatar = input.files[0];
       },
       // Interest Methods
       getAllInterests(){
         console.log('getAllInterests')
-        axios({method: 'GET', url: `/api/user_interests_options/${this.userId}`}).then(
+        axios({method: 'GET', url: `/api/available_interests/${this.scholar.id}`}).then(
           result => {
             this.interests = result.data
           }
         )
       },
       getUserInterests(){
-        console.log('getUserInterests')
-        axios({method: 'GET', url: `/api/user_interests/${this.userId}`}).then(
+        axios({method: 'GET', url: `/api/scholar_interests/${this.scholar.id}`}).then(
           result => {
             this.selectedInterests = result.data
           },
@@ -195,12 +195,12 @@
 
       },
       receiveNewReportCards(reportCards){
-        this.userParams.newReportCards = reportCards;
-        console.log('report cards', this.userParams.newReportCards )
+        this.scholarParams.newReportCards = reportCards;
+        console.log('report cards', this.scholarParams.newReportCards )
 
       },
       receiveFts(fts){
-        this.userParams.fundingTargets = fts;
+        this.scholarParams.fundingTargets = fts;
       }
     }
   }

@@ -19,4 +19,7 @@ class Scholar extends Model
     public function funding_targets(){
         return $this->hasMany('App\FundingTarget');
     }
+    public function interests(){
+        return $this->belongsToMany('App\Interest');
+    }
 }

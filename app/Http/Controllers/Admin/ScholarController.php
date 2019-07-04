@@ -36,24 +36,20 @@ class ScholarController extends Controller
         $user = $scholar->user;
         $reportCards = ReportCard::where('user_id', $scholar->user_id);
         $fundingTarget = $scholar->funding_targets->where('status', 'open');
-        return view('admin.scholars.edit', ['user' => $user, 'interests' => $interests2, 'report_cards' => $reportCards, 'fundingTarget' => $fundingTarget]);
+        return view('admin.scholars.edit', ['scholar' => $scholar, 'user' => $user, 'interests' => $interests2, 'report_cards' => $reportCards, 'fundingTarget' => $fundingTarget]);
     }
     public function update(Request $request, $id)
     {
-        dd($request);
-        $userParams = json_decode($request->input('userParams'));
-        $user = User::find($userParams->user_id);
-        // $this->validate($request, array(
-        //     'name' => 'required|max:255',
-        //     //
-        // ));
-        $user->name = $userParams->name;
-        $user->email = $userParams->email;
-        $user->role = $userParams->role;
-        $user->date_of_birth = $userParams->date_of_birth;
-        $user->phone_number = $userParams->phone_number;
-        $user->ic_passport_number = $userParams->ic_passport_number;
-        $user->bio = $userParams->bio;
+        $scholarParams = json_decode($request->input('scholarParams'));
+        dd($scholarParams);
+        $user = User::find($scholarParams->user_id);
+        $user->name = $scholarParams->name;
+        $user->email = $scholarParams->email;
+        $user->role = $scholarParams->role;
+        $user->date_of_birth = $scholarParams->date_of_birth;
+        $user->phone_number = $scholarParams->phone_number;
+        $user->ic_passport_number = $scholarParams->ic_passport_number;
+        $user->bio = $scholarParams->bio;
 
         // Set user avatar
         if($request->file('avatar')){
@@ -67,13 +63,13 @@ class ScholarController extends Controller
 
         // Add Interests
         $user->interests()->detach();
-        foreach($userParams->interests as $interest){
+        foreach($scholarParams->interests as $interest){
             $user->interests()->attach($interest->id);
         }
 
         // Update existing report cards
-        if(isset($userParams->newReportCards)) {
-            $reportCards = $userParams->newReportCards;
+        if(isset($scholarParams->newReportCards)) {
+            $reportCards = $scholarParams->newReportCards;
             foreach($reportCards as $report){
                 if($report->deleted == false){
                     is_numeric($report->id) ? $currentReport = (ReportCard::find($report->id)) : $currentReport = new ReportCard;
@@ -105,8 +101,8 @@ class ScholarController extends Controller
         }
 
         // Update funding targets
-        if(isset($userParams->fundingTargets)){
-            foreach($userParams->fundingTargets as $ft){
+        if(isset($scholarParams->fundingTargets)){
+            foreach($scholarParams->fundingTargets as $ft){
                 if($ft->deleted == false){
                     is_numeric($ft->id) ? $currentFt = (FundingTarget::find($ft->id)) : $currentFt = new FundingTarget;
                     $currentFt->title = $ft->title;
@@ -121,5 +117,13 @@ class ScholarController extends Controller
         };
         Session::flash('success', 'User updated!');
         return route('users.show', ['user' => $user]);
+    }
+    public function scholar_interests($id) {
+        $scholar = Scholar::find($id);
+        return $scholar->interests;
+    }
+    public function available_interests($id) {
+        $interests = Interest::whereDoesntHave('scholars', function($q) use ($id){ $q->where('scholar_id', $id); })->get()->all();
+        return $interests;
     }
 }
