@@ -16,8 +16,8 @@ class CreateScholarsTable extends Migration
         Schema::create('scholars', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
-            $table->ingeter('school_id')->unsigned();
-            $table->string('school_file');
+            $table->integer('school_id')->unsigned()->nullable();
+            $table->string('school_file')->nullable();
             $table->timestamps();
         });
     }

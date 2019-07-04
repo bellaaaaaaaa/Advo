@@ -38,6 +38,8 @@
             </label>
             <select class='form-control' name='role' required='true'>
               <option value=0>Admin</option>
+              <option value=1>Benefactor</option>
+              <option value=2>Scholar</option>
             </select>
           </div>
           <div class="form-group has-label">

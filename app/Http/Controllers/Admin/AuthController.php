@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use App\User;
+use App\Scholar;
 use Auth;
 use App\Services\AwsService;
 
@@ -28,6 +29,9 @@ class AuthController extends Controller{
 
 		$user = User::create($request->all());
 		$user->password = password_hash($request->password, PASSWORD_BCRYPT);
+		if ($user->role == 2) {
+			Scholar::create(['user_id' => $user->id]);
+		};
 		$user->save();
 		$this->awsService->uploadFile($request, $user, 'avatar', 'Users/Profiles/');
 		Auth::login($user);
