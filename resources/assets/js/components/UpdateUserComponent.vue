@@ -47,16 +47,24 @@
               <input v-model="scholarParams.bio" class="form-control"></input>
             </div>
             <div class='col-md-6'>
-              <label>Avatar</label>
-              <input type="file" v-on:change="onInputChange" class="form-control">
-            </div>
-          </div>
-          <div class='row'>
-            <div class='col-md-4'>
               <label>School</label>
               <select v-model="scholarParams.school" class='form-control'>
                 <option v-for='school in schools' :value='school.id'>{{ school.name }}</option>
               </select>
+            </div>
+          </div>
+          <div class='row'>
+            <div class='col-md-4'>
+              <label>Avatar</label>
+              <input id="avatar" type="file" v-on:change="onInputChange" class="form-control">
+            </div>
+            <div class='col-md-4'>
+              <label>School File</label>
+              <input id="school_file" type="file" v-on:change="onInputChange" class="form-control">
+            </div>
+            <div class='col-md-4'>
+              <label>ID File</label>
+              <input id="id_file" type="file" v-on:change="onInputChange" class="form-control">
             </div>
           </div>
         </div>
@@ -65,6 +73,8 @@
       <interest-component :scholar="scholar"  v-on:interests='receiveInterests'></interest-component>
 
       <report-card-component :report-cards='reportCards' :scholar='scholar' v-on:sendReportCards='receiveNewReportCards'></report-card-component>
+
+      <post-component :posts='posts' :scholar='scholar' v-on:sendPosts='receiveNewPosts'></post-component>
       
       <funding-target-component :scholar="scholar" :scholar-funding-target='fundingTarget' v-on:sendFts='receiveFts'></funding-target-component>
       <button type='submit' class='btn btn-primary'>Submit</button>
@@ -77,7 +87,7 @@
   import moment from 'moment'
   Vue.prototype.moment = moment
   export default {
-    props: ['scholar', 'reportCards', 'fundingTarget', 'schools', 'school'],
+    props: ['scholar', 'reportCards', 'fundingTarget', 'schools', 'school', 'posts'],
 
     data() {
       return {
@@ -92,16 +102,16 @@
           bio: this.scholar.user.bio,
           avatar: this.scholar.user.avatar,
           school: this.scholar.school.name,
+          school_file: this.scholar.school_file,
+          id_file: this.scholar.user.identification_file,
           interests: [],
           reportCards: []
         },
         roles: {'0' : 'Admin', '1' : 'Benefactor', '2' : 'Scholar'},
-        selectedInterests: [],
-        numNewReportCards: 0,
+        selectedInterests: []
       }
     },
     mounted() {
-      console.log('update user component', this.fundingTarget)
     },
     methods: {
       updateScholar(e){
@@ -116,7 +126,15 @@
             formData.append("belongs_to_rc_" + this.scholarParams.newReportCards[i].index, this.scholarParams.newReportCards[i].file)
           }
         }
+        if (typeof this.scholarParams.newPosts != "undefined") {
+          var x;
+          for (x = 0; x < this.scholarParams.newPosts.length; x++) {
+            formData.append("belongs_to_post_" + this.scholarParams.newPosts[x].index, this.scholarParams.newPosts[x].cover_image)
+          }
+        }
         formData.append('avatar', this.scholarParams.avatar)
+        formData.append('school_file', this.scholarParams.school_file)
+        formData.append('id_file', this.scholarParams.id_file)
         axios.post(`/admin/scholars/${this.scholar.id}`, formData, config)
         .then(response => {
           	location.href = response.data;
@@ -136,12 +154,23 @@
             }
             reader.readAsDataURL(input.files[0]);
         }
-        this.scholarParams.avatar = input.files[0];
+        if(event.target.id == 'avatar'){
+          this.scholarParams.avatar = input.files[0];
+        } else if (event.target.id == 'school_file'){
+          this.scholarParams.school_file = input.files[0];
+        } else if (event.target.id == 'id_file'){
+          this.scholarParams.id_file = input.files[0];
+        }
       },
       //Interest Methods
       receiveNewReportCards(reportCards){
         this.scholarParams.newReportCards = reportCards;
         console.log('report cards', this.scholarParams.newReportCards )
+
+      },
+      receiveNewPosts(posts){
+        this.scholarParams.newPosts = posts;
+        console.log('received new posts', this.scholarParams.newPosts )
 
       },
       receiveFts(fts){

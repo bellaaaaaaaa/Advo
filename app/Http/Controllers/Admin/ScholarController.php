@@ -38,7 +38,6 @@ class ScholarController extends Controller
     public function update(Request $request, $id)
     {
         $scholarParams = json_decode($request->input('scholarParams'));
-        dd($scholarParams);
         $scholar = Scholar::find($scholarParams->scholar_id);
         $scholar->user->name = $scholarParams->name;
         $scholar->user->email = $scholarParams->email;
@@ -48,8 +47,16 @@ class ScholarController extends Controller
         $scholar->user->ic_passport_number = $scholarParams->ic_passport_number;
         $scholar->user->bio = $scholarParams->bio;
 
+        if($request->hasFile('school_file')){
+            if ($scholar->school_file != null){
+                $this->awsService->removeUpload($scholar, $scholar->school_file, "Scholars/Scholar_".$scholar->id."/SchoolFile"."/");
+            } 
+            $school_file =  $this->awsService->upload($request, 'school_file', "Scholars/Scholar_".$scholar->id."/SchoolFile");
+            $scholar->school_file = $school_file;
+            $scholar->save();
+        };
         // Set user avatar
-        if($request->file('avatar')){
+        if($request->hasFile('avatar')){
             if ($scholar->user->avatar != null){
                 $this->awsService->removeUpload($scholar->user, $scholar->user->avatar, "Users/Profiles/User_".$scholar->user->id."/");
             }   

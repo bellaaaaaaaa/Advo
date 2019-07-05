@@ -8,7 +8,7 @@
   <div style="padding:20px">
     <h2>Update Scholar: {{$scholar->id}}</h2>
     <hr>
-  <update-user-component :schools="{{ $schools }}" :school="{{ $scholar->school }}" :scholar="{{ $scholar }}" :funding-target="{{ $funding_target ? $funding_target : 'null' }}" :report-cards="{{ $scholar->report_cards }}"></update-user-component>
+  <update-user-component :schools="{{ $schools }}" :school="{{ $scholar->school }}" :scholar="{{ $scholar }}" :funding-target="{{ $funding_target ? $funding_target : 'null' }}" :report-cards="{{ $scholar->report_cards }}" :posts="{{ $scholar->scholar_posts }}"></update-user-component>
   </div>
 @endsection
 @section('scripts')

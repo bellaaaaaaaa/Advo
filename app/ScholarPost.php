@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ScholarPost extends Model
 {
-    protected $fillable = ['title', 'body', 'cover_image'];
+    protected $fillable = ['title', 'body', 'cover_image', 'scholar_id'];
     // old
     public function user() {
         return $this->belongsTo('App\User');
