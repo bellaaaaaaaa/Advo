@@ -22,4 +22,7 @@ class Scholar extends Model
     public function interests(){
         return $this->belongsToMany('App\Interest');
     }
+    public function school(){
+        return $this->belongsTo('App\School');
+    }
 }
