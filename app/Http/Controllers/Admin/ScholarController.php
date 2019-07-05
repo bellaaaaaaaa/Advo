@@ -39,6 +39,7 @@ class ScholarController extends Controller
     {
         $scholarParams = json_decode($request->input('scholarParams'));
         $scholar = Scholar::find($scholarParams->scholar_id);
+        $user = $scholar->user;
         $scholar->user->name = $scholarParams->name;
         $scholar->user->email = $scholarParams->email;
         $scholar->user->role = $scholarParams->role;
@@ -47,9 +48,24 @@ class ScholarController extends Controller
         $scholar->user->ic_passport_number = $scholarParams->ic_passport_number;
         $scholar->user->bio = $scholarParams->bio;
 
+        // Set user id file
+        if($request->hasFile('id_file')){
+            if ($user->identification_file != null){
+                $path = str_replace("https://s3-ap-southeast-1.amazonaws.com/advoedu-testing/", '', $user->identification_file);
+                Storage::disk('s3')->delete($path);
+                $user->identification_file = '';
+                $user->save();
+            } 
+            $identification_file =  $this->awsService->upload($request, 'id_file', "Scholars/Scholar_".$scholar->id."/IdFile");
+            $user->identification_file = $identification_file;
+            $user->save();
+        };
+        // Set scholar school file
         if($request->hasFile('school_file')){
             if ($scholar->school_file != null){
                 $this->awsService->removeUpload($scholar, $scholar->school_file, "Scholars/Scholar_".$scholar->id."/SchoolFile"."/");
+                $scholar->school_file = '';
+                $scholar->save();
             } 
             $school_file =  $this->awsService->upload($request, 'school_file', "Scholars/Scholar_".$scholar->id."/SchoolFile");
             $scholar->school_file = $school_file;

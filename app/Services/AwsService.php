@@ -37,8 +37,6 @@ class AwsService extends TransformerService{
 			$object->file = '';
 		} elseif ($object instanceOf ScholarPost){
 			$object->cover_image = '';
-		} elseif ($object instanceOf Scholar){
-			$object->school_file = '';
 		}
 		return $object->save();
 	}
