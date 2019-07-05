@@ -18,7 +18,7 @@
 
             <div class='col-md-4'>
               <label>Role</label>
-              <select v-model="scholarParams.role" type="submit" class='form-control'>
+              <select v-model="scholarParams.role" class='form-control'>
                 <option v-for='key, value in roles' :value='value'>{{ key }}</option>
               </select>
             </div>
@@ -51,6 +51,14 @@
               <input type="file" v-on:change="onInputChange" class="form-control">
             </div>
           </div>
+          <div class='row'>
+            <div class='col-md-4'>
+              <label>School</label>
+              <select v-model="scholarParams.school" class='form-control'>
+                <option v-for='school in schools' :value='school.id'>{{ school.name }}</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -69,7 +77,7 @@
   import moment from 'moment'
   Vue.prototype.moment = moment
   export default {
-    props: ['scholar', 'reportCards', 'fundingTarget'],
+    props: ['scholar', 'reportCards', 'fundingTarget', 'schools', 'school'],
 
     data() {
       return {
@@ -83,6 +91,7 @@
           ic_passport_number: this.scholar.user.ic_passport_number,
           bio: this.scholar.user.bio,
           avatar: this.scholar.user.avatar,
+          school: this.scholar.school.name,
           interests: [],
           reportCards: []
         },
@@ -92,7 +101,7 @@
       }
     },
     mounted() {
-      console.log(this.scholar)
+      console.log('update user component', this.fundingTarget)
     },
     methods: {
       updateScholar(e){
@@ -137,6 +146,7 @@
       },
       receiveFts(fts){
         this.scholarParams.fundingTargets = fts;
+        console.log('fts', fts)
       },
       receiveInterests(interests){
         console.log('receive interests', interests)

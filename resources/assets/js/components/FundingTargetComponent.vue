@@ -5,7 +5,7 @@
         <h5 class='col'>Funding Targets</h5>
         <a class='col text-right' style="color:#0645AD;" v-if="enableAddFt" v-on:click="renderNewFtForm" >Add new funding target</a>
       </div>
-        <add-funding-target-component v-on:newFtComponent='pushFtComponent'  v-on:deleteFt='removeFt'  v-for="(ft, index) in fundingTargetComponents" :key='index+1' :index='index' :ft='scholarFundingTarget' v-if='!ft.deleted'>
+        <add-funding-target-component v-on:newFtComponent='pushFtComponent'  v-on:deleteFt='removeFt'  v-for="(ft, index) in fundingTargetComponents" :key='index+1' :index='index' :ft='ft' v-if='!ft.deleted'>
         </add-funding-target-component>
       </div>
     </div>
@@ -33,8 +33,14 @@
     },
     methods: {
       setDefaults(){
-        this.fundingTargetComponents = _.cloneDeep(this.fundingTargetComponents.concat(this.scholarFundingTarget));
-        if (this.scholarFundingTarget.length == 0){
+        var scholarFundingTarget;
+        if (this.scholarFundingTarget == null){
+        scholarFundingTarget = []
+        this.fundingTargetComponents = _.cloneDeep(this.fundingTargetComponents.concat(scholarFundingTarget));
+        } else {
+          this.fundingTargetComponents = _.cloneDeep(this.fundingTargetComponents.concat(this.scholarFundingTarget));
+        }
+        if (this.fundingTargetComponents.length == 0){
           this.enableAddFt = true
         }
         console.log('setDefaults fts', this.fundingTargetComponents)

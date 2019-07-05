@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration{
       $table->string('ic_passport_number')->nullable();
       $table->text('bio')->nullable();
 			$table->string('avatar')->nullable();
-			$table->string('indentification_file')->nullable();
+			$table->string('identification_file')->nullable();
       $table->rememberToken();
       $table->timestamps();
     });

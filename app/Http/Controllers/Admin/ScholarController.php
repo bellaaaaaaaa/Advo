@@ -2,8 +2,9 @@
 namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\User;
 use DB;
+use App\User;
+use App\School;
 use App\Scholar;
 use App\Interest;
 use App\Badge;
@@ -30,12 +31,14 @@ class ScholarController extends Controller
     public function edit(Scholar $scholar)
     {
         $user = $scholar->user;
+        $schools = School::all();
         $funding_target = $scholar->funding_targets->where('status', 'open')->sortByDesc('updated_at')->first();
-        return view('admin.scholars.edit', ['scholar' => $scholar, 'funding_target' => $funding_target, 'user' => $scholar->user]);
+        return view('admin.scholars.edit', ['schools' => $schools, 'scholar' => $scholar, 'funding_target' => $funding_target, 'user' => $scholar->user]);
     }
     public function update(Request $request, $id)
     {
         $scholarParams = json_decode($request->input('scholarParams'));
+        dd($scholarParams);
         $scholar = Scholar::find($scholarParams->scholar_id);
         $scholar->user->name = $scholarParams->name;
         $scholar->user->email = $scholarParams->email;
@@ -44,7 +47,6 @@ class ScholarController extends Controller
         $scholar->user->phone_number = $scholarParams->phone_number;
         $scholar->user->ic_passport_number = $scholarParams->ic_passport_number;
         $scholar->user->bio = $scholarParams->bio;
-        dd($scholarParams);
 
         // Set user avatar
         if($request->file('avatar')){
