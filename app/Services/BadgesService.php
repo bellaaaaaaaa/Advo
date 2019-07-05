@@ -16,7 +16,7 @@ class BadgesService extends TransformerService{
 		$offset = $request->offset ? $request->offset : 0;
 		$query = $request->search ? $request->search : '';
 		
-		$badges = Badge::orderBy($sort, $order);
+		$badges = Badge::By($sort, $order);
 		$listCount = $badges->count();
 		$badges = $badges->limit($limit)->offset($offset)->get();		
 		return respond(['rows' => $this->transformCollection($badges), 'total' => $listCount]);

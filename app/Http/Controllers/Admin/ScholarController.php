@@ -12,7 +12,8 @@ use App\ReportCard;
 use Session;
 use App\Services\ScholarsService;
 use App\Services\AwsService;
-
+use Illuminate\Support\Facades\Storage;
+use Aws\S3\S3Client;
 class ScholarController extends Controller
 {
     protected $scholarsService;
@@ -28,43 +29,37 @@ class ScholarController extends Controller
 
     public function edit(Scholar $scholar)
     {
-        $interests = Interest::all();
-        $interests2 = array();
-        foreach ($interests as $interest){
-            $interests2[$interest->id] = $interest->title;
-        };
         $user = $scholar->user;
-        $reportCards = ReportCard::where('user_id', $scholar->user_id);
-        $fundingTarget = $scholar->funding_targets->where('status', 'open');
-        return view('admin.scholars.edit', ['scholar' => $scholar, 'user' => $user, 'interests' => $interests2, 'report_cards' => $reportCards, 'fundingTarget' => $fundingTarget]);
+        $funding_target = $scholar->funding_targets->where('status', 'open')->sortByDesc('updated_at')->first();
+        return view('admin.scholars.edit', ['scholar' => $scholar, 'funding_target' => $funding_target, 'user' => $scholar->user]);
     }
     public function update(Request $request, $id)
     {
         $scholarParams = json_decode($request->input('scholarParams'));
+        $scholar = Scholar::find($scholarParams->scholar_id);
+        $scholar->user->name = $scholarParams->name;
+        $scholar->user->email = $scholarParams->email;
+        $scholar->user->role = $scholarParams->role;
+        $scholar->user->date_of_birth = $scholarParams->date_of_birth;
+        $scholar->user->phone_number = $scholarParams->phone_number;
+        $scholar->user->ic_passport_number = $scholarParams->ic_passport_number;
+        $scholar->user->bio = $scholarParams->bio;
         dd($scholarParams);
-        $user = User::find($scholarParams->user_id);
-        $user->name = $scholarParams->name;
-        $user->email = $scholarParams->email;
-        $user->role = $scholarParams->role;
-        $user->date_of_birth = $scholarParams->date_of_birth;
-        $user->phone_number = $scholarParams->phone_number;
-        $user->ic_passport_number = $scholarParams->ic_passport_number;
-        $user->bio = $scholarParams->bio;
 
         // Set user avatar
         if($request->file('avatar')){
-            if ($user->avatar != null){
-                $this->awsService->removeUpload($user, $user->avatar, "Users/Profiles/User_".$user->id."/");
+            if ($scholar->user->avatar != null){
+                $this->awsService->removeUpload($scholar->user, $scholar->user->avatar, "Users/Profiles/User_".$scholar->user->id."/");
             }   
-            $fileUrl = $this->awsService->upload($request, 'avatar', "Users/Profiles/User_".$user->id);
-            $user->avatar = $fileUrl;
+            $fileUrl = $this->awsService->upload($request, 'avatar', "Users/Profiles/User_".$scholar->user->id);
+            $scholar->user->avatar = $fileUrl;
         }
-        $user->save();
+        $scholar->user->save();
 
         // Add Interests
-        $user->interests()->detach();
+        $scholar->interests()->detach();
         foreach($scholarParams->interests as $interest){
-            $user->interests()->attach($interest->id);
+            $scholar->interests()->attach($interest->id);
         }
 
         // Update existing report cards
@@ -76,14 +71,14 @@ class ScholarController extends Controller
                     $currentReport->title = $report->title;
                     $currentReport->term_start = $report->term_start;
                     $currentReport->term_end = $report->term_end;
-                    $currentReport->user_id = $user->id;
+                    $currentReport->scholar_id = $scholar->id;
                     
                     $filePath = "belongs_to_rc_".strval($report->index);
                     if ($request->file($filePath)){
                         $filenamewithextension = $request->file($filePath)->getClientOriginalName(); 	//get filename with extension
                         $filename = pathinfo($filenamewithextension, PATHINFO_FILENAME); //get filename without extension
                         $extension = $request->file($filePath)->getClientOriginalExtension(); //get file extension
-                        $filenametostore =  "Users/ReportCards/User_".$user->id."/".$filename.'_'.time().'.'.$extension;	//filename to store
+                        $filenametostore =  "Users/ReportCards/Scholar_".$scholar->id."/".$filename.'_'.time().'.'.$extension;	//filename to store
                         Storage::disk('s3')->put($filenametostore, fopen($request->file($filePath), 'r+'), 'public');	//Upload File to s3
                         $report_url = "https://s3-ap-southeast-1.amazonaws.com/advoedu-testing/".$filenametostore;
                         $currentReport->file = $report_url;
@@ -94,7 +89,7 @@ class ScholarController extends Controller
                 }
                 if ($report->deleted == true && is_numeric($report->id)){
                     $currentReport = ReportCard::find($report->id);
-                    $this->awsService->removeUpload($currentReport, $currentReport->file, "Users/ReportCards/User_".$user->id."/");
+                    $this->awsService->removeUpload($currentReport, $currentReport->file, "Users/ReportCards/Scholar_".$scholar->id."/");
                     $currentReport->delete();
                 }
             }
@@ -107,7 +102,8 @@ class ScholarController extends Controller
                     is_numeric($ft->id) ? $currentFt = (FundingTarget::find($ft->id)) : $currentFt = new FundingTarget;
                     $currentFt->title = $ft->title;
                     $currentFt->amount = $ft->amount;
-                    $currentFt->user_id = $user->id;
+                    $currentFt->scholar_id = $scholar->id;
+                    $currentFt->user_id = $scholar->user->id;
                 } elseif ($ft->deleted == true && is_numeric($ft->id)) {
                     $currentFt = FundingTarget::find($ft->id);
                     $currentFt->status = 'closed';
@@ -116,14 +112,14 @@ class ScholarController extends Controller
             }
         };
         Session::flash('success', 'User updated!');
-        return route('users.show', ['user' => $user]);
+        return route('users.show', ['user' => $scholar->user]);
     }
     public function scholar_interests($id) {
         $scholar = Scholar::find($id);
         return $scholar->interests;
     }
     public function available_interests($id) {
-        $interests = Interest::whereDoesntHave('scholars', function($q) use ($id){ $q->where('scholar_id', $id); })->get()->all();
+        $interests = Interest::all();
         return $interests;
     }
 }

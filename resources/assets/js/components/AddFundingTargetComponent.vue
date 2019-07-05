@@ -37,6 +37,7 @@
       },
       methods: {
         setDefaults: function(){
+          debugger;
           if(this.ft.id == ''){
             this.fundingTarget.id = '';
             this.fundingTarget.title = '';

@@ -1,11 +1,10 @@
 <template>
   <div>
-    <form v-on:submit.prevent="updateUser" class="col-md-12 ">
+    <form v-on:submit.prevent="updateScholar" class="col-md-12 ">
 
-      <!-- User Details -->
       <div class='card'>
         <div class='card-body'>
-          <div class='row col-md-12'><h5>User Details</h5></div>
+          <div class='row col-md-12'><h5>Details</h5></div>
           <div class='row'>
             <div class='col-md-4'>
               <label>Name</label>
@@ -55,24 +54,11 @@
         </div>
       </div>
 
-      <!-- User Interests -->
-      <div class='card'>
-        <div class='card-body'>
-          <div class='row col-md-12'><h5>Interests</h5></div>
-          <select @change='selectInterest()' v-model="selectedInterest" type="submit" class='form-control'>
-            <option v-for='interest in interests' :value='interest'>{{ interest.title }}</option>
-          </select>
-          <div class="row" style="padding: 0px 15px !important;">
-            <div style="padding: 5px;" v-for="(interest) in selectedInterests" v-bind:key="interest.id">
-              <span :id='interest.id' :value='interest.id' class="badge badge-secondary">{{interest.title}}<i v-on:click="unselectInterest" class="fa fa-close" style="color:white"></i></span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <interest-component :scholar="scholar"  v-on:interests='receiveInterests'></interest-component>
 
-      <report-card-component :report-cards='reportCards' :user-id='userId' v-on:sendReportCards='receiveNewReportCards'></report-card-component>
+      <report-card-component :report-cards='reportCards' :scholar='scholar' v-on:sendReportCards='receiveNewReportCards'></report-card-component>
       
-      <funding-target-component :user="user" :user-funding-target='fundingTarget' v-on:sendFts='receiveFts'></funding-target-component>
+      <funding-target-component :scholar="scholar" :scholar-funding-target='fundingTarget' v-on:sendFts='receiveFts'></funding-target-component>
       <button type='submit' class='btn btn-primary'>Submit</button>
 
     </form>
@@ -83,12 +69,12 @@
   import moment from 'moment'
   Vue.prototype.moment = moment
   export default {
-    props: ['scholar', 'userId', 'user', 'reportCards', 'fundingTarget'],
+    props: ['scholar', 'reportCards', 'fundingTarget'],
 
     data() {
       return {
         scholarParams: {
-          user_id: this.userId,
+          scholar_id: this.scholar.id,
           name: this.scholar.user.name,
           email: this.scholar.user.email,
           role: this.scholar.user.role,
@@ -97,32 +83,23 @@
           ic_passport_number: this.scholar.user.ic_passport_number,
           bio: this.scholar.user.bio,
           avatar: this.scholar.user.avatar,
-          interests: this.selectedInterests,
+          interests: [],
           reportCards: []
         },
         roles: {'0' : 'Admin', '1' : 'Benefactor', '2' : 'Scholar'},
-
-        selectedInterest: '',
         selectedInterests: [],
-        interests: [],
-        unselectedInterest: '',
-
         numNewReportCards: 0,
       }
     },
     mounted() {
-      console.log('this.scholar.user', this.scholar.user),
-      this.getAllInterests(),
-      this.getUserInterests(this.userId)
+      console.log(this.scholar)
     },
     methods: {
-      // User Methods
-      updateUser(e){
+      updateScholar(e){
         const config = { headers: { 'Content-Type': undefined}}
 
         var formData = new FormData(e.target)
         formData.append('_method', 'PATCH')
-        this.scholarParams.interests = this.selectedInterests
         formData.append('scholarParams', JSON.stringify(this.scholarParams))
         if (typeof this.scholarParams.newReportCards != "undefined") {
           var i;
@@ -131,7 +108,7 @@
           }
         }
         formData.append('avatar', this.scholarParams.avatar)
-        axios.post(`/admin/scholars/${this.userId}`, formData, config)
+        axios.post(`/admin/scholars/${this.scholar.id}`, formData, config)
         .then(response => {
           	location.href = response.data;
           // window.location = res.data.redirect;
@@ -152,48 +129,7 @@
         }
         this.scholarParams.avatar = input.files[0];
       },
-      // Interest Methods
-      getAllInterests(){
-        console.log('getAllInterests')
-        axios({method: 'GET', url: `/api/available_interests/${this.scholar.id}`}).then(
-          result => {
-            this.interests = result.data
-          }
-        )
-      },
-      getUserInterests(){
-        axios({method: 'GET', url: `/api/scholar_interests/${this.scholar.id}`}).then(
-          result => {
-            this.selectedInterests = result.data
-          },
-          error => {
-            console.log(error)
-          }
-        )
-      },
-      selectInterest() {
-        console.log('selectInterest')
-        var array = [];
-        var i;
-        for (i= 0; i < this.selectedInterests.length; i++) {
-          array.push(this.selectedInterests[i].id)
-        }
-
-        if (array.includes(this.selectedInterest.id) == false ){
-          this.selectedInterests.push(this.selectedInterest)
-        }
-      },
-      unselectInterest(event){
-        console.log('unselectInterest')
-        var unselectedInterestId =  event.target.parentElement.id;
-        var x;
-        for (x = 0; x < this.selectedInterests.length; x ++){
-          if(this.selectedInterests[x].id == unselectedInterestId){
-            this.selectedInterests.splice(x, 1)
-          }
-        }
-
-      },
+      //Interest Methods
       receiveNewReportCards(reportCards){
         this.scholarParams.newReportCards = reportCards;
         console.log('report cards', this.scholarParams.newReportCards )
@@ -201,6 +137,10 @@
       },
       receiveFts(fts){
         this.scholarParams.fundingTargets = fts;
+      },
+      receiveInterests(interests){
+        console.log('receive interests', interests)
+        this.scholarParams.interests = interests;
       }
     }
   }

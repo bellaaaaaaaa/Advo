@@ -107943,6 +107943,7 @@ var map = {
 	"./components/AddFundingTargetComponent.vue": 195,
 	"./components/AddReportCardComponent.vue": 198,
 	"./components/FundingTargetComponent.vue": 201,
+	"./components/InterestComponent.vue": 235,
 	"./components/NewFundingTransactionComponent.vue": 204,
 	"./components/ReportCardComponent.vue": 207,
 	"./components/StripeTransactionComponent.vue": 210,
@@ -108057,6 +108058,7 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_0_moment___default.a;
 
   methods: {
     setDefaults: function setDefaults() {
+      debugger;
       if (this.ft.id == '') {
         this.fundingTarget.id = '';
         this.fundingTarget.title = '';
@@ -108631,12 +108633,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['user', 'userFundingTarget'],
+  props: ['scholar', 'scholarFundingTarget'],
 
   data: function data() {
     return {
       fundingTarget: {
-        user_id: this.user.id,
+        scholar_id: this.scholar.id,
         title: '',
         amount: ''
       },
@@ -108650,8 +108652,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   methods: {
     setDefaults: function setDefaults() {
-      this.fundingTargetComponents = _.cloneDeep(this.fundingTargetComponents.concat(this.userFundingTarget));
-      if (this.userFundingTarget.length == 0) {
+      this.fundingTargetComponents = _.cloneDeep(this.fundingTargetComponents.concat(this.scholarFundingTarget));
+      if (this.scholarFundingTarget.length == 0) {
         this.enableAddFt = true;
       }
       console.log('setDefaults fts', this.fundingTargetComponents);
@@ -108659,7 +108661,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     renderNewFtForm: function renderNewFtForm() {
       if (this.enableAddFt == true) {
         this.fundingTargetComponents.push({
-          user_id: this.user.id,
+          scholar_id: this.scholar.id,
           title: '',
           amount: '',
           deleted: false,
@@ -108741,7 +108743,7 @@ var render = function() {
           return !ft.deleted
             ? _c("add-funding-target-component", {
                 key: index + 1,
-                attrs: { index: index, ft: ft },
+                attrs: { index: index, ft: _vm.scholarFundingTarget },
                 on: {
                   newFtComponent: _vm.pushFtComponent,
                   deleteFt: _vm.removeFt
@@ -109375,7 +109377,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['userId', 'reportCards'],
+  props: ['scholar', 'reportCards'],
 
   data: function data() {
     return {
@@ -109383,13 +109385,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       images: [],
       imgSrc: '',
       newReportCard: [{
-        user_id: this.userId,
+        scholar_id: this.scholar.id,
         title: '',
         term_start: '',
         term_end: '',
         deleted: false
       }],
-      user_id: this.userId,
+      scholar_id: this.scholar.id,
       reportCardComponents: []
     };
   },
@@ -110241,31 +110243,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
 Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['scholar', 'userId', 'user', 'reportCards', 'fundingTarget'],
+  props: ['scholar', 'reportCards', 'fundingTarget'],
 
   data: function data() {
     return {
       scholarParams: {
-        user_id: this.userId,
+        scholar_id: this.scholar.id,
         name: this.scholar.user.name,
         email: this.scholar.user.email,
         role: this.scholar.user.role,
@@ -110274,31 +110262,24 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
         ic_passport_number: this.scholar.user.ic_passport_number,
         bio: this.scholar.user.bio,
         avatar: this.scholar.user.avatar,
-        interests: this.selectedInterests,
+        interests: [],
         reportCards: []
       },
       roles: { '0': 'Admin', '1': 'Benefactor', '2': 'Scholar' },
-
-      selectedInterest: '',
       selectedInterests: [],
-      interests: [],
-      unselectedInterest: '',
-
       numNewReportCards: 0
     };
   },
   mounted: function mounted() {
-    console.log('this.scholar.user', this.scholar.user), this.getAllInterests(), this.getUserInterests(this.userId);
+    console.log(this.scholar);
   },
 
   methods: {
-    // User Methods
-    updateUser: function updateUser(e) {
+    updateScholar: function updateScholar(e) {
       var config = { headers: { 'Content-Type': undefined } };
 
       var formData = new FormData(e.target);
       formData.append('_method', 'PATCH');
-      this.scholarParams.interests = this.selectedInterests;
       formData.append('scholarParams', JSON.stringify(this.scholarParams));
       if (typeof this.scholarParams.newReportCards != "undefined") {
         var i;
@@ -110307,7 +110288,7 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
         }
       }
       formData.append('avatar', this.scholarParams.avatar);
-      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/admin/scholars/' + this.userId, formData, config).then(function (response) {
+      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/admin/scholars/' + this.scholar.id, formData, config).then(function (response) {
         location.href = response.data;
         // window.location = res.data.redirect;
       }).catch(function (err) {
@@ -110327,52 +110308,17 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
       this.scholarParams.avatar = input.files[0];
     },
 
-    // Interest Methods
-    getAllInterests: function getAllInterests() {
-      var _this = this;
-
-      console.log('getAllInterests');
-      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/available_interests/' + this.scholar.id }).then(function (result) {
-        _this.interests = result.data;
-      });
-    },
-    getUserInterests: function getUserInterests() {
-      var _this2 = this;
-
-      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/scholar_interests/' + this.scholar.id }).then(function (result) {
-        _this2.selectedInterests = result.data;
-      }, function (error) {
-        console.log(error);
-      });
-    },
-    selectInterest: function selectInterest() {
-      console.log('selectInterest');
-      var array = [];
-      var i;
-      for (i = 0; i < this.selectedInterests.length; i++) {
-        array.push(this.selectedInterests[i].id);
-      }
-
-      if (array.includes(this.selectedInterest.id) == false) {
-        this.selectedInterests.push(this.selectedInterest);
-      }
-    },
-    unselectInterest: function unselectInterest(event) {
-      console.log('unselectInterest');
-      var unselectedInterestId = event.target.parentElement.id;
-      var x;
-      for (x = 0; x < this.selectedInterests.length; x++) {
-        if (this.selectedInterests[x].id == unselectedInterestId) {
-          this.selectedInterests.splice(x, 1);
-        }
-      }
-    },
+    //Interest Methods
     receiveNewReportCards: function receiveNewReportCards(reportCards) {
       this.scholarParams.newReportCards = reportCards;
       console.log('report cards', this.scholarParams.newReportCards);
     },
     receiveFts: function receiveFts(fts) {
       this.scholarParams.fundingTargets = fts;
+    },
+    receiveInterests: function receiveInterests(interests) {
+      console.log('receive interests', interests);
+      this.scholarParams.interests = interests;
     }
   }
 });
@@ -110393,7 +110339,7 @@ var render = function() {
         on: {
           submit: function($event) {
             $event.preventDefault()
-            return _vm.updateUser($event)
+            return _vm.updateScholar($event)
           }
         }
       },
@@ -110627,91 +110573,21 @@ var render = function() {
           ])
         ]),
         _vm._v(" "),
-        _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "card-body" }, [
-            _vm._m(1),
-            _vm._v(" "),
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.selectedInterest,
-                    expression: "selectedInterest"
-                  }
-                ],
-                staticClass: "form-control",
-                attrs: { type: "submit" },
-                on: {
-                  change: [
-                    function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.selectedInterest = $event.target.multiple
-                        ? $$selectedVal
-                        : $$selectedVal[0]
-                    },
-                    function($event) {
-                      _vm.selectInterest()
-                    }
-                  ]
-                }
-              },
-              _vm._l(_vm.interests, function(interest) {
-                return _c("option", { domProps: { value: interest } }, [
-                  _vm._v(_vm._s(interest.title))
-                ])
-              })
-            ),
-            _vm._v(" "),
-            _c(
-              "div",
-              {
-                staticClass: "row",
-                staticStyle: { padding: "0px 15px !important" }
-              },
-              _vm._l(_vm.selectedInterests, function(interest) {
-                return _c(
-                  "div",
-                  { key: interest.id, staticStyle: { padding: "5px" } },
-                  [
-                    _c(
-                      "span",
-                      {
-                        staticClass: "badge badge-secondary",
-                        attrs: { id: interest.id, value: interest.id }
-                      },
-                      [
-                        _vm._v(_vm._s(interest.title)),
-                        _c("i", {
-                          staticClass: "fa fa-close",
-                          staticStyle: { color: "white" },
-                          on: { click: _vm.unselectInterest }
-                        })
-                      ]
-                    )
-                  ]
-                )
-              })
-            )
-          ])
-        ]),
+        _c("interest-component", {
+          attrs: { scholar: _vm.scholar },
+          on: { interests: _vm.receiveInterests }
+        }),
         _vm._v(" "),
         _c("report-card-component", {
-          attrs: { "report-cards": _vm.reportCards, "user-id": _vm.userId },
+          attrs: { "report-cards": _vm.reportCards, scholar: _vm.scholar },
           on: { sendReportCards: _vm.receiveNewReportCards }
         }),
         _vm._v(" "),
         _c("funding-target-component", {
-          attrs: { user: _vm.user, "user-funding-target": _vm.fundingTarget },
+          attrs: {
+            scholar: _vm.scholar,
+            "scholar-funding-target": _vm.fundingTarget
+          },
           on: { sendFts: _vm.receiveFts }
         }),
         _vm._v(" "),
@@ -110731,9 +110607,259 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "row col-md-12" }, [
-      _c("h5", [_vm._v("User Details")])
+      _c("h5", [_vm._v("Details")])
     ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-5de05d7c", module.exports)
+  }
+}
+
+/***/ }),
+/* 216 */,
+/* 217 */,
+/* 218 */,
+/* 219 */,
+/* 220 */,
+/* 221 */,
+/* 222 */,
+/* 223 */,
+/* 224 */,
+/* 225 */,
+/* 226 */,
+/* 227 */,
+/* 228 */,
+/* 229 */,
+/* 230 */,
+/* 231 */,
+/* 232 */,
+/* 233 */,
+/* 234 */,
+/* 235 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(7)
+/* script */
+var __vue_script__ = __webpack_require__(236)
+/* template */
+var __vue_template__ = __webpack_require__(237)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/InterestComponent.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-3bb5424c", Component.options)
+  } else {
+    hotAPI.reload("data-v-3bb5424c", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 236 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_moment__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['scholar'],
+
+  data: function data() {
+    return {
+      selectedInterest: '',
+      selectedInterests: [],
+      interests: [],
+      unselectedInterest: ''
+    };
   },
+  mounted: function mounted() {
+    this.getAvailableInterests(), this.getScholarInterests();
+  },
+
+  methods: {
+    getAvailableInterests: function getAvailableInterests() {
+      var _this = this;
+
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/available_interests/' + this.scholar.id }).then(function (result) {
+        _this.interests = result.data;
+      });
+    },
+    getScholarInterests: function getScholarInterests() {
+      var _this2 = this;
+
+      __WEBPACK_IMPORTED_MODULE_0_axios___default()({ method: 'GET', url: '/api/scholar_interests/' + this.scholar.id }).then(function (result) {
+        _this2.selectedInterests = result.data;
+      }, function (error) {
+        console.log(error);
+      });
+    },
+    selectInterest: function selectInterest() {
+      console.log('selectInterest');
+      var array = [];
+      var i;
+      for (i = 0; i < this.selectedInterests.length; i++) {
+        array.push(this.selectedInterests[i].id);
+      }
+
+      if (array.includes(this.selectedInterest.id) == false) {
+        this.selectedInterests.push(this.selectedInterest);
+      }
+      this.selectedInterest = null;
+      this.$emit('interests', this.selectedInterests);
+    },
+    unselectInterest: function unselectInterest(event) {
+      console.log('unselectInterest');
+      var unselectedInterestId = event.target.parentElement.id;
+      var x;
+      for (x = 0; x < this.selectedInterests.length; x++) {
+        if (this.selectedInterests[x].id == unselectedInterestId) {
+          this.selectedInterests.splice(x, 1);
+        }
+      }
+      this.selectedInterest = null;
+      this.$emit('interests', this.selectedInterests);
+    }
+  }
+});
+
+/***/ }),
+/* 237 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "card" }, [
+    _c("div", { staticClass: "card-body" }, [
+      _vm._m(0),
+      _vm._v(" "),
+      _c(
+        "select",
+        {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.selectedInterest,
+              expression: "selectedInterest"
+            }
+          ],
+          staticClass: "form-control",
+          attrs: { type: "submit" },
+          on: {
+            change: [
+              function($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function(o) {
+                    return o.selected
+                  })
+                  .map(function(o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return val
+                  })
+                _vm.selectedInterest = $event.target.multiple
+                  ? $$selectedVal
+                  : $$selectedVal[0]
+              },
+              function($event) {
+                _vm.selectInterest()
+              }
+            ]
+          }
+        },
+        _vm._l(_vm.interests, function(interest) {
+          return _c("option", { domProps: { value: interest } }, [
+            _vm._v(_vm._s(interest.title))
+          ])
+        })
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "row", staticStyle: { padding: "0px 15px !important" } },
+        _vm._l(_vm.selectedInterests, function(interest) {
+          return _c(
+            "div",
+            { key: interest.id, staticStyle: { padding: "5px" } },
+            [
+              _c(
+                "span",
+                {
+                  staticClass: "badge badge-secondary",
+                  attrs: { id: interest.id, value: interest.id }
+                },
+                [
+                  _vm._v(_vm._s(interest.title)),
+                  _c("i", {
+                    staticClass: "fa fa-close",
+                    staticStyle: { color: "white" },
+                    on: { click: _vm.unselectInterest }
+                  })
+                ]
+              )
+            ]
+          )
+        })
+      )
+    ])
+  ])
+}
+var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -110748,7 +110874,7 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-5de05d7c", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-3bb5424c", module.exports)
   }
 }
 

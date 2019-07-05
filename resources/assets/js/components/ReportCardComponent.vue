@@ -17,7 +17,7 @@
 <script>
   import axios from 'axios'
   export default {
-    props: ['userId', 'reportCards'],
+    props: ['scholar', 'reportCards'],
 
     data() {
       return {
@@ -25,13 +25,13 @@
         images: [],
         imgSrc: '',
         newReportCard :[{
-          user_id: this.userId,
+          scholar_id: this.scholar.id,
           title: '',
           term_start: '',
           term_end: '',
           deleted: false
         }],
-        user_id: this.userId,
+        scholar_id: this.scholar.id,
         reportCardComponents: [],
       }
     },

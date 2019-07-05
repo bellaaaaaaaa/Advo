@@ -6,9 +6,9 @@
 </style>
 @section('content')
   <div style="padding:20px">
-    <h2>Update Scholar: {{$user->id}}</h2>
+    <h2>Update Scholar: {{$scholar->id}}</h2>
     <hr>
-  <update-user-component  :scholar="{{ $scholar }}" :funding-target="{{ $fundingTarget }}":user-id="{{ $user->id }}" :user="{{ $user }}" :report-cards="{{ $scholar->report_cards }}"></update-user-component>
+  <update-user-component :scholar="{{ $scholar }}" :funding-target="{{ $funding_target }}" :report-cards="{{ $scholar->report_cards }}"></update-user-component>
   </div>
 @endsection
 @section('scripts')
