@@ -107949,8 +107949,8 @@ var map = {
 	"./components/PostComponent.vue": 213,
 	"./components/ReportCardComponent.vue": 216,
 	"./components/StripeTransactionComponent.vue": 219,
-	"./components/UpdateScholarComponent.vue": 241,
-	"./components/UpdateUserComponent.vue": 222
+	"./components/UpdateUserComponent.vue": 222,
+	"./components/UserDetailsComponent.vue": 244
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -110968,51 +110968,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -111024,21 +110979,12 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
     return {
       scholarParams: {
         scholar_id: this.scholar.id,
-        name: this.scholar.user.name,
-        email: this.scholar.user.email,
-        role: this.scholar.user.role,
-        date_of_birth: this.scholar.user.date_of_birth,
-        phone_number: this.scholar.user.phone_number,
-        ic_passport_number: this.scholar.user.ic_passport_number,
-        bio: this.scholar.user.bio,
-        avatar: this.scholar.user.avatar,
         school: this.scholar.school.name,
         school_file: this.scholar.school_file,
         id_file: this.scholar.user.identification_file,
         interests: [],
         reportCards: []
       },
-      roles: { '0': 'Admin', '1': 'Benefactor', '2': 'Scholar' },
       selectedInterests: []
     };
   },
@@ -111108,6 +111054,16 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
     receiveInterests: function receiveInterests(interests) {
       console.log('receive interests', interests);
       this.scholarParams.interests = interests;
+    },
+    receiveUserInfo: function receiveUserInfo(info) {
+      this.scholarParams.name = info.name;
+      this.scholarParams.email = info.email;
+      this.scholarParams.phone_number = info.phone_number;
+      this.scholarParams.role = info.role;
+      this.scholarParams.date_of_birth = info.date_of_birth;
+      this.scholarParams.ic_passport_number = info.ic_passport_number;
+      this.scholarParams.bio = info.bio;
+      this.scholarParams.avatar = info.avatar;
     }
   }
 });
@@ -111134,296 +111090,82 @@ var render = function() {
       },
       [
         _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "card-body" }, [
-            _vm._m(0),
-            _vm._v(" "),
-            _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-md-4" }, [
-                _c("label", [_vm._v("Name")]),
-                _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.scholarParams.name,
-                      expression: "scholarParams.name"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  domProps: { value: _vm.scholarParams.name },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.$set(_vm.scholarParams, "name", $event.target.value)
-                    }
-                  }
-                })
-              ]),
+          _c(
+            "div",
+            { staticClass: "card-body" },
+            [
+              _c("user-details-component", {
+                attrs: { scholar: _vm.scholar },
+                on: { sendUserInfo: _vm.receiveUserInfo }
+              }),
               _vm._v(" "),
-              _c("div", { staticClass: "col-md-4" }, [
-                _c("label", [_vm._v("Email")]),
-                _vm._v(" "),
-                _c("input", {
-                  directives: [
+              _c("div", { staticClass: "row" }, [
+                _c("div", { staticClass: "col-md-4" }, [
+                  _c("label", [_vm._v("School")]),
+                  _vm._v(" "),
+                  _c(
+                    "select",
                     {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.scholarParams.email,
-                      expression: "scholarParams.email"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  domProps: { value: _vm.scholarParams.email },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.scholarParams.school,
+                          expression: "scholarParams.school"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      on: {
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.$set(
+                            _vm.scholarParams,
+                            "school",
+                            $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          )
+                        }
                       }
-                      _vm.$set(_vm.scholarParams, "email", $event.target.value)
-                    }
-                  }
-                })
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-md-4" }, [
-                _c("label", [_vm._v("Role")]),
+                    },
+                    _vm._l(_vm.schools, function(school) {
+                      return _c("option", { domProps: { value: school.id } }, [
+                        _vm._v(_vm._s(school.name))
+                      ])
+                    })
+                  )
+                ]),
                 _vm._v(" "),
-                _c(
-                  "select",
-                  {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.scholarParams.role,
-                        expression: "scholarParams.role"
-                      }
-                    ],
+                _c("div", { staticClass: "col-md-4" }, [
+                  _c("label", [_vm._v("School File")]),
+                  _vm._v(" "),
+                  _c("input", {
                     staticClass: "form-control",
-                    on: {
-                      change: function($event) {
-                        var $$selectedVal = Array.prototype.filter
-                          .call($event.target.options, function(o) {
-                            return o.selected
-                          })
-                          .map(function(o) {
-                            var val = "_value" in o ? o._value : o.value
-                            return val
-                          })
-                        _vm.$set(
-                          _vm.scholarParams,
-                          "role",
-                          $event.target.multiple
-                            ? $$selectedVal
-                            : $$selectedVal[0]
-                        )
-                      }
-                    }
-                  },
-                  _vm._l(_vm.roles, function(key, value) {
-                    return _c("option", { domProps: { value: value } }, [
-                      _vm._v(_vm._s(key))
-                    ])
+                    attrs: { id: "school_file", type: "file" },
+                    on: { change: _vm.onInputChange }
                   })
-                )
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-md-4" }, [
-                _c("label", [_vm._v("Date of Birth")]),
+                ]),
                 _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.scholarParams.date_of_birth,
-                      expression: "scholarParams.date_of_birth"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: { type: "date" },
-                  domProps: { value: _vm.scholarParams.date_of_birth },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.$set(
-                        _vm.scholarParams,
-                        "date_of_birth",
-                        $event.target.value
-                      )
-                    }
-                  }
-                })
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-md-4" }, [
-                _c("label", [_vm._v("Phone Number")]),
-                _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.scholarParams.phone_number,
-                      expression: "scholarParams.phone_number"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  domProps: { value: _vm.scholarParams.phone_number },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.$set(
-                        _vm.scholarParams,
-                        "phone_number",
-                        $event.target.value
-                      )
-                    }
-                  }
-                })
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-md-4" }, [
-                _c("label", [_vm._v("IC/Passport Number")]),
-                _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.scholarParams.ic_passport_number,
-                      expression: "scholarParams.ic_passport_number"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  domProps: { value: _vm.scholarParams.ic_passport_number },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.$set(
-                        _vm.scholarParams,
-                        "ic_passport_number",
-                        $event.target.value
-                      )
-                    }
-                  }
-                })
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-md-6" }, [
-                _c("label", [_vm._v("Bio")]),
-                _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.scholarParams.bio,
-                      expression: "scholarParams.bio"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  domProps: { value: _vm.scholarParams.bio },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.$set(_vm.scholarParams, "bio", $event.target.value)
-                    }
-                  }
-                })
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-md-6" }, [
-                _c("label", [_vm._v("Avatar")]),
-                _vm._v(" "),
-                _c("input", {
-                  staticClass: "form-control",
-                  attrs: { id: "avatar", type: "file" },
-                  on: { change: _vm.onInputChange }
-                })
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-md-4" }, [
-                _c("label", [_vm._v("School")]),
-                _vm._v(" "),
-                _c(
-                  "select",
-                  {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.scholarParams.school,
-                        expression: "scholarParams.school"
-                      }
-                    ],
+                _c("div", { staticClass: "col-md-4" }, [
+                  _c("label", [_vm._v("ID File")]),
+                  _vm._v(" "),
+                  _c("input", {
                     staticClass: "form-control",
-                    on: {
-                      change: function($event) {
-                        var $$selectedVal = Array.prototype.filter
-                          .call($event.target.options, function(o) {
-                            return o.selected
-                          })
-                          .map(function(o) {
-                            var val = "_value" in o ? o._value : o.value
-                            return val
-                          })
-                        _vm.$set(
-                          _vm.scholarParams,
-                          "school",
-                          $event.target.multiple
-                            ? $$selectedVal
-                            : $$selectedVal[0]
-                        )
-                      }
-                    }
-                  },
-                  _vm._l(_vm.schools, function(school) {
-                    return _c("option", { domProps: { value: school.id } }, [
-                      _vm._v(_vm._s(school.name))
-                    ])
+                    attrs: { id: "id_file", type: "file" },
+                    on: { change: _vm.onInputChange }
                   })
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-md-4" }, [
-                _c("label", [_vm._v("School File")]),
-                _vm._v(" "),
-                _c("input", {
-                  staticClass: "form-control",
-                  attrs: { id: "school_file", type: "file" },
-                  on: { change: _vm.onInputChange }
-                })
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-md-4" }, [
-                _c("label", [_vm._v("ID File")]),
-                _vm._v(" "),
-                _c("input", {
-                  staticClass: "form-control",
-                  attrs: { id: "id_file", type: "file" },
-                  on: { change: _vm.onInputChange }
-                })
+                ])
               ])
-            ])
-          ])
+            ],
+            1
+          )
         ]),
         _vm._v(" "),
         _c("interest-component", {
@@ -111459,16 +111201,7 @@ var render = function() {
     )
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row col-md-12" }, [
-      _c("h5", [_vm._v("Details")])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -111495,15 +111228,18 @@ if (false) {
 /* 238 */,
 /* 239 */,
 /* 240 */,
-/* 241 */
+/* 241 */,
+/* 242 */,
+/* 243 */,
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(6)
 /* script */
-var __vue_script__ = __webpack_require__(242)
+var __vue_script__ = __webpack_require__(245)
 /* template */
-var __vue_template__ = __webpack_require__(243)
+var __vue_template__ = __webpack_require__(246)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -111520,7 +111256,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources/assets/js/components/UpdateScholarComponent.vue"
+Component.options.__file = "resources/assets/js/components/UserDetailsComponent.vue"
 
 /* hot reload */
 if (false) {(function () {
@@ -111529,9 +111265,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-f9d8ead2", Component.options)
+    hotAPI.createRecord("data-v-b958c306", Component.options)
   } else {
-    hotAPI.reload("data-v-f9d8ead2", Component.options)
+    hotAPI.reload("data-v-b958c306", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -111542,7 +111278,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 242 */
+/* 245 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -111607,18 +111343,111 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: [],
+  props: ['scholar'],
 
   data: function data() {
-    return {};
+    return {
+      userParams: {
+        scholar_id: this.scholar.id,
+        name: this.scholar.user.name ? this.scholar.user.name : '',
+        email: this.scholar.user.email ? this.scholar.user.email : '',
+        role: this.scholar.user.role ? this.scholar.user.role : '',
+        date_of_birth: this.scholar.user.date_of_birth ? this.scholar.user.date_of_birth : '',
+        phone_number: this.scholar.user.phone_number ? this.scholar.user.phone_number : '',
+        ic_passport_number: this.scholar.user.ic_passport_number ? this.scholar.user.ic_passport_number : '',
+        bio: this.scholar.user.bio ? this.scholar.user.bio : '',
+        avatar: this.scholar.user.avatar ? this.scholar.user.avatar : ''
+      },
+      roles: { '0': 'Admin', '1': 'Benefactor', '2': 'Scholar' }
+    };
   },
-  mounted: function mounted() {},
+  mounted: function mounted() {
+    this.userListeners();
+  },
 
-  methods: {}
+  methods: {
+    onInputChange: function onInputChange(event) {
+      var input = event.target;
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        var vm = this;
+        reader.onload = function (e) {
+          vm.imageSrc = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+      if (event.target.id == 'avatar') {
+        this.userParams.avatar = input.files[0];
+        this.$emit('sendUserInfo', this.userParams);
+      }
+    },
+
+    userListeners: function userListeners(e) {
+      var self = this;
+      this.id = this.index;
+      var timer;
+      $("#name").on("keyup", function (event) {
+        var searchid = $(this).val().trim();
+
+        clearInterval(timer);
+        timer = setTimeout(function () {
+          self.userParams.name = event.target.value;
+          self.onUserUpdated();
+        }, 200);
+      });
+      $("#email").on("keyup", function (event) {
+        var searchid = $(this).val().trim();
+
+        clearInterval(timer);
+        timer = setTimeout(function () {
+          self.userParams.email = event.target.value;
+          self.onUserUpdated();
+        }, 200);
+      });
+      $("#role").on('change', function (event) {
+        self.userParams.role = event.target.value;
+        self.onUserUpdated();
+      });
+      $("#date_of_birth").on('change', function (event) {
+        self.userParams.date_of_birth = event.target.value;
+        self.onUserUpdated();
+      });
+      $("#phone_number").on("keyup", function (event) {
+        var searchid = $(this).val().trim();
+
+        clearInterval(timer);
+        timer = setTimeout(function () {
+          self.userParams.phone_number = event.target.value;
+          self.onUserUpdated();
+        }, 200);
+      });
+      $("#ic_passport_number").on("keyup", function (event) {
+        var searchid = $(this).val().trim();
+
+        clearInterval(timer);
+        timer = setTimeout(function () {
+          self.userParams.ic_passport_number = event.target.value;
+          self.onUserUpdated();
+        }, 200);
+      });
+      $("#bio").on("keyup", function (event) {
+        var searchid = $(this).val().trim();
+
+        clearInterval(timer);
+        timer = setTimeout(function () {
+          self.userParams.bio = event.target.value;
+          self.onUserUpdated();
+        }, 200);
+      });
+    },
+    onUserUpdated: function onUserUpdated() {
+      this.$emit('sendUserInfo', this.userParams);
+    }
+  }
 });
 
 /***/ }),
-/* 243 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -111637,18 +111466,19 @@ var render = function() {
             {
               name: "model",
               rawName: "v-model",
-              value: _vm.scholarParams.name,
-              expression: "scholarParams.name"
+              value: _vm.userParams.name,
+              expression: "userParams.name"
             }
           ],
           staticClass: "form-control",
-          domProps: { value: _vm.scholarParams.name },
+          attrs: { id: "name" },
+          domProps: { value: _vm.userParams.name },
           on: {
             input: function($event) {
               if ($event.target.composing) {
                 return
               }
-              _vm.$set(_vm.scholarParams, "name", $event.target.value)
+              _vm.$set(_vm.userParams, "name", $event.target.value)
             }
           }
         })
@@ -111662,18 +111492,19 @@ var render = function() {
             {
               name: "model",
               rawName: "v-model",
-              value: _vm.scholarParams.email,
-              expression: "scholarParams.email"
+              value: _vm.userParams.email,
+              expression: "userParams.email"
             }
           ],
           staticClass: "form-control",
-          domProps: { value: _vm.scholarParams.email },
+          attrs: { id: "email" },
+          domProps: { value: _vm.userParams.email },
           on: {
             input: function($event) {
               if ($event.target.composing) {
                 return
               }
-              _vm.$set(_vm.scholarParams, "email", $event.target.value)
+              _vm.$set(_vm.userParams, "email", $event.target.value)
             }
           }
         })
@@ -111689,11 +111520,12 @@ var render = function() {
               {
                 name: "model",
                 rawName: "v-model",
-                value: _vm.scholarParams.role,
-                expression: "scholarParams.role"
+                value: _vm.userParams.role,
+                expression: "userParams.role"
               }
             ],
             staticClass: "form-control",
+            attrs: { id: "role" },
             on: {
               change: function($event) {
                 var $$selectedVal = Array.prototype.filter
@@ -111705,7 +111537,7 @@ var render = function() {
                     return val
                   })
                 _vm.$set(
-                  _vm.scholarParams,
+                  _vm.userParams,
                   "role",
                   $event.target.multiple ? $$selectedVal : $$selectedVal[0]
                 )
@@ -111730,19 +111562,19 @@ var render = function() {
             {
               name: "model",
               rawName: "v-model",
-              value: _vm.scholarParams.date_of_birth,
-              expression: "scholarParams.date_of_birth"
+              value: _vm.userParams.date_of_birth,
+              expression: "userParams.date_of_birth"
             }
           ],
           staticClass: "form-control",
-          attrs: { type: "date" },
-          domProps: { value: _vm.scholarParams.date_of_birth },
+          attrs: { id: "date_of_birth", type: "date" },
+          domProps: { value: _vm.userParams.date_of_birth },
           on: {
             input: function($event) {
               if ($event.target.composing) {
                 return
               }
-              _vm.$set(_vm.scholarParams, "date_of_birth", $event.target.value)
+              _vm.$set(_vm.userParams, "date_of_birth", $event.target.value)
             }
           }
         })
@@ -111756,18 +111588,19 @@ var render = function() {
             {
               name: "model",
               rawName: "v-model",
-              value: _vm.scholarParams.phone_number,
-              expression: "scholarParams.phone_number"
+              value: _vm.userParams.phone_number,
+              expression: "userParams.phone_number"
             }
           ],
           staticClass: "form-control",
-          domProps: { value: _vm.scholarParams.phone_number },
+          attrs: { id: "phone_number" },
+          domProps: { value: _vm.userParams.phone_number },
           on: {
             input: function($event) {
               if ($event.target.composing) {
                 return
               }
-              _vm.$set(_vm.scholarParams, "phone_number", $event.target.value)
+              _vm.$set(_vm.userParams, "phone_number", $event.target.value)
             }
           }
         })
@@ -111781,19 +111614,20 @@ var render = function() {
             {
               name: "model",
               rawName: "v-model",
-              value: _vm.scholarParams.ic_passport_number,
-              expression: "scholarParams.ic_passport_number"
+              value: _vm.userParams.ic_passport_number,
+              expression: "userParams.ic_passport_number"
             }
           ],
           staticClass: "form-control",
-          domProps: { value: _vm.scholarParams.ic_passport_number },
+          attrs: { id: "ic_passport_number" },
+          domProps: { value: _vm.userParams.ic_passport_number },
           on: {
             input: function($event) {
               if ($event.target.composing) {
                 return
               }
               _vm.$set(
-                _vm.scholarParams,
+                _vm.userParams,
                 "ic_passport_number",
                 $event.target.value
               )
@@ -111812,18 +111646,19 @@ var render = function() {
             {
               name: "model",
               rawName: "v-model",
-              value: _vm.scholarParams.bio,
-              expression: "scholarParams.bio"
+              value: _vm.userParams.bio,
+              expression: "userParams.bio"
             }
           ],
           staticClass: "form-control",
-          domProps: { value: _vm.scholarParams.bio },
+          attrs: { id: "bio" },
+          domProps: { value: _vm.userParams.bio },
           on: {
             input: function($event) {
               if ($event.target.composing) {
                 return
               }
-              _vm.$set(_vm.scholarParams, "bio", $event.target.value)
+              _vm.$set(_vm.userParams, "bio", $event.target.value)
             }
           }
         })
@@ -111856,7 +111691,7 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-f9d8ead2", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-b958c306", module.exports)
   }
 }
 
