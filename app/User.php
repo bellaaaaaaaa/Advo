@@ -9,13 +9,13 @@ class User extends Authenticatable
   public function scholar(){
     return $this->hasOne('App\Scholar');
   }
+  public function benefactor(){
+    return $this->hasOne('App\Benefactor');
+  }
   // old maybe idk
   public function funding_targets(){
     return $this->hasMany('App\FundingTarget');
   }
-  // public function report_cards(){
-  //   return $this->hasMany('App\ReportCard');
-  // }
   public function scholar_posts(){
     return $this->hasMany('App\ScholarPost');
   }
