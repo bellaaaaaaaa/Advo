@@ -6,17 +6,15 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
   use HasApiTokens, Notifiable;
-  public function interests(){
-    return $this->belongsToMany('App\Interest');
+  public function scholar(){
+    return $this->hasOne('App\Scholar');
   }
-  public function badges(){
-    return $this->belongsToMany('App\Badge');
+  public function benefactor(){
+    return $this->hasOne('App\Benefactor');
   }
+  // old maybe idk
   public function funding_targets(){
     return $this->hasMany('App\FundingTarget');
-  }
-  public function report_cards(){
-    return $this->hasMany('App\ReportCard');
   }
   public function scholar_posts(){
     return $this->hasMany('App\ScholarPost');

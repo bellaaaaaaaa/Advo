@@ -1,25 +1,24 @@
 <template>
   <div>
-    <form v-on:submit.prevent="updateUser" class="col-md-12 ">
+    <form v-on:submit.prevent="updateScholar" class="col-md-12 ">
 
-      <!-- User Details -->
       <div class='card'>
         <div class='card-body'>
-          <div class='row col-md-12'><h5>User Details</h5></div>
+          <div class='row col-md-12'><h5>Details</h5></div>
           <div class='row'>
             <div class='col-md-4'>
               <label>Name</label>
-              <input v-model="userParams.name" class="form-control"></input>
+              <input v-model="scholarParams.name" class="form-control"></input>
             </div>
 
             <div class='col-md-4'>
               <label>Email</label>
-              <input v-model="userParams.email" class="form-control"></input>
+              <input v-model="scholarParams.email" class="form-control"></input>
             </div>
 
             <div class='col-md-4'>
               <label>Role</label>
-              <select v-model="userParams.role" type="submit" class='form-control'>
+              <select v-model="scholarParams.role" class='form-control'>
                 <option v-for='key, value in roles' :value='value'>{{ key }}</option>
               </select>
             </div>
@@ -28,66 +27,56 @@
           <div class='row'>
             <div class='col-md-4'>
               <label>Date of Birth</label>
-              <input v-model="userParams.date_of_birth" type='date' class="form-control"></input>
+              <input v-model="scholarParams.date_of_birth" type='date' class="form-control"></input>
             </div>
 
             <div class='col-md-4'>
               <label>Phone Number</label>
-              <input v-model="userParams.phone_number" class="form-control"></input>
+              <input v-model="scholarParams.phone_number" class="form-control"></input>
             </div>
 
             <div class='col-md-4'>
               <label>IC/Passport Number</label>
-              <input v-model="userParams.ic_passport_number" class="form-control"></input>
+              <input v-model="scholarParams.ic_passport_number" class="form-control"></input>
             </div>
           </div> <!-- end row -->
 
           <div class='row'>
             <div class='col-md-6'>
               <label>Bio</label>
-              <input v-model="userParams.bio" class="form-control"></input>
+              <input v-model="scholarParams.bio" class="form-control"></input>
             </div>
             <div class='col-md-6'>
+              <label>School</label>
+              <select v-model="scholarParams.school" class='form-control'>
+                <option v-for='school in schools' :value='school.id'>{{ school.name }}</option>
+              </select>
+            </div>
+          </div>
+          <div class='row'>
+            <div class='col-md-4'>
               <label>Avatar</label>
-              <input type="file" v-on:change="onInputChange" class="form-control">
+              <input id="avatar" type="file" v-on:change="onInputChange" class="form-control">
+            </div>
+            <div class='col-md-4'>
+              <label>School File</label>
+              <input id="school_file" type="file" v-on:change="onInputChange" class="form-control">
+            </div>
+            <div class='col-md-4'>
+              <label>ID File</label>
+              <input id="id_file" type="file" v-on:change="onInputChange" class="form-control">
             </div>
           </div>
         </div>
       </div>
 
-      <!-- User Badges -->
-      <div class='card'>
-        <div class='card-body'>
-          <div class='row col-md-12'><h5>User Badges</h5></div>
-          <select @change='selectBadge()' v-model="selectedBadge" type="submit" class='form-control'>
-            <option v-for='badge in badges' :value='badge'>{{ badge.title }}</option>
-          </select>
-          <div class="row" style="padding: 0px 15px !important;">
-            <div style="padding: 5px;" v-for="(badge) in selectedBadges" v-bind:key="badge.id">
-              <span :id='badge.id' :value='badge.id' class="badge badge-secondary">{{badge.title}}<i v-on:click="unselectBadge" class="fa fa-close" style="color:white"></i></span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <interest-component :scholar="scholar"  v-on:interests='receiveInterests'></interest-component>
 
-      <!-- User Interests -->
-      <div class='card'>
-        <div class='card-body'>
-          <div class='row col-md-12'><h5>User Interests</h5></div>
-          <select @change='selectInterest()' v-model="selectedInterest" type="submit" class='form-control'>
-            <option v-for='interest in interests' :value='interest'>{{ interest.title }}</option>
-          </select>
-          <div class="row" style="padding: 0px 15px !important;">
-            <div style="padding: 5px;" v-for="(interest) in selectedInterests" v-bind:key="interest.id">
-              <span :id='interest.id' :value='interest.id' class="badge badge-secondary">{{interest.title}}<i v-on:click="unselectInterest" class="fa fa-close" style="color:white"></i></span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <report-card-component :report-cards='reportCards' :scholar='scholar' v-on:sendReportCards='receiveNewReportCards'></report-card-component>
 
-      <report-card-component :report-cards='reportCards' :user-id='userId' v-on:sendReportCards='receiveNewReportCards'></report-card-component>
+      <post-component :posts='posts' :scholar='scholar' v-on:sendPosts='receiveNewPosts'></post-component>
       
-      <funding-target-component :user="user" :user-funding-target='fundingTarget' v-on:sendFts='receiveFts'></funding-target-component>
+      <funding-target-component :scholar="scholar" :scholar-funding-target='fundingTarget' v-on:sendFts='receiveFts'></funding-target-component>
       <button type='submit' class='btn btn-primary'>Submit</button>
 
     </form>
@@ -98,63 +87,55 @@
   import moment from 'moment'
   Vue.prototype.moment = moment
   export default {
-    props: ['userId', 'user', 'userBadges', 'reportCards', 'fundingTarget'],
+    props: ['scholar', 'reportCards', 'fundingTarget', 'schools', 'school', 'posts'],
 
     data() {
       return {
-        userParams: {
-          user_id: this.userId,
-          name: this.user.name,
-          email: this.user.email,
-          role: this.user.role,
-          date_of_birth: this.user.date_of_birth,
-          phone_number: this.user.phone_number,
-          ic_passport_number: this.user.ic_passport_number,
-          bio: this.user.bio,
-          avatar: this.user.avatar,
-          badges: this.selectedBadges,
-          interests: this.selectedInterests,
+        scholarParams: {
+          scholar_id: this.scholar.id,
+          name: this.scholar.user.name,
+          email: this.scholar.user.email,
+          role: this.scholar.user.role,
+          date_of_birth: this.scholar.user.date_of_birth,
+          phone_number: this.scholar.user.phone_number,
+          ic_passport_number: this.scholar.user.ic_passport_number,
+          bio: this.scholar.user.bio,
+          avatar: this.scholar.user.avatar,
+          school: this.scholar.school.name,
+          school_file: this.scholar.school_file,
+          id_file: this.scholar.user.identification_file,
+          interests: [],
           reportCards: []
         },
         roles: {'0' : 'Admin', '1' : 'Benefactor', '2' : 'Scholar'},
-        selectedBadge: '',
-        selectedBadges: [],
-        badges: [],
-        unselectedBadge: '',
-
-        selectedInterest: '',
-        selectedInterests: [],
-        interests: [],
-        unselectedInterest: '',
-
-        numNewReportCards: 0,
+        selectedInterests: []
       }
     },
     mounted() {
-      this.getUser(),
-      this.getAllBadges(),
-      this.getUserBadges(this.userId),
-      this.getAllInterests(),
-      this.getUserInterests(this.userId)
     },
     methods: {
-      // User Methods
-      updateUser(e){
+      updateScholar(e){
         const config = { headers: { 'Content-Type': undefined}}
 
         var formData = new FormData(e.target)
         formData.append('_method', 'PATCH')
-        this.userParams.badges = this.selectedBadges
-        this.userParams.interests = this.selectedInterests
-        formData.append('userParams', JSON.stringify(this.userParams))
-        if (typeof this.userParams.newReportCards != "undefined") {
+        formData.append('scholarParams', JSON.stringify(this.scholarParams))
+        if (typeof this.scholarParams.newReportCards != "undefined") {
           var i;
-          for (i = 0; i < this.userParams.newReportCards.length; i++) {
-            formData.append("belongs_to_rc_" + this.userParams.newReportCards[i].index, this.userParams.newReportCards[i].file)
+          for (i = 0; i < this.scholarParams.newReportCards.length; i++) {
+            formData.append("belongs_to_rc_" + this.scholarParams.newReportCards[i].index, this.scholarParams.newReportCards[i].file)
           }
         }
-        formData.append('avatar', this.userParams.avatar)
-        axios.post(`/admin/users/${this.userId}`, formData, config)
+        if (typeof this.scholarParams.newPosts != "undefined") {
+          var x;
+          for (x = 0; x < this.scholarParams.newPosts.length; x++) {
+            formData.append("belongs_to_post_" + this.scholarParams.newPosts[x].index, this.scholarParams.newPosts[x].cover_image)
+          }
+        }
+        formData.append('avatar', this.scholarParams.avatar)
+        formData.append('school_file', this.scholarParams.school_file)
+        formData.append('id_file', this.scholarParams.id_file)
+        axios.post(`/admin/scholars/${this.scholar.id}`, formData, config)
         .then(response => {
           	location.href = response.data;
           // window.location = res.data.redirect;
@@ -173,94 +154,32 @@
             }
             reader.readAsDataURL(input.files[0]);
         }
-        this.userParams.avatar = input.files[0];
-      },
-      // Badge Methods
-      getAllBadges(){
-        axios({method: 'GET', url: `/api/user_badges_options/${this.userId}`}).then(
-          result => {
-            this.badges = result.data
-          }
-        )
-      },
-      getUserBadges(){
-        axios({method: 'GET', url: `/api/user_badges/${this.userId}`}).then(
-          result => {
-            this.selectedBadges = result.data
-          },
-          error => {
-            console.log(error)
-          }
-        )
-      },
-      selectBadge() {
-        var array = [];
-        var i;
-        for (i= 0; i < this.selectedBadges.length; i++) {
-          array.push(this.selectedBadges[i].id)
-        }
-
-        if (array.includes(this.selectedBadge.id) == false ){
-          this.selectedBadges.push(this.selectedBadge)
+        if(event.target.id == 'avatar'){
+          this.scholarParams.avatar = input.files[0];
+        } else if (event.target.id == 'school_file'){
+          this.scholarParams.school_file = input.files[0];
+        } else if (event.target.id == 'id_file'){
+          this.scholarParams.id_file = input.files[0];
         }
       },
-      unselectBadge(event){
-        console.log('unselected badge id', event.target.parentElement.id)
-        var unselectedBadgeId =  event.target.parentElement.id;
-        var x;
-        for (x = 0; x < this.selectedBadges.length; x ++){
-          if(this.selectedBadges[x].id == unselectedBadgeId){
-            this.selectedBadges.splice(x, 1)
-          }
-        }
-
-      },
-      // Interest Methods
-      getAllInterests(){
-        axios({method: 'GET', url: `/api/user_interests_options/${this.userId}`}).then(
-          result => {
-            this.interests = result.data
-          }
-        )
-      },
-      getUserInterests(){
-        axios({method: 'GET', url: `/api/user_interests/${this.userId}`}).then(
-          result => {
-            this.selectedInterests = result.data
-          },
-          error => {
-            console.log(error)
-          }
-        )
-      },
-      selectInterest() {
-        var array = [];
-        var i;
-        for (i= 0; i < this.selectedInterests.length; i++) {
-          array.push(this.selectedInterests[i].id)
-        }
-
-        if (array.includes(this.selectedInterest.id) == false ){
-          this.selectedInterests.push(this.selectedInterest)
-        }
-      },
-      unselectInterest(event){
-        var unselectedInterestId =  event.target.parentElement.id;
-        var x;
-        for (x = 0; x < this.selectedInterests.length; x ++){
-          if(this.selectedInterests[x].id == unselectedInterestId){
-            this.selectedInterests.splice(x, 1)
-          }
-        }
-
-      },
+      //Interest Methods
       receiveNewReportCards(reportCards){
-        this.userParams.newReportCards = reportCards;
-        console.log('report cards', this.userParams.newReportCards )
+        this.scholarParams.newReportCards = reportCards;
+        console.log('report cards', this.scholarParams.newReportCards )
+
+      },
+      receiveNewPosts(posts){
+        this.scholarParams.newPosts = posts;
+        console.log('received new posts', this.scholarParams.newPosts )
 
       },
       receiveFts(fts){
-        this.userParams.fundingTargets = fts;
+        this.scholarParams.fundingTargets = fts;
+        console.log('fts', fts)
+      },
+      receiveInterests(interests){
+        console.log('receive interests', interests)
+        this.scholarParams.interests = interests;
       }
     }
   }

@@ -44,12 +44,6 @@
         </div>
       </div>
     </div>
-    <div class="card col-md-8 col-sm-6 col-12">
-        <h4 style="margin: 10px 0;"><small>Interests</small></h4>
-        <div id="bar-container">
-          <div id="bar-chart" style="stroke-width: 20px;"></div>
-        </div>
-      </div>
   </div>
 @endsection
 
@@ -78,14 +72,6 @@
     };
     var pie1 = new Chartist.Pie('#chartPie1', data, {
     });
-    var interests = <?php echo json_encode($interest_obj) ?>;
-    var interest_values = <?php echo json_encode($interest_obj) ?>;
-    var data = {
-      labels: Object.keys(interests),
-      series: [
-        Object.values(interests)
-      ]
-    };
     var options = {
       seriesBarDistance: 30
     };
@@ -100,6 +86,5 @@
       }]
     ];
 
-    new Chartist.Bar('#bar-chart', data, options, responsiveOptions);
   </script>
 @endsection

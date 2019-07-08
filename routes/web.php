@@ -44,6 +44,7 @@ Route::prefix('admin')->group(function(){
 
     //Users
     Route::resource('users', 'Admin\UsersController');
+    Route::resource('scholars', 'Admin\ScholarController');
     //Interests
     Route::resource('interests', 'Admin\InterestsController');
     //Badges

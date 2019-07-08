@@ -15,12 +15,12 @@
 <script>
   import axios from 'axios'
   export default {
-    props: ['user', 'userFundingTarget'],
+    props: ['scholar', 'scholarFundingTarget'],
 
     data() {
       return {
         fundingTarget :{
-          user_id: this.user.id,
+          scholar_id: this.scholar.id,
           title: '',
           amount: ''
         },
@@ -33,8 +33,14 @@
     },
     methods: {
       setDefaults(){
-        this.fundingTargetComponents = _.cloneDeep(this.fundingTargetComponents.concat(this.userFundingTarget));
-        if (this.userFundingTarget.length == 0){
+        var scholarFundingTarget;
+        if (this.scholarFundingTarget == null){
+        scholarFundingTarget = []
+        this.fundingTargetComponents = _.cloneDeep(this.fundingTargetComponents.concat(scholarFundingTarget));
+        } else {
+          this.fundingTargetComponents = _.cloneDeep(this.fundingTargetComponents.concat(this.scholarFundingTarget));
+        }
+        if (this.fundingTargetComponents.length == 0){
           this.enableAddFt = true
         }
         console.log('setDefaults fts', this.fundingTargetComponents)
@@ -42,7 +48,7 @@
       renderNewFtForm(){
         if (this.enableAddFt == true){
           this.fundingTargetComponents.push({
-            user_id: this.user.id,
+            scholar_id: this.scholar.id,
             title: '',
             amount: '',
             deleted: false,

@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Interest extends Model
 {
-    public function users(){
-        return $this->belongsToMany('App\User');
+    protected $fillable = ['title'];
+    public function scholars(){
+        return $this->belongsToMany('App\Scholar');
     }
 }

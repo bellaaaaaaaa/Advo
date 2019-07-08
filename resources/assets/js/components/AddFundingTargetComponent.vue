@@ -42,7 +42,7 @@
             this.fundingTarget.title = '';
             this.fundingTarget.index = this.index;
             this.fundingTarget.deleted = false;
-            this.fundingTarget.amount = '',
+            this.fundingTarget.amount = '';
             this.fundingTarget.amount_gained = ''
           }else{
             this.fundingTarget.id = this.ft.id;

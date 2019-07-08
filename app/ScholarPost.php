@@ -6,14 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class ScholarPost extends Model
 {
-    protected $fillable = ['title', 'body', 'cover_image'];
+    protected $fillable = ['title', 'body', 'cover_image', 'scholar_id'];
+    // old
     public function user() {
         return $this->belongsTo('App\User');
     }
+    //new
+    public function scholar() {
+        return $this->belongsTo('App\Scholar');
+    }
     public function scholar_post_likes(){
         return $this->hasMany('App\ScholarPostLike');
-    }
-    public function scholar_post_comments(){
-        return $this->hasMany('App\ScholarPostComment');
     }
 }

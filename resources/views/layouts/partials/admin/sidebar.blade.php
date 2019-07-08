@@ -27,17 +27,23 @@
         </a>
       </li>
       <li class="nav-item {{ is_active('users') }}">
-          <a class="nav-link" href="{{ route('users.index') }}">
-            <i class="fa fa-male text-info"></i>
-            <p>Users</p>
-          </a>
-        </li>
-        <li class="nav-item {{ is_active('interests') }}">
-            <a class="nav-link" href="{{ route('interests.index') }}">
-              <i class="fa fa-star text-info"></i>
-              <p>Interests</p>
-            </a>
-          </li>
+        <a class="nav-link" href="{{ route('users.index') }}">
+          <i class="fa fa-male text-info"></i>
+          <p>Users</p>
+        </a>
+      </li>
+      <li class="nav-item {{ is_active('scholars') }}">
+        <a class="nav-link" href="{{ route('scholars.index') }}">
+          <i class="fa fa-male text-info"></i>
+          <p>Scholars</p>
+        </a>
+      </li>
+      <li class="nav-item {{ is_active('interests') }}">
+        <a class="nav-link" href="{{ route('interests.index') }}">
+          <i class="fa fa-star text-info"></i>
+          <p>Interests</p>
+        </a>
+      </li>
 			<li class="nav-item {{ is_active('badges') }}">
 				<a class="nav-link" href="{{ route('badges.index') }}">
 					<i class="fa fa-gift text-info"></i>
