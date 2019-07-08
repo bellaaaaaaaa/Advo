@@ -47,16 +47,16 @@
               <input v-model="scholarParams.bio" class="form-control"></input>
             </div>
             <div class='col-md-6'>
-              <label>School</label>
-              <select v-model="scholarParams.school" class='form-control'>
-                <option v-for='school in schools' :value='school.id'>{{ school.name }}</option>
-              </select>
+              <label>Avatar</label>
+              <input id="avatar" type="file" v-on:change="onInputChange" class="form-control">
             </div>
           </div>
           <div class='row'>
             <div class='col-md-4'>
-              <label>Avatar</label>
-              <input id="avatar" type="file" v-on:change="onInputChange" class="form-control">
+              <label>School</label>
+              <select v-model="scholarParams.school" class='form-control'>
+                <option v-for='school in schools' :value='school.id'>{{ school.name }}</option>
+              </select>
             </div>
             <div class='col-md-4'>
               <label>School File</label>

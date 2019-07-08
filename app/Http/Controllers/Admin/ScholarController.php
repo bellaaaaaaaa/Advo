@@ -33,6 +33,7 @@ class ScholarController extends Controller
         $user = $scholar->user;
         $schools = School::all();
         $funding_target = $scholar->funding_targets->where('status', 'open')->sortByDesc('updated_at')->first();
+        // dd('schools', $schools, 'scholar', $scholar, 'ft', $funding_target, 'user', $user, 'rcs', $scholar->report_cards, 'posts', $scholar->scholar_posts);
         return view('admin.scholars.edit', ['schools' => $schools, 'scholar' => $scholar, 'funding_target' => $funding_target, 'user' => $scholar->user]);
     }
     public function update(Request $request, $id)
