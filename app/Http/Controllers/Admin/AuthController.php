@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use App\User;
 use App\Scholar;
+use App\Benefactor;
 use Auth;
 use App\Services\AwsService;
 
