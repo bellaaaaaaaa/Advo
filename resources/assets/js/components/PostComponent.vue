@@ -36,14 +36,11 @@
       }
     },
     mounted() {
-      console.log('scholar', this.scholar)
       this.setDefaults()
     },
     methods: {
       setDefaults() {
-
         this.postComponents = _.cloneDeep(this.postComponents.concat(this.posts));
-        console.log('setDefaults posts', this.postComponents)
       },
       removePost(deletedPost, index){
         let filterPosts = _.reject(this.postComponents, function(rc){

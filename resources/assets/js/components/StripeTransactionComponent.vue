@@ -164,7 +164,6 @@
             var name = result.data
             name += "'s "
             this.scholarName = name
-            console.log(this.scholarName);
           },
           error => {
             console.log(error)
@@ -176,7 +175,6 @@
         this.scholar_id = event.target.value;
         this.getScholarName()
         this.getScholarFundingTargets()
-        console.log(this.scholarFundingTargets)
       },
       isNumber: function(evt) {
         evt = (evt) ? evt : window.event;

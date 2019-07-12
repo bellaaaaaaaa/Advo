@@ -4,7 +4,7 @@
 
       <div class='card'>
         <div class='card-body'>
-          <user-details-component :scholar='scholar' v-on:sendUserInfo='receiveUserInfo'></user-details-component>
+          <user-details-component :user-pivot='scholar' v-on:sendUserInfo='receiveUserInfo'></user-details-component>
           
           <div class='row'>
             <div class='col-md-4'>
@@ -58,6 +58,7 @@
       }
     },
     mounted() {
+      console.log('reportCards', this.reportCards)
     },
     methods: {
       updateScholar(e){
@@ -111,20 +112,16 @@
       //Interest Methods
       receiveNewReportCards(reportCards){
         this.scholarParams.newReportCards = reportCards;
-        console.log('report cards', this.scholarParams.newReportCards )
 
       },
       receiveNewPosts(posts){
         this.scholarParams.newPosts = posts;
-        console.log('received new posts', this.scholarParams.newPosts )
 
       },
       receiveFts(fts){
         this.scholarParams.fundingTargets = fts;
-        console.log('fts', fts)
       },
       receiveInterests(interests){
-        console.log('receive interests', interests)
         this.scholarParams.interests = interests;
       },
       receiveUserInfo(info){

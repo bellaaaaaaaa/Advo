@@ -54,28 +54,33 @@
   import moment from 'moment'
   Vue.prototype.moment = moment
   export default {
-    props: ['scholar'],
+    props: ['userPivot', 'user'],
 
     data() {
       return {
         userParams: {
-          scholar_id: this.scholar.id,
-          name: this.scholar.user.name ? this.scholar.user.name : '' ,
-          email: this.scholar.user.email ? this.scholar.user.email : '',
-          role: this.scholar.user.role ? this.scholar.user.role : '',
-          date_of_birth: this.scholar.user.date_of_birth ? this.scholar.user.date_of_birth : '',
-          phone_number: this.scholar.user.phone_number ? this.scholar.user.phone_number : '',
-          ic_passport_number: this.scholar.user.ic_passport_number ? this.scholar.user.ic_passport_number : '',
-          bio: this.scholar.user.bio ? this.scholar.user.bio : '',
-          avatar: this.scholar.user.avatar ? this.scholar.user.avatar : '',
+          name: ''
         },
         roles: {'0' : 'Admin', '1' : 'Benefactor', '2' : 'Scholar'}
       }
     },
     mounted() {
+      this.setDefaults(),
       this.userListeners()
     },
     methods: {
+      setDefaults(){
+        this.userParams.user_pivot_id = this.userPivot.id
+        this.userParams.name = this.userPivot.user.name ? this.userPivot.user.name : ''
+        this.userParams.email = this.userPivot.user.email ? this.userPivot.user.email : ''
+        this.userParams.role = this.userPivot.user.role ? this.userPivot.user.role : ''
+        this.userParams.date_of_birth = this.userPivot.user.date_of_birth ? this.userPivot.user.date_of_birth : ''
+        this.userParams.phone_number = this.userPivot.user.phone_number ? this.userPivot.user.phone_number : ''
+        this.userParams.ic_passport_number = this.userPivot.user.ic_passport_number ? this.userPivot.user.ic_passport_number : ''
+        this.userParams.bio = this.userPivot.bio ? this.userPivot.bio : ''
+        this.userParams.avatar = this.userPivot.user.avatar ? this.userPivot.user.avatar : ''
+        this.onUserUpdated()
+      },
       onInputChange(event) {
         var input = event.target;
         if (input.files && input.files[0]) {

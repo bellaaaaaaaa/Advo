@@ -39,14 +39,17 @@ class BenefactorController extends Controller
         //
     }
 
-    public function edit($id)
+    public function edit(Benefactor $benefactor)
     {
-        //
+        $user = $benefactor->user;
+        return view('admin.benefactors.edit', ['benefactor' => $benefactor, 'user' => $user]);
     }
 
     public function update(Request $request, $id)
     {
-        //
+        $params = json_decode($request->input('benParams'));
+        $ben = Benefactor::find($params->user_pivot_id);
+        $user = $ben->user;
     }
 
     public function destroy($id)

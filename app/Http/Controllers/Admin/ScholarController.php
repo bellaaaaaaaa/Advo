@@ -38,7 +38,7 @@ class ScholarController extends Controller
     public function update(Request $request, $id)
     {
         $scholarParams = json_decode($request->input('scholarParams'));
-        $scholar = Scholar::find($scholarParams->scholar_id);
+        $scholar = Scholar::find($scholarParams->user_pivot_id);
         $user = $scholar->user;
         $scholar->user->name = $scholarParams->name;
         $scholar->user->email = $scholarParams->email;
