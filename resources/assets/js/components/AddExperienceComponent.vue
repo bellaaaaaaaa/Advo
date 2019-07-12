@@ -18,7 +18,7 @@
       <div class='row'>
         <div class='col-md-5'>
             <label>From</label>
-            <vue-monthly-picker v-model="newExperience.year_from"></vue-monthly-picker>
+            <vue-monthly-picker :class="'date_from' + index" @change='dateFrom' v-model="newExperience.date_from"></vue-monthly-picker>
             <label>To</label>
             <vue-monthly-picker v-model="newExperience.year_to"></vue-monthly-picker>
         </div>
@@ -47,8 +47,8 @@
           id: '',
           position: '',
           organisation: '',
-          year_from: '',
-          year_to: '',
+          date_from: '',
+          date_to: '',
           description: ''
         }
         }
@@ -65,7 +65,8 @@
             this.newExperience.index = this.index;
             this.newExperience.position = '';
             this.newExperience.organisation = null;
-            this.newExperience.year = null;
+            this.newExperience.date_from = null;
+            this.newExperience.date_to = null;
             this.newExperience.description = null;
             this.newExperience.deleted = false;
           }else{
@@ -73,8 +74,9 @@
             this.newExperience.index = this.index;
             this.newExperience.position = this.exp.position;
             this.newExperience.organisation = this.exp.organisation;
-            this.newExperience.year = this.exp.year;
-            this.newExperience.description = this.exp.year;
+            this.newExperience.date_from = this.exp.date_from;
+            this.newExperience.date_to = this.exp.date_to;
+            this.newExperience.description = this.exp.description;
             this.newExperience.deleted = false;
           }
         },
@@ -106,6 +108,11 @@
                 self.onExperienceUpdated();
             }, 200);
           });
+          $('.date_from' + this.index).on('change', function(event) {
+            console.log('date from', event.target.value)
+            self.newReportCard.date_from = event.target.value
+            self.onExperienceUpdated();
+          });
         },
         onExperienceUpdated: function() {
           let experience = {
@@ -113,7 +120,8 @@
             index: this.index,
             position: this.newExperience.position ? this.newExperience.position: null,
             organisation: this.newExperience.organisation ? this.newExperience.organisation : null,
-            year: this.newExperience.year ? this.newExperience.year : null,
+            date_from: this.newExperience.date_from ? this.newExperience.date_from : null,
+            date_to: this.newExperience.date_to ? this.newExperience.date_to : null,
             description: this.newExperience.description ? this.newExperience.description : null,
             deleted: false
           }
@@ -122,6 +130,9 @@
         removeExperience: function(){
           this.newExperience.deleted = true;
           this.$emit('deleteExperience', this.newExperience, this.index);
+        },
+        dateFrom(event){
+          console.log('date from', event.target.value)
         }
       }
     }

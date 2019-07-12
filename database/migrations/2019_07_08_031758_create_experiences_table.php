@@ -18,7 +18,8 @@ class CreateExperiencesTable extends Migration
             $table->integer('benefactor_id');
             $table->string('position');
             $table->string('organisation');
-            $table->date('year');
+            $table->date('date_from');
+            $table->date('date_to');
             $table->text('description');
             $table->timestamps();
         });

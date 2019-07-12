@@ -15,6 +15,7 @@
             <div class='col-md-4'>
               <label>Company</label>
               <input id="company" v-model="params.company" type="text" class="form-control">
+              <!--<GmapAutocomplete class='form-control' @place_changed="onLocationAdded" ref="autocomplete"></GmapAutocomplete>-->
             </div>
             <div class='col-md-4'>
               <label>Position</label>
@@ -34,10 +35,14 @@
   </div>
 </template>
 <script>
+  import {gmapApi} from 'vue2-google-maps';
   import axios from 'axios'
   import moment from 'moment'
   Vue.prototype.moment = moment
   export default {
+    computed: {
+      google: gmapApi
+    },
     props: ['benefactor', 'user', 'experiences'],
 
     data() {
@@ -55,7 +60,6 @@
     methods: {
       updateBen(e){
         const config = { headers: { 'Content-Type': undefined}}
-
         var formData = new FormData(e.target)
         formData.append('_method', 'PATCH')
         formData.append('benParams', JSON.stringify(this.params))
@@ -90,6 +94,9 @@
       },
       receiveExperiences(experiences){
         this.params.experiences = experiences
+      },
+      onLocationAdded(company) {
+        this.params.company = company;
       }
     }
   }

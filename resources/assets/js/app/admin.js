@@ -58,6 +58,14 @@ window.Vue = require('vue');
 const files = require.context('../', true, /\.vue$/i)
 files.keys().map(key => {Vue.component(key.split('/').pop().split('.')[0], files(key))});
 
+// Google Autocomplete
+import * as VueGoogleMaps from 'vue2-google-maps';
+Vue.use(VueGoogleMaps, {
+    load: {
+      key: 'AIzaSyCv1OncUGD97w-rcIEtDtdcyHYOcvVs4UI',
+      libraries: 'places',
+    },
+  });
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
