@@ -4,59 +4,14 @@
 
       <div class='card'>
         <div class='card-body'>
-          <div class='row col-md-12'><h5>Details</h5></div>
+          <user-details-component :user-pivot='scholar' v-on:sendUserInfo='receiveUserInfo'></user-details-component>
+          
           <div class='row'>
             <div class='col-md-4'>
-              <label>Name</label>
-              <input v-model="scholarParams.name" class="form-control"></input>
-            </div>
-
-            <div class='col-md-4'>
-              <label>Email</label>
-              <input v-model="scholarParams.email" class="form-control"></input>
-            </div>
-
-            <div class='col-md-4'>
-              <label>Role</label>
-              <select v-model="scholarParams.role" class='form-control'>
-                <option v-for='key, value in roles' :value='value'>{{ key }}</option>
-              </select>
-            </div>
-          </div> <!-- end row -->
-
-          <div class='row'>
-            <div class='col-md-4'>
-              <label>Date of Birth</label>
-              <input v-model="scholarParams.date_of_birth" type='date' class="form-control"></input>
-            </div>
-
-            <div class='col-md-4'>
-              <label>Phone Number</label>
-              <input v-model="scholarParams.phone_number" class="form-control"></input>
-            </div>
-
-            <div class='col-md-4'>
-              <label>IC/Passport Number</label>
-              <input v-model="scholarParams.ic_passport_number" class="form-control"></input>
-            </div>
-          </div> <!-- end row -->
-
-          <div class='row'>
-            <div class='col-md-6'>
-              <label>Bio</label>
-              <input v-model="scholarParams.bio" class="form-control"></input>
-            </div>
-            <div class='col-md-6'>
               <label>School</label>
               <select v-model="scholarParams.school" class='form-control'>
                 <option v-for='school in schools' :value='school.id'>{{ school.name }}</option>
               </select>
-            </div>
-          </div>
-          <div class='row'>
-            <div class='col-md-4'>
-              <label>Avatar</label>
-              <input id="avatar" type="file" v-on:change="onInputChange" class="form-control">
             </div>
             <div class='col-md-4'>
               <label>School File</label>
@@ -93,25 +48,17 @@
       return {
         scholarParams: {
           scholar_id: this.scholar.id,
-          name: this.scholar.user.name,
-          email: this.scholar.user.email,
-          role: this.scholar.user.role,
-          date_of_birth: this.scholar.user.date_of_birth,
-          phone_number: this.scholar.user.phone_number,
-          ic_passport_number: this.scholar.user.ic_passport_number,
-          bio: this.scholar.user.bio,
-          avatar: this.scholar.user.avatar,
           school: this.scholar.school.name,
           school_file: this.scholar.school_file,
           id_file: this.scholar.user.identification_file,
           interests: [],
           reportCards: []
         },
-        roles: {'0' : 'Admin', '1' : 'Benefactor', '2' : 'Scholar'},
         selectedInterests: []
       }
     },
     mounted() {
+      console.log('reportCards', this.reportCards)
     },
     methods: {
       updateScholar(e){
@@ -165,21 +112,27 @@
       //Interest Methods
       receiveNewReportCards(reportCards){
         this.scholarParams.newReportCards = reportCards;
-        console.log('report cards', this.scholarParams.newReportCards )
 
       },
       receiveNewPosts(posts){
         this.scholarParams.newPosts = posts;
-        console.log('received new posts', this.scholarParams.newPosts )
 
       },
       receiveFts(fts){
         this.scholarParams.fundingTargets = fts;
-        console.log('fts', fts)
       },
       receiveInterests(interests){
-        console.log('receive interests', interests)
         this.scholarParams.interests = interests;
+      },
+      receiveUserInfo(info){
+        this.scholarParams.name = info.name
+        this.scholarParams.email = info.email
+        this.scholarParams.phone_number = info.phone_number
+        this.scholarParams.role = info.role
+        this.scholarParams.date_of_birth = info.date_of_birth
+        this.scholarParams.ic_passport_number = info.ic_passport_number
+        this.scholarParams.bio = info.bio
+        this.scholarParams.avatar = info.avatar
       }
     }
   }

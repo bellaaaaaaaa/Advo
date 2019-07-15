@@ -43,7 +43,6 @@
         if (this.fundingTargetComponents.length == 0){
           this.enableAddFt = true
         }
-        console.log('setDefaults fts', this.fundingTargetComponents)
       },
       renderNewFtForm(){
         if (this.enableAddFt == true){
@@ -71,7 +70,6 @@
         }
       },
       removeFt(deletedFt, index){
-        console.log('funding target components', this.fundingTargetComponents)
         let filterFts = _.reject(this.fundingTargetComponents, function(ft){
           return ft.index == deletedFt.index;
         })

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateBenefactorsTable extends Migration
+class CreateExperiencesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,14 @@ class CreateBenefactorsTable extends Migration
      */
     public function up()
     {
-        Schema::create('benefactors', function (Blueprint $table) {
+        Schema::create('experiences', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id');
-            $table->string('company')->nullable();
-            $table->string('position')->nullable();
+            $table->integer('benefactor_id');
+            $table->string('position');
+            $table->string('organisation');
+            $table->date('date_from');
+            $table->date('date_to');
+            $table->text('description');
             $table->timestamps();
         });
     }
@@ -29,6 +32,6 @@ class CreateBenefactorsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('benefactors');
+        Schema::dropIfExists('experiences');
     }
 }

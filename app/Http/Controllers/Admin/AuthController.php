@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use App\User;
 use App\Scholar;
+use App\Benefactor;
 use Auth;
 use App\Services\AwsService;
 
@@ -29,6 +30,9 @@ class AuthController extends Controller{
 
 		$user = User::create($request->all());
 		$user->password = password_hash($request->password, PASSWORD_BCRYPT);
+		if ($user->role == 1) {
+			Benefactor::create(['user_id' => $user->id]);
+		};
 		if ($user->role == 2) {
 			Scholar::create(['user_id' => $user->id]);
 		};

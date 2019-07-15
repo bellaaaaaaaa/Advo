@@ -51,7 +51,6 @@
         )
       },
       selectInterest() {
-        console.log('selectInterest')
         var array = [];
         var i;
         for (i= 0; i < this.selectedInterests.length; i++) {
@@ -65,7 +64,6 @@
         this.$emit('interests', this.selectedInterests);
       },
       unselectInterest(event){
-        console.log('unselectInterest')
         var unselectedInterestId =  event.target.parentElement.id;
         var x;
         for (x = 0; x < this.selectedInterests.length; x ++){

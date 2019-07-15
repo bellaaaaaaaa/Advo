@@ -38,6 +38,12 @@
           <p>Scholars</p>
         </a>
       </li>
+      <li class="nav-item {{ is_active('benefactors') }}">
+        <a class="nav-link" href="{{ route('benefactors.index') }}">
+          <i class="fa fa-male text-info"></i>
+          <p>Benefactors</p>
+        </a>
+      </li>
       <li class="nav-item {{ is_active('interests') }}">
         <a class="nav-link" href="{{ route('interests.index') }}">
           <i class="fa fa-star text-info"></i>

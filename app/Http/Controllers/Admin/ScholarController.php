@@ -38,15 +38,15 @@ class ScholarController extends Controller
     public function update(Request $request, $id)
     {
         $scholarParams = json_decode($request->input('scholarParams'));
-        $scholar = Scholar::find($scholarParams->scholar_id);
+        $scholar = Scholar::find($scholarParams->user_pivot_id);
         $user = $scholar->user;
-        $scholar->user->name = $scholarParams->name;
-        $scholar->user->email = $scholarParams->email;
-        $scholar->user->role = $scholarParams->role;
-        $scholar->user->date_of_birth = $scholarParams->date_of_birth;
-        $scholar->user->phone_number = $scholarParams->phone_number;
-        $scholar->user->ic_passport_number = $scholarParams->ic_passport_number;
-        $scholar->user->bio = $scholarParams->bio;
+        $user->name = $scholarParams->name;
+        $user->email = $scholarParams->email;
+        $user->role = $scholarParams->role;
+        $user->date_of_birth = $scholarParams->date_of_birth;
+        $user->phone_number = $scholarParams->phone_number;
+        $user->ic_passport_number = $scholarParams->ic_passport_number;
+        $user->bio = $scholarParams->bio;
 
         // Set user id file
         if($request->hasFile('id_file')){
