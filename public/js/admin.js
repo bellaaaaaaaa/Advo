@@ -109332,11 +109332,6 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_0_moment___default.a;
           self.onExperienceUpdated();
         }, 200);
       });
-      $('.date_from' + this.index).on('change', function (event) {
-        console.log('date from', event.target.value);
-        self.newReportCard.date_from = event.target.value;
-        self.onExperienceUpdated();
-      });
     },
     onExperienceUpdated: function onExperienceUpdated() {
       var experience = {
@@ -109356,7 +109351,13 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_0_moment___default.a;
       this.$emit('deleteExperience', this.newExperience, this.index);
     },
     dateFrom: function dateFrom(event) {
-      console.log('date from', event.target.value);
+      this.newExperience.date_from = event._i;
+      this.onExperienceUpdated();
+    },
+    dateTo: function dateTo(event) {
+      this.newExperience.date_to = event._i;
+      debugger;
+      this.onExperienceUpdated();
     }
   }
 });
@@ -109459,8 +109460,7 @@ var render = function() {
             _c("label", [_vm._v("From")]),
             _vm._v(" "),
             _c("vue-monthly-picker", {
-              class: "date_from" + _vm.index,
-              on: { change: _vm.dateFrom },
+              on: { selected: _vm.dateFrom },
               model: {
                 value: _vm.newExperience.date_from,
                 callback: function($$v) {
@@ -109473,12 +109473,13 @@ var render = function() {
             _c("label", [_vm._v("To")]),
             _vm._v(" "),
             _c("vue-monthly-picker", {
+              on: { selected: _vm.dateTo },
               model: {
-                value: _vm.newExperience.year_to,
+                value: _vm.newExperience.date_to,
                 callback: function($$v) {
-                  _vm.$set(_vm.newExperience, "year_to", $$v)
+                  _vm.$set(_vm.newExperience, "date_to", $$v)
                 },
-                expression: "newExperience.year_to"
+                expression: "newExperience.date_to"
               }
             })
           ],
@@ -112716,10 +112717,14 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_2_moment___default.a;
     };
   },
   mounted: function mounted() {
-    console.log('experiences', this.experiences);
+    this.setDefaults();
   },
 
   methods: {
+    setDefaults: function setDefaults() {
+      this.params.company = this.benefactor.company ? this.benefactor.company : '';
+      this.params.position = this.benefactor.position ? this.benefactor.position : '';
+    },
     updateBen: function updateBen(e) {
       var config = { headers: { 'Content-Type': undefined } };
       var formData = new FormData(e.target);
@@ -115195,7 +115200,7 @@ Vue.prototype.moment = __WEBPACK_IMPORTED_MODULE_1_moment___default.a;
       this.userParams.date_of_birth = this.userPivot.user.date_of_birth ? this.userPivot.user.date_of_birth : '';
       this.userParams.phone_number = this.userPivot.user.phone_number ? this.userPivot.user.phone_number : '';
       this.userParams.ic_passport_number = this.userPivot.user.ic_passport_number ? this.userPivot.user.ic_passport_number : '';
-      this.userParams.bio = this.userPivot.bio ? this.userPivot.bio : '';
+      this.userParams.bio = this.userPivot.user.bio ? this.userPivot.user.bio : '';
       this.userParams.avatar = this.userPivot.user.avatar ? this.userPivot.user.avatar : '';
       this.onUserUpdated();
     },

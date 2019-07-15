@@ -55,9 +55,13 @@
       }
     },
     mounted() {
-      console.log('experiences', this.experiences)
+      this.setDefaults()
     },
     methods: {
+      setDefaults(){
+        this.params.company = this.benefactor.company ? this.benefactor.company : ''
+        this.params.position = this.benefactor.position ? this.benefactor.position : ''
+      },
       updateBen(e){
         const config = { headers: { 'Content-Type': undefined}}
         var formData = new FormData(e.target)

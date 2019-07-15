@@ -77,7 +77,7 @@
         this.userParams.date_of_birth = this.userPivot.user.date_of_birth ? this.userPivot.user.date_of_birth : ''
         this.userParams.phone_number = this.userPivot.user.phone_number ? this.userPivot.user.phone_number : ''
         this.userParams.ic_passport_number = this.userPivot.user.ic_passport_number ? this.userPivot.user.ic_passport_number : ''
-        this.userParams.bio = this.userPivot.bio ? this.userPivot.bio : ''
+        this.userParams.bio = this.userPivot.user.bio ? this.userPivot.user.bio : ''
         this.userParams.avatar = this.userPivot.user.avatar ? this.userPivot.user.avatar : ''
         this.onUserUpdated()
       },

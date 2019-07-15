@@ -16,7 +16,7 @@ class CreateBenefactorsTable extends Migration
         Schema::create('benefactors', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id');
-            $table->string('workplace')->nullable();
+            $table->string('company')->nullable();
             $table->string('position')->nullable();
             $table->timestamps();
         });

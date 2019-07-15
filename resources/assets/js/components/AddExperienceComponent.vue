@@ -18,9 +18,9 @@
       <div class='row'>
         <div class='col-md-5'>
             <label>From</label>
-            <vue-monthly-picker :class="'date_from' + index" @change='dateFrom' v-model="newExperience.date_from"></vue-monthly-picker>
+            <vue-monthly-picker v-model="newExperience.date_from" @selected='dateFrom'></vue-monthly-picker>
             <label>To</label>
-            <vue-monthly-picker v-model="newExperience.year_to"></vue-monthly-picker>
+            <vue-monthly-picker v-model="newExperience.date_to" @selected='dateTo'></vue-monthly-picker>
         </div>
         <div class='col-md-6'>
           <label>Description</label>
@@ -108,11 +108,6 @@
                 self.onExperienceUpdated();
             }, 200);
           });
-          $('.date_from' + this.index).on('change', function(event) {
-            console.log('date from', event.target.value)
-            self.newReportCard.date_from = event.target.value
-            self.onExperienceUpdated();
-          });
         },
         onExperienceUpdated: function() {
           let experience = {
@@ -132,7 +127,13 @@
           this.$emit('deleteExperience', this.newExperience, this.index);
         },
         dateFrom(event){
-          console.log('date from', event.target.value)
+          this.newExperience.date_from = event._i
+          this.onExperienceUpdated();
+        },
+        dateTo(event){
+          this.newExperience.date_to = event._i
+          debugger;
+          this.onExperienceUpdated();
         }
       }
     }
